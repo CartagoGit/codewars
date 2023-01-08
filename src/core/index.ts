@@ -1,5 +1,6 @@
-import { initBrainLuck } from "../exercices/5kyu/brainLuck";
+import { initBrainLuck } from "../exercices/5kyu/brain-luck";
 
 
 const result = initBrainLuck();
-console.log(result);
+console.log("❗FINAL result ➽ ⏩" , result);
+
