@@ -1,6 +1,7 @@
-import { initBrainLuck } from "../exercices/5kyu/brain-luck";
+import { initDecodeMorse } from "../exercices/6kyu/decode-morse";
 
 
-const result = initBrainLuck();
+
+const result = initDecodeMorse();
 console.log("❗FINAL result ➽ ⏩" , result);
 
