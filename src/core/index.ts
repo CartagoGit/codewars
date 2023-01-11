@@ -1,4 +1,4 @@
-import { initDecodeMorse } from "../exercices/6kyu/decode-morse";
+import { initDecodeMorse } from "../exercices/4kyu/decode-bits-morse";
 
 
 
