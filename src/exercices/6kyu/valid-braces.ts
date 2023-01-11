@@ -22,7 +22,6 @@ export function validBraces(braces: string): boolean {
 		for (let symbol of dictionary) {
 			if (symbol.close === brace) {
 				if (i - 1 < 0) return false;
-				console.log(arrayBraces);
 				if (symbol.open !== arrayBraces[i - 1]) return false;
 				else {
 					arrayBraces.splice(i - 1, 2);

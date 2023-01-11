@@ -1,18 +1,64 @@
-
 import { decodeMorse } from "../6kyu/decode-morse";
+import { getGreatestCommonDivisior } from "../../helpers/greatest-common-divisor";
 
 export const initDecodeMorse = (): string => {
 	// return decodeMorse(".... . -.--   .--- ..- -.. .");
-	return decodeMorse(
-		decodeBits(
-			"1100110011001100000011000000111111001100111111001111110000000000000011001111110011111100111111000000110011001111110000001111110011001100000011"
+	// return decodeMorse(
+	// 	decodeBits(
+	// 		"1100110011001100000011000000111111001100111111001111110000000000000011001111110011111100111111000000110011001111110000001111110011001100000011"
+	// 	)
+	// );
+	// return decodeMorse(decodeBits("000000011100000"));
+	return decodeMorse(decodeBits("000000011100000"));
+};
+
+export const getRepeatedChains = (chain: string): string[] => {
+	const arrayChain = chain.split("");
+
+	const repeatedChains: string[] = [];
+	let supportiveChain = "";
+	for (const char of arrayChain) {
+		if (
+			supportiveChain.length === 0 ||
+			supportiveChain[supportiveChain.length - 1] === char
 		)
-	);
+			supportiveChain += char;
+		else {
+			repeatedChains.push(supportiveChain);
+			supportiveChain = char;
+		}
+	}
+	repeatedChains.push(supportiveChain);
+	return repeatedChains;
+};
+
+export const getPureBits = (bits: string): string => {
+	const repeatedChains = getRepeatedChains(bits);
+	const lenghtRepeatedChains = repeatedChains.map((chain) => chain.length);
+	const greatestCommonDivisior =
+		getGreatestCommonDivisior(lenghtRepeatedChains);
+	const morseCode = repeatedChains
+		.map((chain) =>
+			chain.substring(0, chain.length / greatestCommonDivisior!)
+		)
+		.join("")
+		.trim();
+	return morseCode;
 };
 
 export const decodeBits = (bits: string) => {
-	let isStationOn = false;
+	bits = getPureBits(bits);
+	if (bits.charAt(0) === "0" && bits.charAt(bits.length - 1) === "0") {
+		let auxiliarBits = bits.split("");
+		while (auxiliarBits[0] === "0") auxiliarBits.splice(0, 1);
+		while (auxiliarBits[auxiliarBits.length - 1] === "0")
+			auxiliarBits.splice(-1, 1);
+		if (!auxiliarBits.includes("0") && auxiliarBits.includes("1"))
+			return ".";
+		bits = auxiliarBits.join("");
+	}
 
+	let isStationOn = false;
 	let morseString = "";
 	while ((bits.includes("1") || bits.includes("0")) && bits.length !== 0) {
 		const firstNumber = bits.substring(0, 1);
@@ -31,9 +77,7 @@ export const decodeBits = (bits: string) => {
 				counter++;
 			}
 			morseString += counter < 3 ? "" : counter < 7 ? " " : "   ";
-		}
+		} else bits = bits.substring(1);
 	}
 	return morseString.trim();
 };
-
-

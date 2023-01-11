@@ -16,10 +16,13 @@ describe("brainLuck", () => {
 		);
 	});
 
-	it('Two numbers multiplier', () => {
-	  assert.equal(
-	    brainLuck(',>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.', String.fromCharCode(8,9)),
-	    String.fromCharCode(72)
-	  );
+	it("Two numbers multiplier", () => {
+		assert.equal(
+			brainLuck(
+				",>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.",
+				String.fromCharCode(8, 9)
+			),
+			String.fromCharCode(72)
+		);
 	});
 });

@@ -38,15 +38,12 @@ export function initBrainLuck() {
 		",+[-.,+]",
 		"Codewars" + String.fromCharCode(255)
 	);
-	console.log("❗initBrainLuck  ➽ result1 ➽ ⏩", result1);
 	const result2 = brainLuck(",[.[-],]", "Codewars" + String.fromCharCode(0));
-	console.log("❗initBrainLuck  ➽ result2 ➽ ⏩", result2);
-	("Codewars");
+
 	const result3 = brainLuck(
 		",>,<[>[->+>+<<]>>[-<<+>>]<<<-]>>.",
 		String.fromCharCode(8, 9)
 	);
-	console.log("❗initBrainLuck  ➽ result3 ➽ ⏩", result3);
 	return "hecho";
 }
 
