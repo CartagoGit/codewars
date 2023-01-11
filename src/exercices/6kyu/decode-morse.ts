@@ -5,10 +5,10 @@ export const initDecodeMorse = (): string => {
 };
 
 export function decodeMorse(morseCode: string): string {
-	const letterSpace = " ";
-	const wordSpace = "   ";
-	const listWords = morseCode.split(wordSpace);
-	const phrase = listWords
+	const letterSpace: string = " ";
+	const wordSpace: string = "   ";
+	const listWords: string[] = morseCode.split(wordSpace);
+	const phrase: string = listWords
 		.map((word: string) => {
 			return word
 				.split(letterSpace)

@@ -13,10 +13,10 @@ export const initDecodeMorse = (): string => {
 };
 
 export const getRepeatedChains = (chain: string): string[] => {
-	const arrayChain = chain.split("");
-
+	const arrayChain: string[] = chain.split("");
 	const repeatedChains: string[] = [];
-	let supportiveChain = "";
+	let supportiveChain: string = "";
+
 	for (const char of arrayChain) {
 		if (
 			supportiveChain.length === 0 ||
@@ -28,18 +28,24 @@ export const getRepeatedChains = (chain: string): string[] => {
 			supportiveChain = char;
 		}
 	}
+
 	repeatedChains.push(supportiveChain);
 	return repeatedChains;
 };
 
 export const getPureBits = (bits: string): string => {
-	const repeatedChains = getRepeatedChains(bits);
-	const lenghtRepeatedChains = repeatedChains.map((chain) => chain.length);
-	const greatestCommonDivisior =
-		getGreatestCommonDivisior(lenghtRepeatedChains);
-	const morseCode = repeatedChains
+	const repeatedChains: string[] = getRepeatedChains(bits);
+
+	const lenghtRepeatedChains: number[] = repeatedChains.map(
+		(chain) => chain.length
+	);
+
+	const greatestCommonDivisior: number =
+		getGreatestCommonDivisior(lenghtRepeatedChains)!;
+
+	const morseCode: string = repeatedChains
 		.map((chain) =>
-			chain.substring(0, chain.length / greatestCommonDivisior!)
+			chain.substring(0, chain.length / greatestCommonDivisior)
 		)
 		.join("")
 		.trim();
@@ -49,7 +55,7 @@ export const getPureBits = (bits: string): string => {
 export const decodeBits = (bits: string) => {
 	bits = getPureBits(bits);
 	if (bits.charAt(0) === "0" && bits.charAt(bits.length - 1) === "0") {
-		let auxiliarBits = bits.split("");
+		let auxiliarBits: string[] = bits.split("");
 		while (auxiliarBits[0] === "0") auxiliarBits.splice(0, 1);
 		while (auxiliarBits[auxiliarBits.length - 1] === "0")
 			auxiliarBits.splice(-1, 1);
@@ -58,11 +64,11 @@ export const decodeBits = (bits: string) => {
 		bits = auxiliarBits.join("");
 	}
 
-	let isStationOn = false;
-	let morseString = "";
+	let isStationOn: boolean = false;
+	let morseString: string = "";
 	while ((bits.includes("1") || bits.includes("0")) && bits.length !== 0) {
-		const firstNumber = bits.substring(0, 1);
-		let counter = 0;
+		const firstNumber: string = bits.substring(0, 1);
+		let counter: number = 0;
 		if (!isStationOn && firstNumber === "1") {
 			isStationOn = true;
 			while (bits.substring(0, 1) !== "0" && bits.length !== 0) {
