@@ -2,5 +2,5 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/decode-bits-morse.test.ts"],
+	testMatch: ["**/doors-in-the-school.test.ts"],
 };
