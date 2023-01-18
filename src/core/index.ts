@@ -1,6 +1,4 @@
-import { initDoorsInTheSchool } from '../exercices/6kyu/doors-in-the-school';
+import { initWhoLikesIt } from "../exercices/6kyu/who-likes-it";
 
-
-const result = initDoorsInTheSchool()
+const result = initWhoLikesIt();
 console.log("❗FINAL result ➽ ⏩", result);
-
