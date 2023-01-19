@@ -1,5 +1,6 @@
 import { assert } from 'chai'
-import { zozonacci } from './solution'
+import { zozonacci } from '../zozonacci'
+
 
 describe('Example Tests', () => {
   it('should work with example tests', () => {
