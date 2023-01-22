@@ -1,4 +1,4 @@
-export function solution(roman: string): number {
+export function romanNumeralDecoder(roman: string): number {
 	const symbols: { [key: string]: number } = {
 		I: 1,
 		V: 5,
