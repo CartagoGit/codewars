@@ -55,6 +55,23 @@ export const getFibonacciPosition = (position: number): number => {
 };
 
 /**
+ * ? Devuelve el índice del número de Fibonacci
+ * @param {number} numOfFibonacci
+ * @returns {number}
+ * - IMPORTANTE -
+ * El valor devuelto es un indice aproximado cercano al indice real más cercano.
+ * - Ejemplo: 9 no es número de Fibonacci, pero 8 sí, en la sexta posición.
+ *  El cálculo de 9 devuelve el indice más cercano, en este caso devuelve 6.
+ */
+export const getFibonacciIndex = (numOfFibonacci: number): number => {
+	
+	if(numOfFibonacci === 0) return 0;
+	const completeNumber = 2.078087 * Math.log(numOfFibonacci) + 1.672276;
+	const result = Math.round(completeNumber);
+	return result;
+};
+
+/**
  * ? Devuelve la seccuancia de Padovan, dandole el número de elementos que se desean
  * @param {number} [limit=100]
  * @returns {number[]}
