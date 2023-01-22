@@ -7,7 +7,7 @@
  * @param {number} [limit=100]
  * @returns {number[]}
  */
-export const getFibonacciSecuence = (limit: number = 100): number[] => {
+export const getFibonacciSequence = (limit: number = 100): number[] => {
 	function* generator(index: number = 0) {
 		let first = index;
 		let second = index + 1;
@@ -35,7 +35,7 @@ export const getFibonacciSecuence = (limit: number = 100): number[] => {
  * @returns {number}
  * Formula de Binet: Fn=((1+5–√2)**n−(1−5–√2)**n)/√5
  * - IMPORTANTE -
- * El valor es exacto hasta la posicion 70. A partir de ahi empieza a haber deprecaciones 
+ * El valor es exacto hasta la posicion 70. A partir de ahi empieza a haber deprecaciones
  * en los decimales debido a la deprecacion de decimales en javascript al realizar raices cuadradas y con numeros muy elevados.
  * A parte hay que tener en cuenta que la formula de binet no es exacta, solo aproximada.
  */
@@ -46,6 +46,7 @@ export const getFibonacciPosition = (position: number): number => {
 	return Math.round(
 		(Math.pow(Phi, position) - Math.pow(phi, position)) / sqRootOf5
 	);
+	//* Aplicación de la formula tal cual sin optimización
 	// return Math.round(
 	// 	(((1 + Math.sqrt(5)) / 2) ** position -
 	// 		((1 - Math.sqrt(5)) / 2) ** position) /
@@ -53,23 +54,58 @@ export const getFibonacciPosition = (position: number): number => {
 	// );
 };
 
-export const getPadovanSecuence = (): number[] => {
+/**
+ * ? Devuelve la seccuancia de Padovan, dandole el número de elementos que se desean
+ * @param {number} [limit=100]
+ * @returns {number[]}
+ */
+export const getPadovanSequence = (limit: number = 100): number[] => {
+	const sequence: number[] = [];
+	for (let i = 0; i < limit; i++) {
+		if (i < 3) {
+			sequence.push(1);
+			continue;
+		}
+		sequence.push(sequence[i - 2] + sequence[i - 3]);
+	}
+	return sequence;
+};
+
+/**
+ * ? Devuelve la seccuancia de Jacobstah, dandole el número de elementos que se desean
+ * @param {number} [limit=100]
+ * @returns {number[]}
+ */
+export const getJacobstahlSequence = (limit: number = 100): number[] => {
+	const sequence: number[] = [];
+	for (let i = 0; i < limit; i++) {
+		if (i < 2) {
+			sequence.push(i);
+			continue;
+		}
+		sequence.push(sequence[i - 1] + 2 * sequence[i - 2]);
+	}
+	return sequence;
+};
+
+/**
+ * ? Devuelve el número de Jacobstah en la posición deseada
+ * @param {number} position
+ * @returns {number}
+ */
+export const getJacobstahPosition = (position: number) => {
+	return (2 ** position - (-1) ** position) / 3;
+};
+
+export const getPellSequence = (): number[] => {
 	return [];
 };
 
-export const getJacobstahlSecuence = (): number[] => {
+export const getTribonacciSequence = (): number[] => {
 	return [];
 };
 
-export const getPellSecuence = (): number[] => {
-	return [];
-};
-
-export const getTribonacciSecuence = (): number[] => {
-	return [];
-};
-
-export const getTetranacciSecuence = (): number[] => {
+export const getTetranacciSequence = (): number[] => {
 	return [];
 };
 
@@ -78,26 +114,26 @@ const sequencies: {
 } = {
 	fib: {
 		name: "fibonacci",
-		getSequence: getFibonacciSecuence,
+		getSequence: getFibonacciSequence,
 	},
 	pad: {
 		name: "padovan",
-		getSequence: getPadovanSecuence,
+		getSequence: getPadovanSequence,
 	},
 	jac: {
 		name: "jacobstahl",
-		getSequence: getJacobstahlSecuence,
+		getSequence: getJacobstahlSequence,
 	},
 	pel: {
 		name: "pell",
-		getSequence: getPellSecuence,
+		getSequence: getPellSequence,
 	},
 	tri: {
 		name: "tribonacci",
-		getSequence: getTribonacciSecuence,
+		getSequence: getTribonacciSequence,
 	},
 	tet: {
 		name: "tetranacci",
-		getSequence: getTetranacciSecuence,
+		getSequence: getTetranacciSequence,
 	},
 };
