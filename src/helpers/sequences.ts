@@ -1,9 +1,9 @@
 /**
- * ? Formulas de famosas secuencias matematicas
+ * $ Formulas de famosas secuencias matematicas
  */
 
 /**
- * ? Devuelve la seccuancia de Fibonacci, dandole el número de elementos que se desean
+ * ? Devuelve la secuencia de Fibonacci, dandole el número de elementos que se desean
  * @param {number} [limit=100]
  * @returns {number[]}
  */
@@ -64,15 +64,14 @@ export const getFibonacciPosition = (position: number): number => {
  *  El cálculo de 9 devuelve el indice más cercano, en este caso devuelve 6.
  */
 export const getFibonacciIndex = (numOfFibonacci: number): number => {
-	
-	if(numOfFibonacci === 0) return 0;
+	if (numOfFibonacci === 0) return 0;
 	const completeNumber = 2.078087 * Math.log(numOfFibonacci) + 1.672276;
 	const result = Math.round(completeNumber);
 	return result;
 };
 
 /**
- * ? Devuelve la seccuancia de Padovan, dandole el número de elementos que se desean
+ * ? Devuelve la secuencia de Padovan, dandole el número de elementos que se desean
  * @param {number} [limit=100]
  * @returns {number[]}
  */
@@ -89,7 +88,7 @@ export const getPadovanSequence = (limit: number = 100): number[] => {
 };
 
 /**
- * ? Devuelve la seccuancia de Jacobstah, dandole el número de elementos que se desean
+ * ? Devuelve la secuencia de Jacobstah, dandole el número de elementos que se desean
  * @param {number} [limit=100]
  * @returns {number[]}
  */
@@ -114,8 +113,23 @@ export const getJacobstahPosition = (position: number) => {
 	return (2 ** position - (-1) ** position) / 3;
 };
 
-export const getPellSequence = (): number[] => {
-	return [];
+
+/**
+ * ? Devuelve la secuencia de Pell, dandole el número de elementos que se desean
+ * @param {number} [limit=100]
+ * @returns {number[]}
+ */
+export const getPellSequence = (limit: number = 100): number[] => {
+	const sequence: number[] = [];
+	for (let i = 0; i < limit; i++) {
+		if (i < 2) {
+			sequence.push(i);
+			continue;
+		}
+		const numberOfPell = 2 * sequence[i - 1] + sequence[i - 2];
+		sequence.push(numberOfPell);
+	}
+	return sequence;
 };
 
 export const getTribonacciSequence = (): number[] => {
