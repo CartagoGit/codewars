@@ -113,7 +113,6 @@ export const getJacobstahPosition = (position: number) => {
 	return (2 ** position - (-1) ** position) / 3;
 };
 
-
 /**
  * ? Devuelve la secuencia de Pell, dandole el número de elementos que se desean
  * @param {number} [limit=100]
@@ -132,8 +131,24 @@ export const getPellSequence = (limit: number = 100): number[] => {
 	return sequence;
 };
 
-export const getTribonacciSequence = (): number[] => {
-	return [];
+/**
+ * ? Devuelve la secuencia de Tribonacci, dandole el número de elementos que se desean
+ * @param {number} [limit=100]
+ * @returns {number[]}
+ */
+export const getTribonacciSequence = (limit: number = 100): number[] => {
+	const sequence: number[] = [];
+	for (let i = 0; i < limit; i++) {
+		if (i === 0 || i === 1 || i === 2) {
+			sequence.push(0);
+			continue;
+		} else if (i === 3) {
+			sequence.push(1);
+			continue;
+		}
+		sequence.push(sequence[i - 1] + sequence[i - 2] + sequence[i - 3]);
+	}
+	return sequence;
 };
 
 export const getTetranacciSequence = (): number[] => {
