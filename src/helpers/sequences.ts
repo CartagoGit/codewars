@@ -79,10 +79,10 @@ export const getFibonacciIndex = (numOfFibonacci: number): number => {
 export const getPadovanSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
 	for (let i = 0; i < limit; i++) {
-		if(i===0){
+		if (i === 0) {
 			sequence.push(1);
 			continue;
-		} else if(i === 1 || i === 2){
+		} else if (i === 1 || i === 2) {
 			sequence.push(0);
 			continue;
 		}
@@ -180,14 +180,13 @@ export const getTetranacciSequence = (limit: number = 100): number[] => {
 	return sequence;
 };
 
-
 /**
  * ? Objeto con secuencias mátematicas por sus siglas
  * @type {{
 	[key in string]: { name: string; getSequence: () => number[] };
 }}
  */
-export const sequencies: {
+export const sequences: {
 	[key in string]: { name: string; getSequence: () => number[] };
 } = {
 	fib: {
