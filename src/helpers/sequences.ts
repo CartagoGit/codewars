@@ -1,5 +1,6 @@
 /**
  * $ Formulas de famosas secuencias matematicas
+ * * https://oeis.org/
  */
 
 /**
@@ -78,8 +79,11 @@ export const getFibonacciIndex = (numOfFibonacci: number): number => {
 export const getPadovanSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
 	for (let i = 0; i < limit; i++) {
-		if (i < 3) {
+		if(i===0){
 			sequence.push(1);
+			continue;
+		} else if(i === 1 || i === 2){
+			sequence.push(0);
 			continue;
 		}
 		sequence.push(sequence[i - 2] + sequence[i - 3]);
@@ -139,10 +143,10 @@ export const getPellSequence = (limit: number = 100): number[] => {
 export const getTribonacciSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
 	for (let i = 0; i < limit; i++) {
-		if (i === 0 || i === 1 || i === 2) {
+		if (i === 0 || i === 1) {
 			sequence.push(0);
 			continue;
-		} else if (i === 3) {
+		} else if (i === 2) {
 			sequence.push(1);
 			continue;
 		}
@@ -159,14 +163,11 @@ export const getTribonacciSequence = (limit: number = 100): number[] => {
 export const getTetranacciSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
 	for (let i = 0; i < limit; i++) {
-		if (i === 0) {
+		if (i === 0 || i === 1 || i === 2) {
 			sequence.push(0);
 			continue;
-		} else if (i === 1 || i === 2) {
-			sequence.push(1);
-			continue;
 		} else if (i === 3) {
-			sequence.push(2);
+			sequence.push(1);
 			continue;
 		}
 		sequence.push(

@@ -3,7 +3,7 @@ import { getJacobstahlSequence, getJacobstahPosition, getPadovanSequence, getTet
 import { getFibonacciSequence, getFibonacciIndex, getPellSequence } from '../helpers/sequences';
 
 
-const result = getTetranacciSequence(100);
+const result = getTribonacciSequence(100);
 // const result2 = getJacobstahPosition(49);
 // const result2 = getFibonacciIndex(9);
 console.log("❗FINAL result ➽ ⏩", result);
