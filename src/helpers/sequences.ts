@@ -23,11 +23,11 @@ export const getFibonacciSequence = (limit: number = 100): number[] => {
 	let counter = 0;
 	const gen = generator();
 	let sequence: number[] = [];
-	while (counter < limit) {
+	while (counter <= limit) {
 		sequence.push(gen.next().value!);
 		counter++;
 	}
-	return sequence || [];
+	return sequence;
 };
 
 /**
@@ -78,7 +78,7 @@ export const getFibonacciIndex = (numOfFibonacci: number): number => {
  */
 export const getPadovanSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i <= limit; i++) {
 		if (i === 0) {
 			sequence.push(1);
 			continue;
@@ -98,7 +98,7 @@ export const getPadovanSequence = (limit: number = 100): number[] => {
  */
 export const getJacobstahlSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i <= limit; i++) {
 		if (i < 2) {
 			sequence.push(i);
 			continue;
@@ -124,7 +124,7 @@ export const getJacobstahPosition = (position: number) => {
  */
 export const getPellSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i <= limit; i++) {
 		if (i < 2) {
 			sequence.push(i);
 			continue;
@@ -142,7 +142,7 @@ export const getPellSequence = (limit: number = 100): number[] => {
  */
 export const getTribonacciSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i <= limit; i++) {
 		if (i === 0 || i === 1) {
 			sequence.push(0);
 			continue;
@@ -162,7 +162,7 @@ export const getTribonacciSequence = (limit: number = 100): number[] => {
  */
 export const getTetranacciSequence = (limit: number = 100): number[] => {
 	const sequence: number[] = [];
-	for (let i = 0; i < limit; i++) {
+	for (let i = 0; i <= limit; i++) {
 		if (i === 0 || i === 1 || i === 2) {
 			sequence.push(0);
 			continue;
