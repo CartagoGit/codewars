@@ -151,11 +151,42 @@ export const getTribonacciSequence = (limit: number = 100): number[] => {
 	return sequence;
 };
 
-export const getTetranacciSequence = (): number[] => {
-	return [];
+/**
+ * ? Devuelve la secuencia de Tetranacci, dandole el número de elementos que se desean
+ * @param {number} [limit=100]
+ * @returns {number[]}
+ */
+export const getTetranacciSequence = (limit: number = 100): number[] => {
+	const sequence: number[] = [];
+	for (let i = 0; i < limit; i++) {
+		if (i === 0) {
+			sequence.push(0);
+			continue;
+		} else if (i === 1 || i === 2) {
+			sequence.push(1);
+			continue;
+		} else if (i === 3) {
+			sequence.push(2);
+			continue;
+		}
+		sequence.push(
+			sequence[i - 1] +
+				sequence[i - 2] +
+				sequence[i - 3] +
+				sequence[i - 4]
+		);
+	}
+	return sequence;
 };
 
-const sequencies: {
+
+/**
+ * ? Objeto con secuencias mátematicas por sus siglas
+ * @type {{
+	[key in string]: { name: string; getSequence: () => number[] };
+}}
+ */
+export const sequencies: {
 	[key in string]: { name: string; getSequence: () => number[] };
 } = {
 	fib: {
