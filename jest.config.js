@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/mixbonacci.test.ts"],
+	testMatch: ["**/cats-and-shelves.test.ts"],
 
 };
