@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/cats-and-shelves.test.ts"],
+	testMatch: ["**/take-a-ten-minutes-walk.test.ts"],
 
 };
