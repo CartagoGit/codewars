@@ -1,8 +1,8 @@
-import { initBackSpaceString } from '../exercices/6kyu/backspace-in-string';
+import { initBackSpacesInString } from '../exercices/6kyu/backspaces-in-string';
 
 
 
-const result = initBackSpaceString();
+const result = initBackSpacesInString();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
