@@ -1,11 +1,7 @@
-import { initZozonacci } from '../exercices/6kyu/zozonacci';
-import { initMixbonacci } from '../exercices/5kyu/mixbonacci';
-import { getFibonacciSequence } from '../helpers/sequences';
-import { initNthFibo } from '../exercices/6kyu/nthFibo';
+import { initDigitalRoot } from "../exercices/6kyu/digital-root";
 
 
-const result = initNthFibo();
-// const result = getFibonacciSequence(0);
-// const result2 = getFibonacciIndex(9);
+const result = initDigitalRoot();
+
 console.log("❗FINAL result ➽ ⏩", result);
-// console.log("❗result2 ➽ ⏩" , result2);
+
