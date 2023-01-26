@@ -1,7 +1,8 @@
-import { initDigitalRoot } from "../exercices/6kyu/digital-root";
+import { initBackSpaceString } from '../exercices/6kyu/backspace-in-string';
 
 
-const result = initDigitalRoot();
+
+const result = initBackSpaceString();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
