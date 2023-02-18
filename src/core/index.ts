@@ -1,9 +1,6 @@
-import { initBackSpacesInString } from '../exercices/6kyu/backspaces-in-string';
-import { initIsValidWalk } from '../exercices/6kyu/take-a-ten-minutes-walk';
+import { initTimeCorrect } from '../exercices/7kyu/time-correct';
 
-
-
-const result = initIsValidWalk();
+const result = initTimeCorrect();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
