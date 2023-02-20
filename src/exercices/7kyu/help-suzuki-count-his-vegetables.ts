@@ -8,11 +8,14 @@ export const initVegetables = () => {
 
 export function countVegetables(s:string): [number,string][] {
     //your code here
-    const arrayOfVegetablesNotSorted : [number, string][] = [];
+    let arrayOfVegetablesNotSorted : [number, string][] = [];
+    let arrayCounter : number[] =[]
+    let arrayNameVegetables : string [] = []  
     s.split(' ').forEach(vegetable => {
-        const index = arrayOfVegetablesNotSorted[1].findIndex(vegetableNotSorted => vegetableNotSorted === vegetable)
-        if(index === -1 ) arrayOfVegetablesNotSorted.push([1,vegetable])
-        else arrayOfVegetablesNotSorted[]
+        const index = arrayNameVegetables.findIndex(vegetableName => vegetableName === vegetable)
+        if(index === -1 ) {arrayNameVegetables.push(vegetable), arrayCounter.push(1)}
+        else arrayCounter[index]++;
     })
+    
     return []
   }
