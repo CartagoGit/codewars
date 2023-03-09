@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/decipher-this.test.ts"],
+	testMatch: ["**/playing-with-digits.test.ts"],
 
 };

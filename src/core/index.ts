@@ -1,8 +1,8 @@
-import { initCountVegetables } from '../exercices/7kyu/help-suzuki-count-his-vegetables';
-import { initDecipherThis } from '../exercices/6kyu/decipher-this';
+import { initPLayingWithDigits } from '../exercices/6kyu/playing-with-digits';
 
 
-const result = initDecipherThis();
+
+const result = initPLayingWithDigits();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
