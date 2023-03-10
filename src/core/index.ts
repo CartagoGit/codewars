@@ -1,8 +1,8 @@
-import { initPLayingWithDigits } from '../exercices/6kyu/playing-with-digits';
+import { initRecreationTwo } from '../exercices/6kyu/recreation-two';
 
 
 
-const result = initPLayingWithDigits();
+const result = initRecreationTwo();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
