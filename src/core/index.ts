@@ -1,8 +1,8 @@
-import { initJosephusSurvivor } from '../exercices/5kyu/josephus-survivor';
+import { initNextBigger } from '../exercices/4kyu/next-bigger';
 
 
 
-const result =initJosephusSurvivor();
+const result =initNextBigger();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
