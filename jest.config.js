@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/next-bigger.test.ts"],
+	testMatch: ["**/reverse.test.ts"],
 
 };
