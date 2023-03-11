@@ -1,8 +1,8 @@
-import { initRecreationTwo } from '../exercices/6kyu/recreation-two';
+import { initJosephusSurvivor } from '../exercices/5kyu/josephus-survivor';
 
 
 
-const result = initRecreationTwo();
+const result =initJosephusSurvivor();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
