@@ -1,8 +1,8 @@
-import { initNextBigger } from '../exercices/4kyu/next-bigger';
+import { initCamelCase } from '../exercices/6kyu/camel-case';
 
 
 
-const result =initNextBigger();
+const result =initCamelCase();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
