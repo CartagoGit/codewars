@@ -1,10 +1,9 @@
-import { initCardsDrawOrder2 } from '../exercices/6kyu/cards-draw-order-2';
-import { initCardsDrawOrder1 } from '../exercices/7kyu/cards-draw-order-1';
-import { initBestTravel } from '../exercices/5kyu/best-travel';
+
+import { initSumIntervals } from '../exercices/4kyu/sum-intervals';
 
 
 
-const result =initBestTravel();
+const result =initSumIntervals();
 
 console.log("❗FINAL result ➽ ⏩", result);
 

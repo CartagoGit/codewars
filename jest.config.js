@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/best-travel.test.ts"],
+	testMatch: ["**/sum-intervals.test.ts"],
 
 };
