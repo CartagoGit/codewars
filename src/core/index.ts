@@ -1,9 +1,10 @@
 
-import { initSumIntervals } from '../exercices/4kyu/sum-intervals';
+
+import { initJosephusPermutation } from '../exercices/5kyu/josephus-permutation';
 
 
 
-const result =initSumIntervals();
+const result =initJosephusPermutation();
 
 console.log("❗FINAL result ➽ ⏩", result);
 

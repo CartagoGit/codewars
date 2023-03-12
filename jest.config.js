@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/sum-intervals.test.ts"],
+	testMatch: ["**/josephus-permutation.test.ts"],
 
 };
