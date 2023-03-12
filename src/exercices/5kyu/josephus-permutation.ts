@@ -9,7 +9,6 @@ export const josephus = <T>(items: T[], k: number): T[] => {
 		counter = counter + k - 1;
 		while (counter >= items.length) counter = counter - items.length;
 		result.push(items.splice(counter, 1)[0]);
-		// console.log({ k, counter, lenght: items.length, items });
 	}
 	return result;
 };
