@@ -1,8 +1,8 @@
-import { initCamelCase } from '../exercices/6kyu/camel-case';
+import { initCardsDrawOrder1 } from '../exercices/7kyu/cards-draw-order-1';
 
 
 
-const result =initCamelCase();
+const result =initCardsDrawOrder1();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
