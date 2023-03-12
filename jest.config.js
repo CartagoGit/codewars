@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/camel-case.test.ts"],
+	testMatch: ["**/cards-draw-order-2.test"],
 
 };
