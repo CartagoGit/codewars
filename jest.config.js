@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/josephus-permutation.test.ts"],
+	testMatch: ["**/card-game.test.ts"],
 
 };

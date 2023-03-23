@@ -1,10 +1,7 @@
+import { initCardGame } from "../exercices/5kyu/card-game";
 
 
-import { initJosephusPermutation } from '../exercices/5kyu/josephus-permutation';
-
-
-
-const result =initJosephusPermutation();
+const result =initCardGame();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
