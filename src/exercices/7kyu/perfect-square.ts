@@ -4,5 +4,5 @@ export const initPerfectSquare = () => {
 };
 
 export default function isSquare(n: number): boolean {
-	return Math.sqrt(n) % 1 === 0;
+	return Number.isInteger(Math.sqrt(n));
 }
