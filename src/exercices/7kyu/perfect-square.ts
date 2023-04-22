@@ -1,8 +1,11 @@
 export const initPerfectSquare = () => {
-    const result = isSquare(5);
-    return result;
-}
+	const result = isSquare(0);
+	return result;
+};
 
 export default function isSquare(n: number): boolean {
-    return false; // fix me
-  };
+	for (let i = 0; i <= n; i++) {
+		if (i * i === n) return true;
+	}
+	return false; // fix me
+}
