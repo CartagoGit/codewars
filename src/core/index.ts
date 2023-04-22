@@ -1,9 +1,8 @@
-import { initCardGame } from "../exercices/5kyu/card-game";
-import { initPerfectSquare } from "../exercices/7kyu/perfect-square";
-import { initAreTheSameSquarePos } from '../exercices/6kyu/are-the-same-square-pos';
+import { initSumOdds } from '../exercices/7kyu/sum-odd';
 
 
-const result =initAreTheSameSquarePos();
+
+const result =initSumOdds();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
