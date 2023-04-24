@@ -1,9 +1,9 @@
-import { initSumOdds } from '../exercices/7kyu/sum-odd';
-import { initSumArray } from '../exercices/8kyu/sum-without-min-and-max';
+
+import { initSquareSum } from '../exercices/8kyu/square-sum';
 
 
 
-const result =initSumArray();
+const result =initSquareSum();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
