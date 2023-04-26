@@ -2,6 +2,6 @@
 module.exports = {
 	preset: "ts-jest",
 	testEnvironment: "node",
-	testMatch: ["**/perfect-square.test.ts"],
+	testMatch: ["**/bouncing-ball.test.ts"],
 
 };
