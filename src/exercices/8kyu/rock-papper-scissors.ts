@@ -16,10 +16,20 @@
 // 	return cases[p1](p2);
 // };
 
+// export const rps = (p1: string, p2: string): string => {
+// 	const possibilities = ["rock", "paper", "scissors"];
+// 	const p1Index = possibilities.indexOf(p1);
+// 	const p2Index = possibilities.indexOf(p2);
+// 	const result = (p1Index - p2Index + 3) % 3;
+// 	return result === 0 ? "Draw!" : `Player ${result === 1 ? 1 : 2} won!`;
+// };
+
 export const rps = (p1: string, p2: string): string => {
-	const possibilities = ["rock", "paper", "scissors"];
-	const p1Index = possibilities.indexOf(p1);
-	const p2Index = possibilities.indexOf(p2);
-	const result = (p1Index - p2Index + 3) % 3;
-	return result === 0 ? "Draw!" : `Player ${result === 1 ? 1 : 2} won!`;
+	const winnerVsLoser: Record<string, string> = {
+		rock: "scissors",
+		paper: "rock",
+		scissors: "paper",
+	};
+	if (p1 === p2) return "Draw!";
+	return `Player ${winnerVsLoser[p1] === p2 ? "1" : "2"} won!`;
 };
