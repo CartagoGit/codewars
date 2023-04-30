@@ -1,0 +1,1 @@
+export const boolToWord = (bool: boolean): 'Yes' | 'No' => bool ? 'Yes' : 'No';
