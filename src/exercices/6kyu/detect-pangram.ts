@@ -11,7 +11,11 @@
 // 	return alphabet.length === numLetters;
 // };
 
+// export const isPangram = (phrase: string): boolean =>
+// 	"abcdefghijklmnopqrstuvwxyz"
+// 		.split("")
+// 		.every((letter) => phrase.toLowerCase().includes(letter));
+
 export const isPangram = (phrase: string): boolean =>
-	"abcdefghijklmnopqrstuvwxyz"
-		.split("")
-		.every((letter) => phrase.toLowerCase().includes(letter));
+	new Set(phrase.toLowerCase().match(/[a-z]/g)).size ===
+	"abcdefghijklmnopqrstuvwxyz".length;
