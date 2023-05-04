@@ -1,10 +1,17 @@
-export const isPangram = (phrase: string): boolean => {
-	const alphabet = "abcdefghijklmnopqrstuvwxyz";
-	const phraseLetters = phrase
-		.toLowerCase()
+//* https://www.codewars.com/kata/545cedaa9943f7fe7b000048/train/typescript
+
+// export const isPangram = (phrase: string): boolean => {
+// 	const alphabet = "abcdefghijklmnopqrstuvwxyz";
+// 	const phraseLetters = phrase
+// 		.toLowerCase()
+// 		.split("")
+// 		.map((letter) => letter.trim())
+// 		.filter((letter) => letter && alphabet.includes(letter) );
+// 	const numLetters = new Set(phraseLetters).size;
+// 	return alphabet.length === numLetters;
+// };
+
+export const isPangram = (phrase: string): boolean =>
+	"abcdefghijklmnopqrstuvwxyz"
 		.split("")
-		.map((letter) => letter.trim())
-		.filter((letter) => letter && alphabet.includes(letter) );
-	const numLetters = new Set(phraseLetters).size;
-	return alphabet.length === numLetters;
-};
+		.every((letter) => phrase.toLowerCase().includes(letter));
