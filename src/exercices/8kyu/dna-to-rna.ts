@@ -2,6 +2,8 @@
 
 // export const DNAtoRNA = (dna: string): string => dna.replace(/T/g, "U");
 
-export const DNAtoRNA = (dna: string): string => dna.split("T").join("U");
+// export const DNAtoRNA = (dna: string): string => dna.split("T").join("U");
+
+export const DNAtoRNA = (dna: string): string => dna.replaceAll("T", "U");
 
 
