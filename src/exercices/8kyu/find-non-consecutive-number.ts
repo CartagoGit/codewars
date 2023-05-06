@@ -3,11 +3,19 @@
 export const initFirstNonConsecutive = (): null | number =>
 	firstNonConsecutive([-9, -8, -7, -6, -5, -4, -2]);
 
+// export const firstNonConsecutive = (arr: number[]): null | number => {
+// 	if (arr.length < 2) return null;
+// 	for (let i = 1; i <= arr.length - 1; i++) {
+// 		console.log(i, arr[i - 1] + 1, arr[i]);
+// 		if (arr[i - 1] + 1 !== arr[i]) return arr[i];
+// 	}
+// 	return null;
+// };
+
 export const firstNonConsecutive = (arr: number[]): null | number => {
-	if (arr.length < 2) return null;
-	for (let i = 1; i <= arr.length - 1; i++) {
-		console.log(i, arr[i - 1] + 1, arr[i]);
-		if (arr[i - 1] + 1 !== arr[i]) return arr[i];
-	}
-	return null;
+	const difference = arr.find((value, index, array) => {
+		if (index === 0) return false;
+		return value !== array[index - 1] + 1;
+	});
+	return difference ?? null;
 };
