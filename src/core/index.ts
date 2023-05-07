@@ -7,3 +7,7 @@ const result =initCountDigits();
 
 console.log("❗FINAL result ➽ ⏩", result);
 
+
+
+
+
