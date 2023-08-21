@@ -2,4 +2,4 @@
 
 export function sumMix(x: any[]): number {
     return x.reduce((acc, curr) => acc + Number(curr), 0);
-}
+} 
