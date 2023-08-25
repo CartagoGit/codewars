@@ -24,16 +24,15 @@ export function joust(
 
 	const knightLeftFinalSpaces = sizeField - knightLeftPosition - knightSize;
 	const knightRightStartSpaces = knightRightPosition - knightSize;
-    const knightRightFinalSpaces = sizeField - knightRightPosition;
+	const knightRightFinalSpaces = sizeField - knightRightPosition;
 	const result = [
-		' '.repeat(knightLeftPosition) +
-			knightLeft +
-			' '.repeat(knightLeftFinalSpaces),
-		' '.repeat(knightRightStartSpaces) +
-			knightRight +
-			' '.repeat(knightRightFinalSpaces),
+		`${' '.repeat(knightLeftPosition)}${knightLeft}${' '.repeat(
+			knightLeftFinalSpaces
+		)}`,
+		`${' '.repeat(knightRightStartSpaces)}${knightRight}${' '.repeat(
+			knightRightFinalSpaces
+		)}`,
 	];
-
 
 	return result;
 }
