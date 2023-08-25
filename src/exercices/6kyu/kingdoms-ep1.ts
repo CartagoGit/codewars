@@ -14,47 +14,26 @@ export function joust(
 	let knightLeftPosition = 0;
 	let knightRightPosition = sizeField;
 	while (!collision) {
-		console.log({
-			collision,
-			knightLeftPosition,
-			knightSize,
-			knightRightPosition,
-		});
-		if (knightLeftPosition + knightSize >= knightRightPosition - knightSize)
+		if (knightLeftPosition + knightSize > knightRightPosition - knightSize)
 			collision = true;
 		else {
 			knightLeftPosition += vKnightLeft;
 			knightRightPosition -= vKnightRight;
 		}
 	}
-	// const result = [
-	// 	knightLeft
-	// 		.padStart(knightLeftPosition, ' ')
-	// 		.padEnd(sizeField - knightSize - knightLeftPosition, ' '),
-	// 	knightRight
-	// 		.padStart(knightRightPosition - knightSize, ' ')
-	// 		.padEnd(sizeField - knightRightPosition, ' '),
-	// ];
-	// const result = [
-	// 	' '.repeat(knightLeftPosition) + knightLeft + ' '.repeat(sizeField - knightLeftPosition - knightSize),
-	// 	' '.repeat(knightRightPosition - knightSize) + knightRight + ' '.repeat(sizeField - knightRightPosition - knightSize),
-	// ];
-	console.log({
-		knightLeftPosition,
-		knightRightPosition,
-		sizeField,
-		knightSize,
-	});
+
+	const knightLeftFinalSpaces = sizeField - knightLeftPosition - knightSize;
+	const knightRightStartSpaces = knightRightPosition - knightSize;
+    const knightRightFinalSpaces = sizeField - knightRightPosition;
 	const result = [
 		' '.repeat(knightLeftPosition) +
 			knightLeft +
-			' '.repeat(sizeField - knightLeftPosition - knightSize),
-		' '.repeat(knightRightPosition - knightSize) +
+			' '.repeat(knightLeftFinalSpaces),
+		' '.repeat(knightRightStartSpaces) +
 			knightRight +
-			' '.repeat(sizeField - knightRightPosition),
+			' '.repeat(knightRightFinalSpaces),
 	];
 
-	console.log(result);
 
 	return result;
 }
