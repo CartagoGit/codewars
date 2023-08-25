@@ -5,31 +5,56 @@ export function joust(
 	vKnightLeft: number,
 	vKnightRight: number
 ): string[] {
+	if (vKnightLeft === 0 && vKnightRight === 0) return listField;
 	const knightLeft = listField[0].trim();
 	const knightRight = listField[1].trim();
 	const knightSize = knightLeft.length;
 	const sizeField = listField[0].length;
 	let collision = false;
 	let knightLeftPosition = 0;
-	let knightRightPosition = sizeField - 1;
-	let walked = 0;
+	let knightRightPosition = sizeField;
 	while (!collision) {
-		knightLeftPosition += vKnightLeft;
-		knightRightPosition -= vKnightRight;
+		console.log({
+			collision,
+			knightLeftPosition,
+			knightSize,
+			knightRightPosition,
+		});
 		if (knightLeftPosition + knightSize >= knightRightPosition - knightSize)
 			collision = true;
-		else walked++;
+		else {
+			knightLeftPosition += vKnightLeft;
+			knightRightPosition -= vKnightRight;
+		}
 	}
-	const leftWalked = walked * vKnightLeft;
-	const rightWalked = walked * vKnightRight;
+	// const result = [
+	// 	knightLeft
+	// 		.padStart(knightLeftPosition, ' ')
+	// 		.padEnd(sizeField - knightSize - knightLeftPosition, ' '),
+	// 	knightRight
+	// 		.padStart(knightRightPosition - knightSize, ' ')
+	// 		.padEnd(sizeField - knightRightPosition, ' '),
+	// ];
+	// const result = [
+	// 	' '.repeat(knightLeftPosition) + knightLeft + ' '.repeat(sizeField - knightLeftPosition - knightSize),
+	// 	' '.repeat(knightRightPosition - knightSize) + knightRight + ' '.repeat(sizeField - knightRightPosition - knightSize),
+	// ];
+	console.log({
+		knightLeftPosition,
+		knightRightPosition,
+		sizeField,
+		knightSize,
+	});
 	const result = [
-		knightLeft
-			.padStart(leftWalked, ' ')
-			.padEnd(sizeField - knightSize - leftWalked, ' '),
-		knightRight
-			.padEnd(rightWalked, ' ')
-			.padStart(sizeField - knightSize - rightWalked, ' '),
+		' '.repeat(knightLeftPosition) +
+			knightLeft +
+			' '.repeat(sizeField - knightLeftPosition - knightSize),
+		' '.repeat(knightRightPosition - knightSize) +
+			knightRight +
+			' '.repeat(sizeField - knightRightPosition),
 	];
+
+	console.log(result);
 
 	return result;
 }
