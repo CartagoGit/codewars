@@ -37,3 +37,5 @@ const isMatching = (censoredWord: string, vocabularyWord: string) => {
 	}
 	return true;
 };
+
+
