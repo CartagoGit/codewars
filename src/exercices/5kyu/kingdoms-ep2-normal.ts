@@ -3,6 +3,7 @@
 const PUNCTUATION_OMITTED = '?!.,';
 
 export function translate(speech: string, vocabulary: string[]): string {
+	if (speech === '') return '';
 	const speechWords = speech.split(' ');
 
 	// Get all possible words for each censored word
@@ -27,18 +28,15 @@ export function translate(speech: string, vocabulary: string[]): string {
 	) {
 		for (let [word, possibilities] of Object.entries(matchedWords)) {
 			if (uniquePossibilities[word]) continue;
-			possibilities = possibilities.filter((possibility) => {
-				console.log({ possibility, uniquePossibilities });
-				return !Object.values(uniquePossibilities).includes(
-					possibility
-				);
-			});
+			possibilities = possibilities.filter(
+				(possibility) =>
+					!Object.values(uniquePossibilities).includes(possibility)
+			);
 			if (possibilities.length === 1) {
 				uniquePossibilities[word] = possibilities[0];
 			}
 		}
 	}
-	console.log({ uniquePossibilities });
 	const correctedSpeech = speechWords
 		.map((speechWord) => {
 			// Get punctuations before and after speech word
@@ -65,10 +63,4 @@ const isMatching = (censoredWord: string, vocabularyWord: string) => {
 		if (char !== '*' && char !== vocabularyWord[index]) return false;
 	}
 	return true;
-};
-
-const getMatchingWord = (censoredWord: string, vocabulary: string[]) => {
-	return vocabulary.find((vocabularyWord) =>
-		isMatching(censoredWord, vocabularyWord)
-	);
 };
