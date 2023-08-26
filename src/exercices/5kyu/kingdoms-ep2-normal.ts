@@ -4,6 +4,41 @@ const PUNCTUATION_OMITTED = '?!.,';
 
 export function translate(speech: string, vocabulary: string[]): string {
 	const speechWords = speech.split(' ');
+
+	// Get all possible words for each censored word
+	let matchedWords: Record<string, string[]> = {};
+	for (let speechWord of speechWords) {
+		const speechWordWithoutPunctuation = speechWord.replace(
+			new RegExp(`[${PUNCTUATION_OMITTED}]`, 'g'),
+			''
+		);
+		matchedWords[speechWord] = vocabulary.filter((vocabWord) =>
+			isMatching(speechWordWithoutPunctuation, vocabWord)
+		);
+	}
+
+	// Get unique possibilities
+	let uniquePossibilities: Record<string, string> = {};
+
+	while (
+		Object.keys(matchedWords).length > 0 &&
+		Object.keys(uniquePossibilities).length <
+			Object.keys(matchedWords).length
+	) {
+		for (let [word, possibilities] of Object.entries(matchedWords)) {
+			if (uniquePossibilities[word]) continue;
+			possibilities = possibilities.filter((possibility) => {
+				console.log({ possibility, uniquePossibilities });
+				return !Object.values(uniquePossibilities).includes(
+					possibility
+				);
+			});
+			if (possibilities.length === 1) {
+				uniquePossibilities[word] = possibilities[0];
+			}
+		}
+	}
+	console.log({ uniquePossibilities });
 	const correctedSpeech = speechWords
 		.map((speechWord) => {
 			// Get punctuations before and after speech word
@@ -13,14 +48,8 @@ export function translate(speech: string, vocabulary: string[]): string {
 			const punctuationEnd = speechWord.match(
 				new RegExp(`[${PUNCTUATION_OMITTED}]+$`)
 			) || [''];
-			// Clean punctuation of censored word
-			const speechWordWithoutPunctuation = speechWord.replace(
-				new RegExp(`[${PUNCTUATION_OMITTED}]`, 'g'),
-				''
-			);
-			const matchingWord = vocabulary.find((vocabularyWord) =>
-				isMatching(speechWordWithoutPunctuation, vocabularyWord)
-			);
+
+			const matchingWord = uniquePossibilities[speechWord];
 			return matchingWord
 				? punctuationStart[0] + matchingWord + punctuationEnd[0]
 				: speechWord;
@@ -38,4 +67,8 @@ const isMatching = (censoredWord: string, vocabularyWord: string) => {
 	return true;
 };
 
-
+const getMatchingWord = (censoredWord: string, vocabulary: string[]) => {
+	return vocabulary.find((vocabularyWord) =>
+		isMatching(censoredWord, vocabularyWord)
+	);
+};
