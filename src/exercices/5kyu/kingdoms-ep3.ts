@@ -1,7 +1,6 @@
 //* https://www.codewars.com/kata/616eedc41d5644001ff97462/train/typescript
 
 export function countAndSort(target: string[]): string[] {
-	console.log({ target });
 	let counterScore: Record<string, { score: number; arrows: number }> = {};
 	const maxScores = (target.length + 1) / 2;
 	const positionScores = Array.from({ length: target.length }, (_, index) => {
@@ -19,21 +18,13 @@ export function countAndSort(target: string[]): string[] {
 			};
 			const arrowsInPosition = char === char.toUpperCase() ? 2 : 1;
 			arrows = arrows + arrowsInPosition;
-			console.log({
-				char,
-				arrowsInPosition,
-				arrows,
-				positionScore:
-					positionScores[Math.min(...[rowIndex, colIndex])],
-			});
-			score =
-				score +
-				positionScores[Math.min(...[rowIndex, colIndex])] *
-					arrowsInPosition;
+			const positionScore = Math.min(
+				...[positionScores[rowIndex], positionScores[colIndex]]
+			);
+			score = positionScore * arrowsInPosition + score;
 			counterScore[lowerChar] = { score, arrows };
 		}
 	}
-	console.log({ counterScore });
 	const finalResult = Object.entries(counterScore)
 		.sort((a, b) => {
 			const [nameA, { score: scoreA, arrows: arrowsA }] = a;
@@ -44,6 +35,5 @@ export function countAndSort(target: string[]): string[] {
 			else return nameA.localeCompare(nameB); // Order alphabetically
 		})
 		.map(([char]) => char);
-	console.log({ finalResult });
 	return finalResult;
 }
