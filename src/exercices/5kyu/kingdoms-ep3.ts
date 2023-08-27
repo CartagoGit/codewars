@@ -10,9 +10,7 @@ export function countAndSort(target: string[]): string[] {
 	});
 
 	for (let [rowIndex, row] of target.entries()) {
-		console.log({ rowIndex, row });
 		for (let [colIndex, char] of row.split('').entries()) {
-			console.log({ colIndex, char });
 			if (char === '*') continue;
 			const lowerChar = char.toLowerCase();
 			let { score, arrows } = counterScore[lowerChar] || {
@@ -21,6 +19,13 @@ export function countAndSort(target: string[]): string[] {
 			};
 			const arrowsInPosition = char === char.toUpperCase() ? 2 : 1;
 			arrows = arrows + arrowsInPosition;
+			console.log({
+				char,
+				arrowsInPosition,
+				arrows,
+				positionScore:
+					positionScores[Math.min(...[rowIndex, colIndex])],
+			});
 			score =
 				score +
 				positionScores[Math.min(...[rowIndex, colIndex])] *
@@ -29,6 +34,16 @@ export function countAndSort(target: string[]): string[] {
 		}
 	}
 	console.log({ counterScore });
-
-	return [];
+	const finalResult = Object.entries(counterScore)
+		.sort((a, b) => {
+			const [nameA, { score: scoreA, arrows: arrowsA }] = a;
+			const [nameB, { score: scoreB, arrows: arrowsB }] = b;
+			if (scoreA !== scoreB) return scoreA - scoreB; // Ordeer score asc
+			else if (arrowsA !== arrowsB)
+				return arrowsB - arrowsA; // Order arrows desc
+			else return nameA.localeCompare(nameB); // Order alphabetically
+		})
+		.map(([char]) => char);
+	console.log({ finalResult });
+	return finalResult;
 }
