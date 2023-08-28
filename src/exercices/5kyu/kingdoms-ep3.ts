@@ -37,3 +37,4 @@ export function countAndSort(target: string[]): string[] {
 		.map(([char]) => char);
 	return finalResult;
 }
+
