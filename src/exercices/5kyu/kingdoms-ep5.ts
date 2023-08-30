@@ -19,6 +19,7 @@ export function searchForFood(
 		island: islandCoordinates,
 		coordinates: coordinatesXY,
 		steps,
+		result: 0,
 	});
 	return result;
 }
@@ -27,18 +28,32 @@ const walk = (data: {
 	island: string[][];
 	coordinates: Coordinates;
 	steps: number;
+	result: number;
 }): number => {
 	const { island, coordinates } = data;
-	let { steps } = data;
+	let { steps, result } = data;
+
 	while (steps > 0) {
 		const { top, right, bottom, left } = getBesides(coordinates);
-		if (!isValidPosition({ island, coordinates: top })) continue;
-		if (!isValidPosition({ island, coordinates: right })) continue;
-		if (!isValidPosition({ island, coordinates: bottom })) continue;
-		if (!isValidPosition({ island, coordinates: left })) continue;
-		steps--;
+		const { validTop, validRight, validBottom, validLeft } = validBesides({
+			island,
+			coordinates,
+		});
+		const { x, y } = coordinates;
+		const value = island[x][y];
+		steps = steps - (value === '$' ? 2 : 1);
+		if (!isNaN(Number(value))) result = result + Number(value);
+		const newData = {
+			island,
+			steps,
+			result,
+		};
+		if (validTop) walk({ ...newData, coordinates: top });
+		else if (validRight) walk({ ...newData, coordinates: right });
+		else if (validBottom) walk({ ...newData, coordinates: bottom });
+		else if (validLeft) walk({ ...newData, coordinates: left });
 	}
-	let result = 0;
+	console.log({ result });
 	return result;
 };
 
@@ -76,17 +91,17 @@ const validBesides = (data: {
 	island: string[][];
 	coordinates: Coordinates;
 }): {
-	top: boolean;
-	right: boolean;
-	bottom: boolean;
-	left: boolean;
+	validTop: boolean;
+	validRight: boolean;
+	validBottom: boolean;
+	validLeft: boolean;
 } => {
 	const { island, coordinates } = data;
 	const { top, right, bottom, left } = getBesides(coordinates);
 	return {
-		top: isValidPosition({ island, coordinates: top }),
-		right: isValidPosition({ island, coordinates: right }),
-		bottom: isValidPosition({ island, coordinates: bottom }),
-		left: isValidPosition({ island, coordinates: left }),
+		validTop: isValidPosition({ island, coordinates: top }),
+		validRight: isValidPosition({ island, coordinates: right }),
+		validBottom: isValidPosition({ island, coordinates: bottom }),
+		validLeft: isValidPosition({ island, coordinates: left }),
 	};
 };
