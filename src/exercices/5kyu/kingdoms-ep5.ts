@@ -15,23 +15,27 @@ export function searchForFood(
 		return row.split('');
 	});
 	const coordinatesXY = { y: coordinates[0], x: coordinates[1] };
-	console.log({ island, islandCoordinates, coordinates, steps });
 	const result = walk({
-		island: islandCoordinates,
+		// island: islandCoordinates,
+		island,
 		coordinates: coordinatesXY,
 		steps,
 		result: 0,
 		maxResult: 0,
 		isFirstStep: true,
 	});
-
-	console.log({ result });
+	console.log({
+		island,
+		coordinates,
+		steps,
+	});
 	return result;
 }
 
 //* Walk through the island
 const walk = (data: {
-	island: string[][];
+	// island: string[][];
+	island: string[];
 	coordinates: Coordinates;
 	steps: number;
 	result: number;
@@ -39,30 +43,60 @@ const walk = (data: {
 	isFirstStep?: boolean;
 }): number => {
 	const { island, coordinates, isFirstStep = false } = data;
+	if (!isValidPosition({ island, coordinates })) return 0;
 	const { x, y } = coordinates;
 	const value = island[y][x];
 	let { steps, maxResult, result } = data;
-	if (steps <= 0) {
+	if (steps <= 0 || steps - (value === '$' ? 2 : 1) < 0) {
 		if (isFirstStep) return !isNaN(Number(value)) ? Number(value) : 0;
-		return maxResult > result ? maxResult : result;
+		return Math.max(maxResult, result);
 	}
 	if (!isNaN(Number(value))) result += Number(value);
-	if (!isNaN(Number(value)) || value === '$') island[y][x] = '.';
+	// if (!isNaN(Number(value)) || value === '$') island[y][x] = '.';
+	if (!isNaN(Number(value)) || value === '$')
+		island[y] = island[y]
+			.split('')
+			.map((char, index) => (index === x ? '.' : char))
+			.join('');
 	if (!isFirstStep) steps = steps - (value === '$' ? 2 : 1);
-	// console.log('ENTRA EN WALK', { coordinates, steps, results, island });
 	const sides = getBesides(coordinates);
-	for (const newCoordinates of Object.values(sides)) {
-		if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
-		maxResult = walk({
-			island: island.map((row) => [...row]),
-			steps,
-			result,
-			maxResult,
-			coordinates: newCoordinates,
-		});
-	}
-	console.log('aqui', { result, maxResult });
-	return maxResult > result ? maxResult : result;
+	const newData = {
+		// island: island.map((row) => [...row]),
+		island: [...island],
+		steps,
+		result,
+		maxResult,
+	};
+	return Math.max(
+		walk({
+			...newData,
+			coordinates: sides.top,
+		}),
+		walk({
+			...newData,
+			coordinates: sides.right,
+		}),
+		walk({
+			...newData,
+			coordinates: sides.bottom,
+		}),
+		walk({
+			...newData,
+			coordinates: sides.left,
+		})
+	);
+	// for (const newCoordinates of Object.values(sides)) {
+	// 	if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
+	// 	maxResult = walk({
+	// 		// island: island.map((row) => [...row]),
+	// 		island: [...island],
+	// 		steps,
+	// 		result,
+	// 		maxResult,
+	// 		coordinates: newCoordinates,
+	// 	});
+	// }
+	// return Math.max(maxResult, result);
 };
 
 //* Get the coordinates of the 4 squares besides the current one
@@ -85,7 +119,7 @@ const getBesides = (
 
 //* Check if the coordinates are valid
 const isValidPosition = (data: {
-	island: string[][];
+	island: string[];
 	coordinates: Coordinates;
 }): boolean => {
 	const { island, coordinates } = data;
