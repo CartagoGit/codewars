@@ -5,6 +5,7 @@ interface Coordinates {
 	y: number;
 }
 
+//* Search for food in the island
 export function searchForFood(
 	island: string[],
 	coordinates: number[],
@@ -15,52 +16,53 @@ export function searchForFood(
 	});
 	const coordinatesXY = { y: coordinates[0], x: coordinates[1] };
 	console.log({ island, islandCoordinates, coordinates, steps });
-	const results = walk({
+	const result = walk({
 		island: islandCoordinates,
 		coordinates: coordinatesXY,
 		steps,
 		result: 0,
-		results: [],
+		maxResult: 0,
 		isFirstStep: true,
 	});
 
-	console.log({ results });
-	return Math.max(...results);
+	console.log({ result });
+	return result;
 }
 
+//* Walk through the island
 const walk = (data: {
 	island: string[][];
 	coordinates: Coordinates;
 	steps: number;
 	result: number;
-	results: number[];
+	maxResult: number;
 	isFirstStep?: boolean;
-}): number[] => {
+}): number => {
 	const { island, coordinates, isFirstStep = false } = data;
-	let { steps, results, result } = data;
-	if (steps <= 0) {
-		results.push(result);
-		return results
-	};
 	const { x, y } = coordinates;
 	const value = island[y][x];
-	if (!isFirstStep) steps = steps - (value === '$' ? 2 : 1);
+	let { steps, maxResult, result } = data;
+	if (steps <= 0) {
+		if (isFirstStep) return !isNaN(Number(value)) ? Number(value) : 0;
+		return maxResult > result ? maxResult : result;
+	}
 	if (!isNaN(Number(value))) result += Number(value);
 	if (!isNaN(Number(value)) || value === '$') island[y][x] = '.';
+	if (!isFirstStep) steps = steps - (value === '$' ? 2 : 1);
 	// console.log('ENTRA EN WALK', { coordinates, steps, results, island });
 	const sides = getBesides(coordinates);
 	for (const newCoordinates of Object.values(sides)) {
 		if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
-		results = walk({
+		maxResult = walk({
 			island: island.map((row) => [...row]),
 			steps,
 			result,
-			results,
+			maxResult,
 			coordinates: newCoordinates,
 		});
-		console.log({ results });
 	}
-	return results;
+	console.log('aqui', { result, maxResult });
+	return maxResult > result ? maxResult : result;
 };
 
 //* Get the coordinates of the 4 squares besides the current one
