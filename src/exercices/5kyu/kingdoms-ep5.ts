@@ -14,7 +14,7 @@ export function searchForFood(
 	const islandCoordinates = island.map((row) => {
 		return row.split('');
 	});
-	const coordinatesXY = { y: coordinates[0], x: coordinates[1] };
+	const coordinatesXY = { x: coordinates[0], y: coordinates[1] };
 	const result = walk({
 		// island: islandCoordinates,
 		island,
@@ -45,7 +45,7 @@ const walk = (data: {
 	const { island, coordinates, isFirstStep = false } = data;
 	if (!isValidPosition({ island, coordinates })) return 0;
 	const { x, y } = coordinates;
-	const value = island[y][x];
+	const value = island[x][y];
 	let { steps, maxResult, result } = data;
 	if (steps <= 0 || steps - (value === '$' ? 2 : 1) < 0) {
 		if (isFirstStep) return !isNaN(Number(value)) ? Number(value) : 0;
@@ -54,9 +54,9 @@ const walk = (data: {
 	if (!isNaN(Number(value))) result += Number(value);
 	// if (!isNaN(Number(value)) || value === '$') island[y][x] = '.';
 	if (!isNaN(Number(value)) || value === '$')
-		island[y] = island[y]
+		island[x] = island[x]
 			.split('')
-			.map((char, index) => (index === x ? '.' : char))
+			.map((char, index) => (index === y ? '.' : char))
 			.join('');
 	if (!isFirstStep) steps = steps - (value === '$' ? 2 : 1);
 	const sides = getBesides(coordinates);
@@ -110,10 +110,10 @@ const getBesides = (
 } => {
 	const { x, y } = coordinates;
 	return {
-		top: { x, y: y - 1 },
-		right: { x: x + 1, y },
-		bottom: { x, y: y + 1 },
-		left: { x: x - 1, y },
+		left: { x, y: y - 1 },
+		bottom: { x: x + 1, y },
+		right: { x, y: y + 1 },
+		top: { x: x - 1, y },
 	};
 };
 
@@ -126,5 +126,5 @@ const isValidPosition = (data: {
 	const { x, y } = coordinates;
 	const islandWidth = island[0].length;
 	const islandHeight = island.length;
-	return x >= 0 && x < islandWidth && y >= 0 && y < islandHeight;
+	return y >= 0 && y < islandWidth && x >= 0 && x < islandHeight;
 };
