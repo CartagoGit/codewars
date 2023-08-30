@@ -10,18 +10,22 @@ export function searchForFood(
 	coordinates: number[],
 	steps: number
 ): number {
-	const islandCoordinates = island.map((row, y) => {
+	const islandCoordinates = island.map((row) => {
 		return row.split('');
 	});
 	const coordinatesXY = { y: coordinates[0], x: coordinates[1] };
-	console.log({ island, coordinates, steps });
-	const result = walk({
+	console.log({ island, islandCoordinates, coordinates, steps });
+	const results = walk({
 		island: islandCoordinates,
 		coordinates: coordinatesXY,
 		steps,
 		result: 0,
+		results: [],
+		isFirstStep: true,
 	});
-	return result;
+
+	console.log({ results });
+	return Math.max(...results);
 }
 
 const walk = (data: {
@@ -29,32 +33,34 @@ const walk = (data: {
 	coordinates: Coordinates;
 	steps: number;
 	result: number;
-}): number => {
-	const { island, coordinates } = data;
-	let { steps, result } = data;
-
-	while (steps > 0) {
-		const { top, right, bottom, left } = getBesides(coordinates);
-		const { validTop, validRight, validBottom, validLeft } = validBesides({
-			island,
-			coordinates,
-		});
-		const { x, y } = coordinates;
-		const value = island[x][y];
-		steps = steps - (value === '$' ? 2 : 1);
-		if (!isNaN(Number(value))) result = result + Number(value);
-		const newData = {
-			island,
+	results: number[];
+	isFirstStep?: boolean;
+}): number[] => {
+	const { island, coordinates, isFirstStep = false } = data;
+	let { steps, results, result } = data;
+	if (steps <= 0) {
+		results.push(result);
+		return results
+	};
+	const { x, y } = coordinates;
+	const value = island[y][x];
+	if (!isFirstStep) steps = steps - (value === '$' ? 2 : 1);
+	if (!isNaN(Number(value))) result += Number(value);
+	if (!isNaN(Number(value)) || value === '$') island[y][x] = '.';
+	// console.log('ENTRA EN WALK', { coordinates, steps, results, island });
+	const sides = getBesides(coordinates);
+	for (const newCoordinates of Object.values(sides)) {
+		if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
+		results = walk({
+			island: island.map((row) => [...row]),
 			steps,
 			result,
-		};
-		if (validTop) walk({ ...newData, coordinates: top });
-		else if (validRight) walk({ ...newData, coordinates: right });
-		else if (validBottom) walk({ ...newData, coordinates: bottom });
-		else if (validLeft) walk({ ...newData, coordinates: left });
+			results,
+			coordinates: newCoordinates,
+		});
+		console.log({ results });
 	}
-	console.log({ result });
-	return result;
+	return results;
 };
 
 //* Get the coordinates of the 4 squares besides the current one
@@ -85,23 +91,4 @@ const isValidPosition = (data: {
 	const islandWidth = island[0].length;
 	const islandHeight = island.length;
 	return x >= 0 && x < islandWidth && y >= 0 && y < islandHeight;
-};
-
-const validBesides = (data: {
-	island: string[][];
-	coordinates: Coordinates;
-}): {
-	validTop: boolean;
-	validRight: boolean;
-	validBottom: boolean;
-	validLeft: boolean;
-} => {
-	const { island, coordinates } = data;
-	const { top, right, bottom, left } = getBesides(coordinates);
-	return {
-		validTop: isValidPosition({ island, coordinates: top }),
-		validRight: isValidPosition({ island, coordinates: right }),
-		validBottom: isValidPosition({ island, coordinates: bottom }),
-		validLeft: isValidPosition({ island, coordinates: left }),
-	};
 };
