@@ -11,9 +11,9 @@ export function searchForFood(
 	coordinates: number[],
 	steps: number
 ): number {
-	const islandCoordinates = island.map((row) => {
-		return row.split('');
-	});
+	// const islandCoordinates = island.map((row) => {
+	// 	return row.split('');
+	// });
 	const coordinatesXY = { x: coordinates[0], y: coordinates[1] };
 	const result = walk({
 		// island: islandCoordinates,
@@ -24,11 +24,11 @@ export function searchForFood(
 		maxResult: 0,
 		isFirstStep: true,
 	});
-	console.log({
-		island,
-		coordinates,
-		steps,
-	});
+	// console.log({
+	// 	island,
+	// 	coordinates,
+	// 	steps,
+	// });
 	return result;
 }
 
@@ -67,36 +67,36 @@ const walk = (data: {
 		result,
 		maxResult,
 	};
-	return Math.max(
-		walk({
-			...newData,
-			coordinates: sides.top,
-		}),
-		walk({
-			...newData,
-			coordinates: sides.right,
-		}),
-		walk({
-			...newData,
-			coordinates: sides.bottom,
-		}),
-		walk({
-			...newData,
-			coordinates: sides.left,
-		})
-	);
-	// for (const newCoordinates of Object.values(sides)) {
-	// 	if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
-	// 	maxResult = walk({
-	// 		// island: island.map((row) => [...row]),
-	// 		island: [...island],
-	// 		steps,
-	// 		result,
-	// 		maxResult,
-	// 		coordinates: newCoordinates,
-	// 	});
-	// }
-	// return Math.max(maxResult, result);
+	// return Math.max(
+	// 	walk({
+	// 		...newData,
+	// 		coordinates: sides.top,
+	// 	}),
+	// 	walk({
+	// 		...newData,
+	// 		coordinates: sides.right,
+	// 	}),
+	// 	walk({
+	// 		...newData,
+	// 		coordinates: sides.bottom,
+	// 	}),
+	// 	walk({
+	// 		...newData,
+	// 		coordinates: sides.left,
+	// 	})
+	// );
+	for (const newCoordinates of Object.values(sides)) {
+		if (!isValidPosition({ island, coordinates: newCoordinates })) continue;
+		maxResult = walk({
+			// island: island.map((row) => [...row]),
+			island: [...island],
+			steps,
+			result,
+			maxResult,
+			coordinates: newCoordinates,
+		});
+	}
+	return Math.max(maxResult, result);
 };
 
 //* Get the coordinates of the 4 squares besides the current one
