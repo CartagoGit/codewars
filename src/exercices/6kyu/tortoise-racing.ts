@@ -6,10 +6,9 @@ export function race(
 	adventage: number
 ): [number, number, number] | null {
 	if (aSpeed >= bSpeed) return null;
-	const timeInHours: number = adventage / (bSpeed - aSpeed);
-	const seconds = (timeInHours * 3600) % 60;
-	const minutes = (timeInHours * 60) % 60;
-	const hours = timeInHours;
+	const hours: number = adventage / (bSpeed - aSpeed);
+	const seconds = (hours * 3600) % 60;
+	const minutes = (hours * 60) % 60;
 	return [hours, minutes, seconds].map(Math.trunc) as [
 		number,
 		number,
