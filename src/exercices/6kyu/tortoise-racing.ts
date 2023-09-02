@@ -9,7 +9,7 @@ export function race(
 	const hours: number = adventage / (bSpeed - aSpeed);
 	const seconds = (hours * 3600) % 60;
 	const minutes = (hours * 60) % 60;
-	return [hours, minutes, seconds].map(Math.trunc) as [
+	return [hours, minutes, seconds].map(Math.floor) as [
 		number,
 		number,
 		number
