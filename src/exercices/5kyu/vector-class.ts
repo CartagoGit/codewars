@@ -13,7 +13,6 @@ const CheckLength = (
 			throw new Error(
 				`Cannot ${propertyKey} vectors of different lengths`
 			);
-
 		return originalMethod.apply(this, [vector]);
 	};
 };
