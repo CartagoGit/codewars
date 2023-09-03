@@ -1,27 +1,51 @@
 //* https://www.codewars.com/kata/526dad7f8c0eb5c4640000a4/train/typescript
 
+//* Decorator for check length in both vectors
+const CheckLength = (
+	_target: any,
+	propertyKey: string,
+	descriptor: PropertyDescriptor
+) => {
+	const originalMethod = descriptor.value;
+	descriptor.value = function (vector: Vector) {
+		const thisObject = this as Vector;
+		if (thisObject.length !== vector.length)
+			throw new Error(
+				`Cannot ${propertyKey} vectors of different lengths`
+			);
+
+		return originalMethod.apply(this, [vector]);
+	};
+};
+
+//* Vector class
 export class Vector {
-	public state: number[] = [];
+	public state: readonly number[] = [];
+
+	get length() {
+		return this.state.length;
+	}
+
 	constructor(components: number[]) {
 		this.state = [...components];
 	}
 
+	@CheckLength
 	public add(vector: Vector): Vector {
-		this._checkErrors({ method: 'add', vector });
 		return new Vector(
 			this.state.map((value, index) => value + vector.state[index])
 		);
 	}
 
+	@CheckLength
 	public subtract(vector: Vector): Vector {
-		this._checkErrors({ method: 'sub', vector });
 		return new Vector(
 			this.state.map((value, index) => value - vector.state[index])
 		);
 	}
 
+	@CheckLength
 	public dot(vector: Vector): number {
-		this._checkErrors({ method: 'dot', vector });
 		return this.state.reduce(
 			(acc, value, index) => acc + value * vector.state[index],
 			0
@@ -43,14 +67,5 @@ export class Vector {
 			this.state.length === vector.state.length &&
 			this.state.every((value, index) => value === vector.state[index])
 		);
-	}
-
-	private _checkErrors(data: {
-		method: 'add' | 'sub' | 'dot';
-		vector: Vector;
-	}): void {
-		const { method, vector } = data;
-		if (this.state.length === vector.state.length) return;
-		throw new Error(`Cannot ${method} vectors of different lengths`);
 	}
 }
