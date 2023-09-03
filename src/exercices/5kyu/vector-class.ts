@@ -39,7 +39,10 @@ export class Vector {
 	}
 
 	public equals(vector: Vector): boolean {
-		return this.state.every((value, index) => value === vector.state[index]);
+		return (
+			this.state.length === vector.state.length &&
+			this.state.every((value, index) => value === vector.state[index])
+		);
 	}
 
 	private _checkErrors(data: {
