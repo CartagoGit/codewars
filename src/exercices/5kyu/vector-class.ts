@@ -2,11 +2,11 @@
 
 //* Decorator for check length in both vectors
 const CheckLength = (
-	_target: any,
+	_: any,
 	propertyKey: string,
 	descriptor: PropertyDescriptor
 ) => {
-	const originalMethod = descriptor.value;
+	const originalMethod = descriptor.value as Function;
 	descriptor.value = function (vector: Vector) {
 		const thisObject = this as Vector;
 		if (thisObject.length !== vector.length)
