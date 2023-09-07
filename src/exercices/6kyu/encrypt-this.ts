@@ -4,11 +4,11 @@ export const encryptThis = (str: string): string => {
 	return str
 		.split(' ')
 		.map((word) => {
-			const firstLetter = word[0] ? word.charCodeAt(0) : '';
-			const secondLetter = word[1] ?? '';
-			const lastLetter = word.length > 2 ? word[word.length - 1] : '';
+			const first = word[0] ? word.charCodeAt(0) : '';
+			const second = word[1] ?? '';
+			const last = word.length > 2 ? word[word.length - 1] : '';
 			const middle = word.slice(2, word.length - 1) ?? '';
-			return `${firstLetter}${lastLetter}${middle}${secondLetter}`;
+			return `${first}${last}${middle}${second}`;
 		})
 		.join(' ');
 };
