@@ -13,7 +13,7 @@ function uniqueInOrder($iterable): array
   } elseif (is_string($iterable)) {
     $chars = str_split($iterable);
   } else {
-    return []; // Manejo de tipos no soportados
+    return [];
   }
 
   $list = [$chars[0]];
