@@ -3,10 +3,7 @@
 <?php
 function pillars($numberOfPillars, $dist, $width): int
 {
-    if ($numberOfPillars <= 1) {
-        return 0;
-    }
-    return ($numberOfPillars - 1) * $dist*100 + ($numberOfPillars - 2) * $width;
+    return $numberOfPillars <= 1 ? 0 : ($numberOfPillars - 1) * $dist * 100 + ($numberOfPillars - 2) * $width;
 }
 
 
