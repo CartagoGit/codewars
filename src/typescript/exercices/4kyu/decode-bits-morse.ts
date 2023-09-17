@@ -1,5 +1,5 @@
 import { decodeMorse } from "../6kyu/decode-morse";
-import { getGreatestCommonDivisior } from "../../helpers/greatest-common-divisor";
+import { getGreatestCommonDivisior } from "../../typescript/helpers/greatest-common-divisor";
 
 export const initDecodeMorse = (): string => {
 	// return decodeMorse(".... . -.--   .--- ..- -.. .");

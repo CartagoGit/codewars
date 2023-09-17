@@ -5,7 +5,7 @@ import {
 	getPadovanSequence,
 	getJacobstahlSequence,
 	getFibonacciSequence,
-} from "../../helpers/sequences";
+} from "../../typescript/helpers/sequences";
 
 export const initMixbonacci = () => {
 	const result = mixbonacci(["fib", "tet"], 10);

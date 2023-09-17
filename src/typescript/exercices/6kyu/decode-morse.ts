@@ -1,4 +1,4 @@
-import { MORSE_CODE } from "../../helpers/morse-code.helper";
+import { MORSE_CODE } from "../../typescript/helpers/morse-code.helper";
 
 export const initDecodeMorse = (): string => {
 	return decodeMorse(".... . -.--   .--- ..- -.. .");
