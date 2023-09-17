@@ -1,0 +1,8 @@
+//* https://www.codewars.com/kata/5262119038c0985a5b00029f/train/php
+
+<?php
+
+function is_prime(int $n): bool
+{
+    // TODO
+}
