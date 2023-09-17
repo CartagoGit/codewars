@@ -2,7 +2,27 @@
 
 <?php
 
-function uniqueInOrder($iterable){
 
-    return $ret;
+function uniqueInOrder($iterable): array
+{
+  if (empty($iterable)) {
+    return [];
   }
+  if (is_array($iterable)) {
+    $chars = $iterable;
+  } elseif (is_string($iterable)) {
+    $chars = str_split($iterable);
+  } else {
+    return []; // Manejo de tipos no soportados
+  }
+
+  $list = [$chars[0]];
+  for ($i = 1; $i < count($chars); $i++) {
+
+    if ($chars[$i] !== $chars[$i - 1]) {
+      $list[] =  $chars[$i];
+    }
+  }
+
+  return $list;
+}
