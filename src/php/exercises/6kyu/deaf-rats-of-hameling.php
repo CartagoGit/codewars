@@ -11,9 +11,7 @@ function countDeafRats($town)
     $ratToLeft = 'O~';
 
     // * Separate chains
-    $indexP = strpos($town, $hamelin);
-    $beforeP = substr($town, 0, $indexP);
-    $afterP = substr($town, $indexP + 1);
+    list($beforeP, $afterP) = explode($hamelin, $town);
 
     // * Separate rats
     $ratsBeforeP = implode(' ', str_split($beforeP, 2));
