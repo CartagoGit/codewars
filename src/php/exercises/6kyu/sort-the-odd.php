@@ -4,17 +4,20 @@
 
 function sortArray(array $arr): array
 {
-    $index = 0;
-    list($evens, $odds) = array_reduce($arr, function ($result, $value) use (&$index) {
-        $result[$index % 2 === 0 ? 'evens' : 'odds'][] = $value;
-        $index++;
+    ['evens' => $evens, 'odds' => $odds] = array_reduce($arr, function ($result, $value) {
+        $result[$value % 2 === 0 ? 'evens' : 'odds'][] = $value;
         return $result;
     }, ['evens' => [], 'odds' => []]);
 
     $finalArray = [];
+    //* order evens, cause odd index of array is not the same that odd position
     sort($odds);
     for ($i = 0; $i < count($arr); $i++) {
-        $finalArray[] = $i % 2 === 0 ? array_shift($evens) : array_shift($odds);
+        $finalArray[] = $arr[$i] % 2 === 0 ? array_shift($evens) : array_shift($odds);
     }
     return $finalArray;
 }
+
+print_r(sortArray([5, 3, 2, 8, 1, 4]));
+print_r(sortArray([5, 3, 1, 8, 0]));
+print_r(sortArray([]));
