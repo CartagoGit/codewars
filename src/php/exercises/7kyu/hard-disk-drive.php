@@ -4,6 +4,17 @@
 <?php
 
 
-function save($sizes, $hd) {
- 
+function save($sizes, $hd)
+{
+    $counter = 0;
+    $times = 0;
+    foreach ($sizes as $size) {
+        if ($hd >= ($size + $counter)) {
+            $times++;
+            $counter += $size;
+        } else  break;
+    }
+    return $times;
 }
+
+
