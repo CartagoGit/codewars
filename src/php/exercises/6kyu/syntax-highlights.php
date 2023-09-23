@@ -2,39 +2,42 @@
 
 <?php
 
-
 function getWrap(String $char)
 {
   $type = '';
   if (ctype_digit($char)) $type = 'num';
   else $type = $char;
   $dictionary = ['F' => 'pink', 'L' => 'red', 'R' => 'green', 'num' => 'orange'];
-  return '<span style=<"color: ' . $dictionary[$type] . '">' . $char;
+  return '<span style="color: ' . $dictionary[$type] . '">' . $char;
 }
+
 function highlight(String $code): String
 {
   $chain = str_split($code);
-  $index  = 0;
   $result = '';
-  $intoBrackets = 0;
-  $isSameChar = false;
+  $currentType = '';
   foreach ($chain as $char) {
-    if ($char === '(' ||  $intoBrackets !== 0) {
-      if ($char === '(') $intoBrackets++;
-      else if ($char === ')') $intoBrackets--;
+    if ($char === '(' ||  $char === ')') {
+      if ($currentType != '') {
+        $result .= '</span>';
+        $currentType = '';
+      }
+      $result .= $char;
     } else if ($char === 'F' || $char === 'L' || $char === 'R' || ctype_digit($char)) {
-      if (!$isSameChar)
-        $char = getWrap($char);
-      if (count($chain) > $index + 1 &&  $char === $chain[$index + 1]) $isSameChar = true;
-      else {
-        $isSameChar = false;
-        $char .= '</span>';
-      };
+      $newType = ctype_digit($char) ? 'num' : $char;
+      if ($newType != $currentType) {
+        if ($currentType != '') {
+          $result .= '</span>';
+        }
+        $result .= getWrap($char);
+        $currentType = $newType;
+      } else {
+        $result .= $char;
+      }
     }
-
-    $result .= $char;
-    $index++;
   }
-
+  if ($currentType != '') {
+    $result .= '</span>';
+  }
   return $result;
 }
