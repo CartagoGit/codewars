@@ -6,7 +6,7 @@
 function getWrap(String $char)
 {
   $type = '';
-  if (is_int($char)) $type = 'num';
+  if (ctype_digit($char)) $type = 'num';
   else $type = $char;
   $dictionary = ['F' => 'pink', 'L' => 'red', 'R' => 'green', 'num' => 'orange'];
   return '<span style=<"color: ' . $dictionary[$type] . '">' . $char;
@@ -16,16 +16,16 @@ function highlight(String $code): String
   $chain = str_split($code);
   $index  = 0;
   $result = '';
-  $isInBrackets = false;
+  $intoBrackets = 0;
   $isSameChar = false;
   foreach ($chain as $char) {
-    if ($char === '(' ||  $isInBrackets) {
-      $isInBrackets = true;
-      if ($char === ')') $isInBrackets = false;
-    } else if ($char === 'F' || $char === 'L' || $char === 'R' || is_int($char)) {
+    if ($char === '(' ||  $intoBrackets !== 0) {
+      if ($char === '(') $intoBrackets++;
+      else if ($char === ')') $intoBrackets--;
+    } else if ($char === 'F' || $char === 'L' || $char === 'R' || ctype_digit($char)) {
       if (!$isSameChar)
         $char = getWrap($char);
-      if ($char === $chain[$index + 1]) $isSameChar = true;
+      if (count($chain) > $index + 1 &&  $char === $chain[$index + 1]) $isSameChar = true;
       else {
         $isSameChar = false;
         $char .= '</span>';
