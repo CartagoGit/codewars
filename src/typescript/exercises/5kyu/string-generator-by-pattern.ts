@@ -23,12 +23,12 @@ class Token {
 
 	public next(): string {
 		const method = {
-			INC_INT: this._incInt,
-			INC_FLOAT: this._incFloat,
-			INTERVAL: this._interval,
-			PERIODIC: this._periodic,
+			INC_INT: this._incInt(),
+			INC_FLOAT: this._incFloat(),
+			INTERVAL: this._interval(),
+			PERIODIC: this._periodic(),
 		};
-		return method[this._kind]();
+		return method[this._kind];
 	}
 
 	private _incInt(): string {
@@ -68,7 +68,6 @@ export function* stringGenerator(pattern: string): Generator<string> {
 		(match: string, type: KindToken, param1: string, param2: string) => {
 			const start = param1 ? parseInt(param1) : undefined;
 			const step = param2 ? parseInt(param2) : undefined;
-			console.log({ match, type, param1, param2 });
 			const method: Record<KindToken, Token> = {
 				INC_INT: new Token({
 					start: start,
@@ -99,10 +98,7 @@ export function* stringGenerator(pattern: string): Generator<string> {
 	while (true) {
 		yield pattern.replace(patternToReplace, (match: string) => {
 			const token = tokens[match];
-            console.log({tokens});
-			// return token ? String(token.next()) : match;
 			return token.next();
 		});
 	}
 }
-/
