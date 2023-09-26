@@ -72,44 +72,52 @@ class Periodic {
 }
 
 export function* stringGenerator(pattern: string): Generator<string> {
-	const tokens = new Map<string, any>();
-
-	// pattern.replace(/\[([A-Z_]+)=(\d+)?,?(\d+)?\]/g, (match, type, p1, p2) => {
-	// 	const param1 = p1 ? p1.trim() : p1;
-	// 	const param2 = p2 ? p2.trim() : p2;
-	// 	switch (type.trim()) {
-	// 		case 'INC_INT':
-	// 			tokens.set(
-	// 				match,
-	// 				new IncInt(parseInt(param1), parseInt(param2))
-	// 			);
-	// 			break;
-	// 		case 'INC_FLOAT':
-	// 			tokens.set(
-	// 				match,
-	// 				new IncFloat(parseFloat(param1), parseFloat(param2))
-	// 			);
-	// 			break;
-	// 		case 'INTERVAL':
-	// 			tokens.set(
-	// 				match,
-	// 				new Interval(parseInt(param1), parseInt(param2))
-	// 			);
-	// 			break;
-	// 		case 'PERIODIC':
-	// 			tokens.set(
-	// 				match,
-	// 				new Periodic(parseInt(param1), parseInt(param2))
-	// 			);
-	// 			break;
-	// 	}
-	// 	return match;
-	// });
-
-	while (true) {
-		yield pattern.replace(/\[[^\]]+\]/g, (match) => {
-			const token = tokens.get(match);
-			return token ? String(token.next()) : match;
-		});
-	}
+    let result = [];
+	// Pattern to replace 
+	pattern.replace(/\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g, (match, type, p1, p2) => {
+		console.log({ match, type, p1, p2 });
+		return match;
+	});
 }
+// export function* stringGenerator(pattern: string): Generator<string> {
+// const tokens = new Map<string, any>();
+
+// pattern.replace(/\[([A-Z_]+)=(\d+)?,?(\d+)?\]/g, (match, type, p1, p2) => {
+// 	const param1 = p1 ? p1.trim() : p1;
+// 	const param2 = p2 ? p2.trim() : p2;
+// 	switch (type.trim()) {
+// 		case 'INC_INT':
+// 			tokens.set(
+// 				match,
+// 				new IncInt(parseInt(param1), parseInt(param2))
+// 			);
+// 			break;
+// 		case 'INC_FLOAT':
+// 			tokens.set(
+// 				match,
+// 				new IncFloat(parseFloat(param1), parseFloat(param2))
+// 			);
+// 			break;
+// 		case 'INTERVAL':
+// 			tokens.set(
+// 				match,
+// 				new Interval(parseInt(param1), parseInt(param2))
+// 			);
+// 			break;
+// 		case 'PERIODIC':
+// 			tokens.set(
+// 				match,
+// 				new Periodic(parseInt(param1), parseInt(param2))
+// 			);
+// 			break;
+// 	}
+// 	return match;
+// });
+
+// while (true) {
+// 	yield pattern.replace(/\[[^\]]+\]/g, (match) => {
+// 		const token = tokens.get(match);
+// 		return token ? String(token.next()) : match;
+// 	});
+// }
+// }
