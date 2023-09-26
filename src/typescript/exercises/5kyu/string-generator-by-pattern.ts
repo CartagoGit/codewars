@@ -8,6 +8,7 @@ class Token {
 	private _step: number;
 	private _count: number = 0;
 	private _kind: KindToken;
+	private _decimalFixed: number;
 
 	private _defaultValues: Record<KindToken, { value: number; step: number }> =
 		{
@@ -29,19 +30,25 @@ class Token {
 			},
 		};
 
-	constructor(data: {
-		start?: number;
-		step?: number;
-		count?: number;
-		kind: KindToken;
-	}) {
+	constructor(data: { start?: string; step?: string; kind: KindToken }) {
 		this._kind = data.kind;
+		let initStep = '';
 		if (this._kind === 'INTERVAL')
-			this._step =
-				data.step ?? data.start ?? this._defaultValues[data.kind].step;
-		else this._step = data.step ?? this._defaultValues[data.kind].step;
-
-		this._value = data.start ?? this._defaultValues[data.kind].value;
+			initStep =
+				data.step ??
+				data.start ??
+				this._defaultValues[data.kind].step.toString();
+		else
+			initStep =
+				data.step ?? this._defaultValues[data.kind].step.toString();
+		const initValue =
+			data.start ?? this._defaultValues[data.kind].value.toString();
+		this._step = Number(initStep);
+		this._value = Number(initValue);
+		this._decimalFixed = Math.max(
+			initStep?.split('.')[1]?.length ?? 0,
+			initValue?.split('.')[1]?.length ?? 0
+		);
 		this._initValue = this._value;
 	}
 
@@ -64,7 +71,7 @@ class Token {
 	private _incFloat(): string {
 		const value = this._value;
 		this._value += this._step;
-		return value.toString();
+		return value.toFixed(this._decimalFixed);
 	}
 
 	private _interval(): string {
@@ -99,8 +106,8 @@ export function* stringGenerator(pattern: string): Generator<string> {
 			undefined,
 		];
 		console.log({ match, type, param1, param2 });
-		const start = param1 ? Number(param1.trim()) : undefined;
-		const step = param2 ? Number(param2.trim()) : undefined;
+		const start = param1 ? param1.trim() : undefined;
+		const step = param2 ? param2.trim() : undefined;
 		const method: Record<KindToken, Token> = {
 			INC_INT: new Token({
 				start: start,
