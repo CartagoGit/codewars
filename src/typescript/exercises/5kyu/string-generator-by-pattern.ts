@@ -100,12 +100,9 @@ export function* stringGenerator(pattern: string): Generator<string> {
 		const kind = match.match(
 			/INC_INT|INC_FLOAT|INTERVAL|PERIODIC/
 		)?.[0] as KindToken;
-		const [param1, param2] = match.match(/\d+(\.\d+)?/g) || [
-			undefined,
-			undefined,
-		];
-		const start = param1 ? param1.trim() : undefined;
-		const step = param2 ? param2.trim() : undefined;
+		const [param1, param2] = match.match(/\d+(\.\d+)?/g) ?? [];
+		const start = param1?.trim();
+		const step = param2?.trim();
 		tokens[counter] = new Token({
 			start,
 			step,
