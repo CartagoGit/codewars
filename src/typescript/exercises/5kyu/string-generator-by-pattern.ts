@@ -1,123 +1,108 @@
 //* https://www.codewars.com/kata/62b3356dacf409000f53cab7/train/typescript
 
-class IncInt {
-	private value: number;
-	private step: number;
+type KindToken = 'INC_INT' | 'INC_FLOAT' | 'INTERVAL' | 'PERIODIC';
 
-	constructor(start = 1, step = 1) {
-		this.value = start;
-		this.step = step;
+class Token {
+	private _value: number;
+	private _step: number;
+	private _count: number;
+	private _kind: KindToken;
+
+	constructor(data: {
+		start?: number;
+		step?: number;
+		count?: number;
+		kind: KindToken;
+	}) {
+		const { start = 1, step = 1, count = 0, kind } = data;
+		this._value = start;
+		this._step = step;
+		this._count = count;
+		this._kind = kind;
 	}
 
-	next() {
-		const value = this.value;
-		this.value += this.step;
-		return value;
-	}
-}
-
-class IncFloat {
-	private value: number;
-	private step: number;
-
-	constructor(start = 0.1, step = 0.1) {
-		this.value = start;
-		this.step = step;
+	public next(): string {
+		const method = {
+			INC_INT: this._incInt,
+			INC_FLOAT: this._incFloat,
+			INTERVAL: this._interval,
+			PERIODIC: this._periodic,
+		};
+		return method[this._kind]();
 	}
 
-	next() {
-		const value = this.value;
-		this.value += this.step;
-		return value.toFixed(6); // Asegura la precisión decimal
-	}
-}
-
-class Interval {
-	private value: number;
-	private first: number;
-	private last: number;
-
-	constructor(first = 1, last = 1) {
-		this.value = first;
-		this.first = first;
-		this.last = last;
+	private _incInt(): string {
+		const value = this._value;
+		this._value += this._step;
+		return value.toString();
 	}
 
-	next() {
-		const value = this.value;
-		this.value = this.value == this.last ? this.first : this.value + 1;
-		return value;
-	}
-}
-
-class Periodic {
-	private value: number;
-	private step: number;
-	private count: number;
-
-	constructor(start = 1, step = 1) {
-		this.value = start;
-		this.step = step;
-		this.count = 0;
+	private _incFloat(): string {
+		const value = this._value;
+		this._value += this._step;
+		return value.toFixed(6);
 	}
 
-	next() {
-		this.count++;
-		if (this.count == this.step) {
-			this.count = 0;
-			this.value++;
+	private _interval(): string {
+		const value = this._value;
+		this._value = this._value == this._step ? this._value : this._value + 1;
+		return value.toString();
+	}
+
+	private _periodic(): string {
+		this._count++;
+		if (this._count === this._step) {
+			this._count = 0;
+			this._value++;
 		}
-		return this.value;
+		return this._value.toString();
 	}
 }
 
 export function* stringGenerator(pattern: string): Generator<string> {
-    let result = [];
-	// Pattern to replace 
-	pattern.replace(/\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g, (match, type, p1, p2) => {
-		console.log({ match, type, p1, p2 });
-		return match;
-	});
+	let tokens: Record<string, Token> = {};
+	// Pattern to replace
+	const patternToReplace = /\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g;
+	pattern.replace(
+		patternToReplace,
+		(match: string, type: KindToken, param1: string, param2: string) => {
+			const start = param1 ? parseInt(param1) : undefined;
+			const step = param2 ? parseInt(param2) : undefined;
+			console.log({ match, type, param1, param2 });
+			const method: Record<KindToken, Token> = {
+				INC_INT: new Token({
+					start: start,
+					step: step,
+					kind: 'INC_INT',
+				}),
+				INC_FLOAT: new Token({
+					start: start,
+					step: step,
+					kind: 'INC_FLOAT',
+				}),
+				INTERVAL: new Token({
+					start: start,
+					step: step,
+					kind: 'INTERVAL',
+				}),
+				PERIODIC: new Token({
+					start: start,
+					step: step,
+					kind: 'PERIODIC',
+				}),
+			};
+			tokens[match] = method[type];
+			return match;
+		}
+	);
+
+	while (true) {
+		yield pattern.replace(patternToReplace, (match: string) => {
+			const token = tokens[match];
+            console.log({tokens});
+			// return token ? String(token.next()) : match;
+			return token.next();
+		});
+	}
 }
-// export function* stringGenerator(pattern: string): Generator<string> {
-// const tokens = new Map<string, any>();
-
-// pattern.replace(/\[([A-Z_]+)=(\d+)?,?(\d+)?\]/g, (match, type, p1, p2) => {
-// 	const param1 = p1 ? p1.trim() : p1;
-// 	const param2 = p2 ? p2.trim() : p2;
-// 	switch (type.trim()) {
-// 		case 'INC_INT':
-// 			tokens.set(
-// 				match,
-// 				new IncInt(parseInt(param1), parseInt(param2))
-// 			);
-// 			break;
-// 		case 'INC_FLOAT':
-// 			tokens.set(
-// 				match,
-// 				new IncFloat(parseFloat(param1), parseFloat(param2))
-// 			);
-// 			break;
-// 		case 'INTERVAL':
-// 			tokens.set(
-// 				match,
-// 				new Interval(parseInt(param1), parseInt(param2))
-// 			);
-// 			break;
-// 		case 'PERIODIC':
-// 			tokens.set(
-// 				match,
-// 				new Periodic(parseInt(param1), parseInt(param2))
-// 			);
-// 			break;
-// 	}
-// 	return match;
-// });
-
-// while (true) {
-// 	yield pattern.replace(/\[[^\]]+\]/g, (match) => {
-// 		const token = tokens.get(match);
-// 		return token ? String(token.next()) : match;
-// 	});
-// }
-// }
+/
