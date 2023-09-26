@@ -8,7 +8,26 @@ class Token {
 	private _step: number;
 	private _count: number = 0;
 	private _kind: KindToken;
-	private _justFirstParam: boolean = false;
+
+	private _defaultValues: Record<KindToken, { value: number; step: number }> =
+		{
+			INC_INT: {
+				value: 1,
+				step: 1,
+			},
+			INC_FLOAT: {
+				value: 0.1,
+				step: 0.1,
+			},
+			INTERVAL: {
+				value: 1,
+				step: 1,
+			},
+			PERIODIC: {
+				value: 1,
+				step: 1,
+			},
+		};
 
 	constructor(data: {
 		start?: number;
@@ -16,16 +35,14 @@ class Token {
 		count?: number;
 		kind: KindToken;
 	}) {
-		const { start = 1, step = 1, kind } = data;
-		this._justFirstParam = data.step === undefined;
-		this._value = start;
-		this._initValue = start;
-		this._step = this._justFirstParam
-			? kind === 'PERIODIC'
-				? 1
-				: start
-			: step;
-		this._kind = kind;
+		this._kind = data.kind;
+		if (this._kind === 'INTERVAL')
+			this._step =
+				data.step ?? data.start ?? this._defaultValues[data.kind].step;
+		else this._step = data.step ?? this._defaultValues[data.kind].step;
+
+		this._value = data.start ?? this._defaultValues[data.kind].value;
+		this._initValue = this._value;
 	}
 
 	public next(): string {
@@ -47,7 +64,7 @@ class Token {
 	private _incFloat(): string {
 		const value = this._value;
 		this._value += this._step;
-		return value.toFixed(6);
+		return value.toString();
 	}
 
 	private _interval(): string {
@@ -70,48 +87,45 @@ class Token {
 
 export function* stringGenerator(pattern: string): Generator<string> {
 	let tokens: Record<string, Token> = {};
-	// Pattern to replace
-	// const patternToReplace = /\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g;
-	// const patternToReplace = /\[(.*?)=?(\d+)?,?(\d+)?\]/g;
-	// const patternToReplace = /\[(.*?)=?(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)\]/g;
-    // const patternToReplace = /\[(INC_INT|INC_FLOAT|INTERVAL|PERIODIC)=?([^,\]]+)(?:,([^,\]]+))?\]/g;
-    // const patternToReplace = /\[(.*?)\s*=\s*([^,\]]+)?,?([^,\]]+)?\]/g;
-    // const patternToReplace = /\[(\s*)?(INC_INT|INC_FLOAT|INTERVAL|PERIODIC)(\s*)?(=([\d.]+))?(\s*)?(,(\s*)?([\d.]+))?(\s*)?\]/g;
-    const patternToReplace = /\[(.*?)=?(\d+)?,?(\d+)?\]/g;
-	
-	pattern.replaceAll(
-		patternToReplace,
-		(match: string, type: KindToken, param1: string, param2: string) => {
-			console.log({ match, type, param1, param2 });
-			const start = param1 ? Number(param1.trim()) : undefined;
-			const step = param2 ? Number(param2.trim()) : undefined;
-			type = (type as string).trim() as KindToken;
-			const method: Record<KindToken, Token> = {
-				INC_INT: new Token({
-					start: start,
-					step: step,
-					kind: 'INC_INT',
-				}),
-				INC_FLOAT: new Token({
-					start: start,
-					step: step,
-					kind: 'INC_FLOAT',
-				}),
-				INTERVAL: new Token({
-					start: start,
-					step: step,
-					kind: 'INTERVAL',
-				}),
-				PERIODIC: new Token({
-					start: start,
-					step: step,
-					kind: 'PERIODIC',
-				}),
-			};
-			tokens[match] = method[type];
-			return match;
-		}
-	);
+	// Get [ .... ] pattern
+	const patternToReplace = /\[(.*?)\]/g;
+
+	pattern.replaceAll(patternToReplace, (match: string) => {
+		const type = match.match(
+			/INC_INT|INC_FLOAT|INTERVAL|PERIODIC/
+		)?.[0] as KindToken;
+		const [param1, param2] = match.match(/\d+(\.\d+)?/g) || [
+			undefined,
+			undefined,
+		];
+		console.log({ match, type, param1, param2 });
+		const start = param1 ? Number(param1.trim()) : undefined;
+		const step = param2 ? Number(param2.trim()) : undefined;
+		const method: Record<KindToken, Token> = {
+			INC_INT: new Token({
+				start: start,
+				step: step,
+				kind: 'INC_INT',
+			}),
+			INC_FLOAT: new Token({
+				start: start,
+				step: step,
+				kind: 'INC_FLOAT',
+			}),
+			INTERVAL: new Token({
+				start: start,
+				step: step,
+				kind: 'INTERVAL',
+			}),
+			PERIODIC: new Token({
+				start: start,
+				step: step,
+				kind: 'PERIODIC',
+			}),
+		};
+		tokens[match] = method[type];
+		return match;
+	});
 
 	while (true) {
 		yield pattern.replaceAll(patternToReplace, (match: string) => {
