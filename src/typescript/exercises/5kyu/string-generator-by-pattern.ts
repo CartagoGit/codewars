@@ -23,12 +23,12 @@ class Token {
 
 	public next(): string {
 		const method = {
-			INC_INT: this._incInt(),
-			INC_FLOAT: this._incFloat(),
-			INTERVAL: this._interval(),
-			PERIODIC: this._periodic(),
+			INC_INT: () => this._incInt(),
+			INC_FLOAT: () => this._incFloat(),
+			INTERVAL: () => this._interval(),
+			PERIODIC: () => this._periodic(),
 		};
-		return method[this._kind];
+		return method[this._kind]();
 	}
 
 	private _incInt(): string {
