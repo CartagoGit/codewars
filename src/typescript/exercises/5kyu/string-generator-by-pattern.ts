@@ -71,12 +71,20 @@ class Token {
 export function* stringGenerator(pattern: string): Generator<string> {
 	let tokens: Record<string, Token> = {};
 	// Pattern to replace
-	const patternToReplace = /\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g;
-	pattern.replace(
+	// const patternToReplace = /\[([A-Z_]+)=?(\d+)?,?(\d+)?\]/g;
+	// const patternToReplace = /\[(.*?)=?(\d+)?,?(\d+)?\]/g;
+	// const patternToReplace = /\[(.*?)=?(\d+(?:\.\d+)?),(\d+(?:\.\d+)?)\]/g;
+    // const patternToReplace = /\[(INC_INT|INC_FLOAT|INTERVAL|PERIODIC)=?([^,\]]+)(?:,([^,\]]+))?\]/g;
+    // const patternToReplace = /\[(.*?)\s*=\s*([^,\]]+)?,?([^,\]]+)?\]/g;
+    // const patternToReplace = /\[(\s*)?(INC_INT|INC_FLOAT|INTERVAL|PERIODIC)(\s*)?(=([\d.]+))?(\s*)?(,(\s*)?([\d.]+))?(\s*)?\]/g;
+    const patternToReplace = /\[(.*?)=?(\d+)?,?(\d+)?\]/g;
+	
+	pattern.replaceAll(
 		patternToReplace,
 		(match: string, type: KindToken, param1: string, param2: string) => {
-			const start = param1 ? parseInt(param1) : undefined;
-			const step = param2 ? parseInt(param2) : undefined;
+			console.log({ match, type, param1, param2 });
+			const start = param1 ? Number(param1.trim()) : undefined;
+			const step = param2 ? Number(param2.trim()) : undefined;
 			type = (type as string).trim() as KindToken;
 			const method: Record<KindToken, Token> = {
 				INC_INT: new Token({
@@ -106,7 +114,7 @@ export function* stringGenerator(pattern: string): Generator<string> {
 	);
 
 	while (true) {
-		yield pattern.replace(patternToReplace, (match: string) => {
+		yield pattern.replaceAll(patternToReplace, (match: string) => {
 			const token = tokens[match];
 			return token.next();
 		});
