@@ -2,29 +2,22 @@
 
 import { getGreatestCommonDivisior } from '../../helpers/greatest-common-divisor';
 
-export function decompose(n: string): string[] {
-	let [numerator, denominator] = n.split('/').map(Number);
-	if (numerator === 0) return [];
-	let result: string[] = [];
+export function decompose(fractionString: string): string[] {
+	if (fractionString.includes('.')) {
+		const [integer, decimal] = fractionString.split('.');
+		fractionString = `${integer}${decimal}/${10 ** decimal.length}`;
+	}
+	let [numerator, denominator] = fractionString.split('/').map(Number);
+	const result: string[] = [];
+	if (numerator === 0) return result;
+	if (numerator % denominator === 0) return [`${numerator / denominator}`];
+
 	while (numerator > 0) {
-		// Calculamos la siguiente fracción egipcia
-		const nextDenominator = Math.ceil(denominator / numerator);
-		const nextNumerator = 1;
-
-		// Agregamos la fracción a la lista de resultados
-		result.push(`1/${nextDenominator}`);
-
-		// Actualizamos el numerador y denominador para la siguiente iteración
-		numerator = nextNumerator * denominator - nextDenominator * numerator;
-		denominator = nextDenominator * denominator;
-
-		// Simplificamos la fracción si es posible
-		const commonDivisor = getGreatestCommonDivisior([
-			numerator,
-			denominator,
-		]);
-		numerator /= commonDivisor;
-		denominator /= commonDivisor;
+		const unitDenominator = Math.ceil(denominator / numerator);
+		if (1 % unitDenominator === 0) result.push(`${1 / unitDenominator}`);
+		else result.push(`1/${unitDenominator}`);
+		numerator = numerator * unitDenominator - denominator;
+		denominator *= unitDenominator;
 	}
 
 	return result;
