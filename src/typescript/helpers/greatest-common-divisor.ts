@@ -1,6 +1,11 @@
-export const getGreatestCommonDivisior = (arrayNums: number[]): number | null => {
-	if (arrayNums.length === 0) return null;
-	else if (arrayNums.length === 1) return arrayNums[0];
+export const getGreatestCommonDivisior = <
+	T extends number[] | [],
+	R extends T extends infer U ? (U extends [] ? null : number) : null
+>(
+	arrayNums: T
+): R => {
+	if (arrayNums.length === 0) return null as R;
+	else if (arrayNums.length === 1) return arrayNums[0] as R;
 
 	const greatestCommonDivisiorTwoNumbers = (
 		num1: number,
@@ -19,5 +24,5 @@ export const getGreatestCommonDivisior = (arrayNums: number[]): number | null =>
 	for (let num of arrayNums)
 		rest = greatestCommonDivisiorTwoNumbers(rest, num);
 
-	return rest;
+	return rest as R;
 };
