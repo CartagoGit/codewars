@@ -1,7 +1,5 @@
 //* https://www.codewars.com/kata/54f8693ea58bce689100065f/train/typescript
 
-import { getGreatestCommonDivisior } from '../../helpers/greatest-common-divisor';
-
 export function decompose(fractionString: string): string[] {
 	if (fractionString.includes('.')) {
 		const [integer, decimal] = fractionString.split('.');
