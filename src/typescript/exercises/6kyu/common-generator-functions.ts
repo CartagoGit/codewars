@@ -19,23 +19,6 @@ export function* generate<T>(
 	}
 }
 
-// export function* delta<T, D>(
-// 	sequence: Iterable<T>,
-// 	delta: (a: T, b: T) => D,
-// 	start?: T
-// ): Generator<D> {
-// 	const iterator = sequence[Symbol.iterator]();
-// 	let prev = start !== undefined ? start : iterator.next().value;
-// 	while (start === undefined) {
-// 		let curr = iterator.next().value;
-// 		yield delta(prev, curr);
-// 		prev = curr;
-// 	}
-// 	for (let curr of sequence) {
-// 		yield delta(prev, curr);
-// 		prev = curr;
-// 	}
-// }
 export function* delta<T, D>(
 	sequence: Iterable<T>,
 	delta: (a: T, b: T) => D,
@@ -55,4 +38,15 @@ export function* delta<T, D>(
 export function* zip<T, U>(
 	sequence1: Iterable<T>,
 	sequence2: Iterable<U>
-): Generator<[T, U]> {}
+): Generator<[T, U]> {
+	const iterator1 = sequence1[Symbol.iterator]();
+	const iterator2 = sequence2[Symbol.iterator]();
+	let curr1 = iterator1.next();
+	let curr2 = iterator2.next();
+
+	while (!curr1.done && !curr2.done) {
+		yield [curr1.value, curr2.value];
+		curr1 = iterator1.next();
+		curr2 = iterator2.next();
+	}
+}
