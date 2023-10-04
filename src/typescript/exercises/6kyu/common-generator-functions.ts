@@ -23,7 +23,20 @@ export function* delta<T, D>(
 	sequence: Iterable<T>,
 	delta: (a: T, b: T) => D,
 	start?: T
-): Generator<D> {}
+): Generator<D> {
+	// const iterator = sequence[Symbol.iterator]();
+	// let prev = start !== undefined ? start : iterator.next().value;
+	// while (start === undefined) {
+	// 	let curr = iterator.next().value;
+	// 	yield delta(prev, curr);
+	// 	prev = curr;
+	// }
+	// for (let curr of sequence) {
+	// 	if (prev === curr) continue;
+	// 	yield delta(prev, curr);
+	// 	prev = curr;
+	// }
+}
 
 export function* zip<T, U>(
 	sequence1: Iterable<T>,
