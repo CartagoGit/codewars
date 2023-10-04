@@ -12,7 +12,12 @@ export function* generate<T>(
 	start: T,
 	iterate: (e: T) => T,
 	continues?: (e: T) => boolean
-): Generator<T> {}
+): Generator<T> {
+	while (continues?.(start) ?? true) {
+		yield start;
+		start = iterate(start);
+	}
+}
 
 export function* delta<T, D>(
 	sequence: Iterable<T>,
