@@ -19,23 +19,37 @@ export function* generate<T>(
 	}
 }
 
+// export function* delta<T, D>(
+// 	sequence: Iterable<T>,
+// 	delta: (a: T, b: T) => D,
+// 	start?: T
+// ): Generator<D> {
+// 	const iterator = sequence[Symbol.iterator]();
+// 	let prev = start !== undefined ? start : iterator.next().value;
+// 	while (start === undefined) {
+// 		let curr = iterator.next().value;
+// 		yield delta(prev, curr);
+// 		prev = curr;
+// 	}
+// 	for (let curr of sequence) {
+// 		yield delta(prev, curr);
+// 		prev = curr;
+// 	}
+// }
 export function* delta<T, D>(
 	sequence: Iterable<T>,
 	delta: (a: T, b: T) => D,
 	start?: T
 ): Generator<D> {
-	// const iterator = sequence[Symbol.iterator]();
-	// let prev = start !== undefined ? start : iterator.next().value;
-	// while (start === undefined) {
-	// 	let curr = iterator.next().value;
-	// 	yield delta(prev, curr);
-	// 	prev = curr;
-	// }
-	// for (let curr of sequence) {
-	// 	if (prev === curr) continue;
-	// 	yield delta(prev, curr);
-	// 	prev = curr;
-	// }
+	const iterator = sequence[Symbol.iterator]();
+	let prev = start !== undefined ? start : iterator.next().value;
+	let curr = iterator.next();
+
+	while (!curr.done) {
+		yield delta(prev, curr.value);
+		prev = curr.value;
+		curr = iterator.next();
+	}
 }
 
 export function* zip<T, U>(
