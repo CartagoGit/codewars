@@ -2,14 +2,12 @@
 
 export function solve(word: string) {
 	word = word.trim().toLowerCase();
-	const points: Record<string, number> = 'abcdefghijklmnopqrstuvwxyz'
-		.split('')
-		.reduce((points, letter, i) => ({ ...points, [letter]: i + 1 }), {});
+	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 	const consonants = word.split(/[aeiou]/gi);
-	return consonants.reduce((acc, subs) => {
-		const valueSubs = subs
+	const points = consonants.map((subs) =>
+		subs
 			.split('')
-			.reduce((acc, char) => acc + (points[char] ?? 0), 0);
-		return Math.max(acc, valueSubs);
-	}, 0);
+			.reduce((acc, char) => acc + (alphabet.indexOf(char) + 1), 0)
+	);
+	return Math.max(...points);
 }
