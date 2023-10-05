@@ -1,6 +1,6 @@
 //* https://www.codewars.com/kata/59c633e7dcc4053512000073/train/typescript
 
-export function solve(word: string) {
+export function solve(word: string): number {
 	word = word.trim().toLowerCase();
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 	const consonants = word.split(/[aeiou]/gi);
