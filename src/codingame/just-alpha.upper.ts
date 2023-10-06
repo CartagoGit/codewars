@@ -3,6 +3,8 @@
  * the standard input according to the problem statement.
  **/
 
+import { readline } from "./helpers/global";
+
 const S: string = readline();
 
 // Write an answer using console.log()
