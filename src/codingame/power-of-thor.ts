@@ -1,26 +1,44 @@
 //* https://www.codingame.com/ide/puzzle/power-of-thor-episode-1
 
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- * ---
- * Hint: You can use the debug stream to print initialTX and initialTY, if Thor seems not follow your orders.
- **/
+import { readline } from './helpers/global';
 
-var inputs: string[] = readline().split(' ');
-const lightX: number = parseInt(inputs[0]); // the X position of the light of power
-const lightY: number = parseInt(inputs[1]); // the Y position of the light of power
-const initialTx: number = parseInt(inputs[2]); // Thor's starting X position
-const initialTy: number = parseInt(inputs[3]); // Thor's starting Y position
+type Direction = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW';
+type PossibleMovement = Direction | '';
+type Coordinates = { x: number; y: number };
+const inputs: string[] = readline().split(' ');
+const light: Coordinates = {
+	x: parseInt(inputs[0]),
+	y: parseInt(inputs[1]),
+};
+const thor: Coordinates = {
+	x: parseInt(inputs[2]),
+	y: parseInt(inputs[3]),
+};
 
-// game loop
+const movements: Record<Direction, Coordinates> = {
+	N: { x: 0, y: -1 },
+	NE: { x: 1, y: -1 },
+	E: { x: 1, y: 0 },
+	SE: { x: 1, y: 1 },
+	S: { x: 0, y: 1 },
+	SW: { x: -1, y: 1 },
+	W: { x: -1, y: 0 },
+	NW: { x: -1, y: -1 },
+};
+
+const size: Coordinates = {
+	x: 40,
+	y: 18,
+};
+
 while (true) {
-    const remainingTurns: number = parseInt(readline()); // The remaining amount of turns Thor can move. Do not remove this line.
-
-    // Write an action using console.log()
-    // To debug: console.error('Debug messages...');
-
-
-    // A single line providing the move to be made: N NE E SE S SW W or NW
-    console.log('SE');
+	const remainingTurns: number = parseInt(readline());
+	let result: string = '';
+	while (thor.x !== light.x || thor.y !== light.y) {
+		const directionY: PossibleMovement =
+			thor.y === light.y ? '' : thor.y > light.y ? 'N' : 'S';
+		const directionX: PossibleMovement =
+			thor.x === light.x ? '' : thor.x > light.x ? 'W' : 'E';
+	}
+	console.log('SE');
 }
