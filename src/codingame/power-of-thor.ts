@@ -17,18 +17,14 @@ const thor: Coordinates = {
 
 while (true) {
 	const remainingTurns: number = parseInt(readline());
-	let result: string = '';
-	while (thor.x !== light.x || thor.y !== light.y) {
-		let direction: Movement | '' = '';
-		if (thor.y !== light.y) {
-			direction += thor.y < light.y ? 'N' : 'S';
-			thor.y += thor.y < light.y ? 1 : -1;
-		}
-		if (thor.x !== light.x) {
-			direction += thor.x < light.x ? 'E' : 'W';
-			thor.x += thor.x < light.x ? 1 : -1;
-		}
-		result += ' ' + direction;
+	let direction: Movement | '' = '';
+	if (thor.y !== light.y) {
+		direction += thor.y < light.y ? 'S' : 'N';
+		thor.y += thor.y < light.y ? 1 : -1;
 	}
-	console.log(result.trim());
+	if (thor.x !== light.x) {
+		direction += thor.x < light.x ? 'E' : 'W';
+		thor.x += thor.x < light.x ? 1 : -1;
+	}
+	console.log(direction.trim());
 }
