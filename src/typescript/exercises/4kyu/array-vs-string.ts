@@ -15,6 +15,16 @@ const getDataKind = (a: number, b: number): DataKind => {
 	else return { kind: 'none', value: 0 };
 };
 
+const getStringArray = (arg: RangeKind) => {
+	if (arg.kind === 'equal') {
+		return `${arg.value}:${arg.range.final - arg.range.init}`;
+	} else {
+		return `${arg.range.init + 1}:${arg.range.final + 1}${
+			arg.kind === 'increase' ? '+' : '-'
+		}${arg.value}`;
+	}
+};
+
 export function arrayToString(arr: number[]): string {
 	console.log({ arr });
 	if (arr.length < 3) return arr.join(',');
@@ -43,15 +53,30 @@ export function arrayToString(arr: number[]): string {
 			isNewRange = true;
 		}
 	}
-    for(let range of rangesKinds) {
-        
-    }
+
+	if (rangesKinds.length === 1) return getStringArray(rangesKinds[0]);
+	let result: string[] = []
+	for (let j = 1; j < rangesKinds.length; j++) {
+		const prev = rangesKinds[j - 1];
+		const now = rangesKinds[j];
+		if (prev.range.final >= now.range.init) {
+			if (
+				now.range.final - now.range.init - 1 < 3 ||
+				now.kind === 'equal'
+			)
+				rangesKinds[j - 1].range.final--;
+			else rangesKinds[j].range.init++;
+		}
+		result.push(getStringArray(rangesKinds[j - 1]));
+		if (j === rangesKinds.length - 1)
+			result.push(getStringArray(rangesKinds[j]));
+	}
 	console.log({
 		actual,
 		rangesKinds,
 		ranges: rangesKinds.map((range) => range.range),
 	});
-	return '';
+	return result.join(',');
 }
 
 export function stringToArray(str: string): number[] {
