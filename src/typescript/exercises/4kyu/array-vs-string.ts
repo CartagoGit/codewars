@@ -22,7 +22,6 @@ const getStringArray = (arg: RangeKind) => {
 	);
 };
 export function arrayToString(arr: number[]): string {
-	console.log(10,{ arr });
 	if (arr.length < 3) return arr.join(',');
 	let actual: RangeKind = {
 		...getDataKind(arr[0], arr[1]),
@@ -39,13 +38,20 @@ export function arrayToString(arr: number[]): string {
 		const isLast = i === arr.length - 1;
 		const areDifferent =
 			prevKind !== actualKind || prevDifference !== actualDifference;
-		actual.range.final = i;
-		if (isLast || areDifferent) {
+		if (areDifferent || isLast) {
 			if (i === 2) return arr.join(',');
-
-			if (actual.range.final - actual.range.init < 2) i--;
-			rangesKinds.push(actual);
-
+			if (isLast) {
+				rangesKinds.push({
+					...actual,
+					range: { init: actual.range.init, final: i },
+				});
+				break;
+			}
+			rangesKinds.push({
+				...actual,
+				range: { init: actual.range.init, final: i - 1 },
+			});
+			i--;
 			actual = {
 				kind: actualKind,
 				difference: actualDifference,
@@ -55,38 +61,31 @@ export function arrayToString(arr: number[]): string {
 		}
 	}
 
-	console.log(1, {
-		actual,
-		rangesKinds,
-		ranges: rangesKinds.map((range) => range.range),
-	});
 	rangesKinds = rangesKinds.filter(
 		(range) => range.range.final - range.range.init > 1
 	);
 	if (rangesKinds.length === 0) return arr.join(',');
 	if (rangesKinds.length === 1) return getStringArray(rangesKinds[0]);
 	let result: string[] = [];
-    console.log({rangesKinds});
 	for (let j = 1; j < rangesKinds.length; j++) {
 		const prev = rangesKinds[j - 1];
 		const now = rangesKinds[j];
 		if (prev.range.final >= now.range.init) {
-			if (
-				now.range.final - now.range.init - 1 < 3 ||
-				now.kind === 'equal'
-			)
+			if (now.range.final - now.range.init < 3 || now.kind === 'equal')
 				rangesKinds[j - 1].range.final--;
-			else rangesKinds[j].range.init++;
+			else {
+				rangesKinds[j].range.init++;
+				rangesKinds[j].startNumber = arr[rangesKinds[j].range.init];
+			}
 		}
 		result.push(getStringArray(rangesKinds[j - 1]));
 		if (j === rangesKinds.length - 1)
 			result.push(getStringArray(rangesKinds[j]));
-        console.log({j});
 	}
-	console.log(2, { result });
+
 	return result.join(',');
 }
 
 export function stringToArray(str: string): number[] {
-	throw new Error('TODO: stringToArray');
+	
 }
