@@ -46,17 +46,20 @@ export function arrayToString(arr: number[]): string {
 				startNumber: arr[i - 1],
 			};
 			isNewRange = false;
-			if (i === arr.length - 1) rangesKinds.push(actual);
 			continue;
 		}
 		if (kind === 'none') return arr.join(',');
 		const { kind: actualKind, value: actualValue } = actual;
 		actual.range.final = i;
-		if (i === arr.length - 1) rangesKinds.push(actual);
 
-		if (actualKind !== kind || actualValue !== value) {
-			rangesKinds.push(actual);
+		if (
+			actualKind !== kind ||
+			actualValue !== value ||
+			i === arr.length - 1
+		) {
 			isNewRange = true;
+			if (actual.range.final - actual.range.init < 3) continue;
+			rangesKinds.push(actual);
 		}
 	}
 	console.log(1, {
@@ -64,7 +67,7 @@ export function arrayToString(arr: number[]): string {
 		rangesKinds,
 		ranges: rangesKinds.map((range) => range.range),
 	});
-
+	if (rangesKinds.length === 0) return arr.join(',');
 	if (rangesKinds.length === 1) return getStringArray(rangesKinds[0]);
 	let result: string[] = [];
 	for (let j = 1; j < rangesKinds.length; j++) {
