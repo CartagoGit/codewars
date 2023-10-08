@@ -31,7 +31,6 @@ export function arrayToString(arr: number[]): string {
 		startNumber: arr[0],
 	};
 	let rangesKinds: RangeKind[] = [];
-
 	for (let i = 2; i < arr.length; i++) {
 		const { kind: actualKind, difference: actualDifference } = getDataKind(
 			arr[i - 1],
@@ -43,23 +42,11 @@ export function arrayToString(arr: number[]): string {
 			prevKind !== actualKind || prevDifference !== actualDifference;
 		actual.range.final = i;
 		if (isLast || areDifferent) {
-			console.log('HA ENTRADOOOOOOO', {
-				arr,
-				actual,
-				actualKind,
-				actualDifference,
-				prevKind,
-				prevDifference,
-				isLast,
-				areDifferent,
-				i,
-				prevValue: arr[i - 1],
-				value: arr[i],
-			});
-			// if (actual.range.final - actual.range.init > 2)
+			if (i === 2) return arr.join(',');
+
+			if (actual.range.final - actual.range.init < 2) i--;
 			rangesKinds.push(actual);
-			// else i--;
-			// i--;
+
 			actual = {
 				kind: actualKind,
 				difference: actualDifference,
@@ -68,13 +55,18 @@ export function arrayToString(arr: number[]): string {
 			};
 		}
 	}
+
 	console.log(1, {
 		actual,
 		rangesKinds,
 		ranges: rangesKinds.map((range) => range.range),
 	});
+	rangesKinds = rangesKinds.filter(
+		(range) => range.range.final - range.range.init > 1
+	);
 	if (rangesKinds.length === 0) return arr.join(',');
 	if (rangesKinds.length === 1) return getStringArray(rangesKinds[0]);
+	console.log(120);
 	let result: string[] = [];
 	for (let j = 1; j < rangesKinds.length; j++) {
 		const prev = rangesKinds[j - 1];
