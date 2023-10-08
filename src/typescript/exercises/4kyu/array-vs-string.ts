@@ -14,16 +14,15 @@ const getDataKind = (a: number, b: number): DataKind => {
 };
 
 const getStringArray = (arg: RangeKind) => {
-	if (arg.kind === 'equal') {
-		return `${arg.startNumber}:${arg.range.final - arg.range.init + 1}`;
-	} else {
-		return `${arg.startNumber}:${arg.range.final + 1 - arg.range.init}${
-			arg.kind === 'increase' ? '+' : '-'
-		}${arg.difference}`;
-	}
+	return (
+		`${arg.startNumber}:${arg.range.final - arg.range.init + 1}` +
+		(arg.kind !== 'equal'
+			? `${arg.kind === 'increase' ? '+' : '-'}${arg.difference}`
+			: '')
+	);
 };
 export function arrayToString(arr: number[]): string {
-	console.log({ arr });
+	console.log(10,{ arr });
 	if (arr.length < 3) return arr.join(',');
 	let actual: RangeKind = {
 		...getDataKind(arr[0], arr[1]),
@@ -66,8 +65,8 @@ export function arrayToString(arr: number[]): string {
 	);
 	if (rangesKinds.length === 0) return arr.join(',');
 	if (rangesKinds.length === 1) return getStringArray(rangesKinds[0]);
-	console.log(120);
 	let result: string[] = [];
+    console.log({rangesKinds});
 	for (let j = 1; j < rangesKinds.length; j++) {
 		const prev = rangesKinds[j - 1];
 		const now = rangesKinds[j];
@@ -82,7 +81,9 @@ export function arrayToString(arr: number[]): string {
 		result.push(getStringArray(rangesKinds[j - 1]));
 		if (j === rangesKinds.length - 1)
 			result.push(getStringArray(rangesKinds[j]));
+        console.log({j});
 	}
+	console.log(2, { result });
 	return result.join(',');
 }
 
