@@ -107,5 +107,6 @@ export function stringToArray(str: string): number[] {
 		}
 		return values;
 	});
+    
 	return arrayResults.flat();
 }
