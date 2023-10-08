@@ -89,19 +89,30 @@ export function arrayToString(arr: number[]): string {
 export function stringToArray(str: string): number[] {
 	console.log({ str });
 	const initArray = str.split(',');
-	const rangesKind: (RangeKind & { chain: string; values: number[] })[] =
-		initArray.map((chain, index) => {
-			const separator = /(\d+):(\d+)([+\-]\d+)?/g;
-			const [_, value1, value2, value3] = [...chain.matchAll(separator)];
-            
-			return {
-				chain,
-				difference: 0,
-				kind: 'equal',
-				range: { init: index, final: index },
-				startNumber: 0,
-				values: [],
-			};
-		});
-	return rangesKind.map((rangeKind) => rangeKind.values).flat();
+	const arrayResults: number[][] = initArray.map((chain) => {
+		// const separator = /(-?\d+):(\d+)([+\-]\d+)?/g;
+		const separator = /(-?\d+)?:(\d+)?([+\-]\d+)?/g;
+		const matchResult = [...chain.matchAll(separator)];
+		if (matchResult.length === 0) return [Number(chain)];
+
+		const [[_, value1, value2, value3]] = matchResult;
+		console.log({ _, value1, value2, value3 });
+		const kind = value3
+			? value3.includes('+')
+				? 'increase'
+				: 'decrease'
+			: 'equal';
+		const startNumber = Number(value1);
+		const times = Number(value2);
+		const difference = Number(value3 ?? '0');
+		let values: number[] = [];
+		if (kind === 'equal') values = Array(times).fill(startNumber);
+		else {
+			for (let i = 0; i < times; i++) {
+				values.push(startNumber + difference * i);
+			}
+		}
+		return values;
+	});
+	return arrayResults.flat();
 }
