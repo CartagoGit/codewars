@@ -15,7 +15,7 @@ const getDataKind = (a: number, b: number): DataKind => {
 
 const getStringArray = (arg: RangeKind) => {
 	if (arg.kind === 'equal') {
-		return `${arg.difference}:${arg.range.final - arg.range.init + 1}`;
+		return `${arg.startNumber}:${arg.range.final - arg.range.init + 1}`;
 	} else {
 		return `${arg.startNumber}:${arg.range.final + 1 - arg.range.init}${
 			arg.kind === 'increase' ? '+' : '-'
@@ -31,6 +31,7 @@ export function arrayToString(arr: number[]): string {
 		startNumber: arr[0],
 	};
 	let rangesKinds: RangeKind[] = [];
+
 	for (let i = 2; i < arr.length; i++) {
 		const { kind: actualKind, difference: actualDifference } = getDataKind(
 			arr[i - 1],
@@ -40,11 +41,25 @@ export function arrayToString(arr: number[]): string {
 		const isLast = i === arr.length - 1;
 		const areDifferent =
 			prevKind !== actualKind || prevDifference !== actualDifference;
-
+		actual.range.final = i;
 		if (isLast || areDifferent) {
-			actual.range.final = i;
-			if (actual.range.final - actual.range.init < 2) continue;
+			console.log('HA ENTRADOOOOOOO', {
+				arr,
+				actual,
+				actualKind,
+				actualDifference,
+				prevKind,
+				prevDifference,
+				isLast,
+				areDifferent,
+				i,
+				prevValue: arr[i - 1],
+				value: arr[i],
+			});
+			// if (actual.range.final - actual.range.init > 2)
 			rangesKinds.push(actual);
+			// else i--;
+			// i--;
 			actual = {
 				kind: actualKind,
 				difference: actualDifference,
