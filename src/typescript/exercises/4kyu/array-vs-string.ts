@@ -87,26 +87,19 @@ export function arrayToString(arr: number[]): string {
 }
 
 export function stringToArray(str: string): number[] {
-	console.log({ str });
 	const initArray = str.split(',');
 	const arrayResults: number[][] = initArray.map((chain) => {
-		// const separator = /(-?\d+):(\d+)([+\-]\d+)?/g;
 		const separator = /(-?\d+)?:(\d+)?([+\-]\d+)?/g;
 		const matchResult = [...chain.matchAll(separator)];
 		if (matchResult.length === 0) return [Number(chain)];
-
 		const [[_, value1, value2, value3]] = matchResult;
-		console.log({ _, value1, value2, value3 });
-		const kind = value3
-			? value3.includes('+')
-				? 'increase'
-				: 'decrease'
-			: 'equal';
 		const startNumber = Number(value1);
 		const times = Number(value2);
-		const difference = Number(value3 ?? '0');
+		const difference: number | undefined = value3
+			? Number(value3)
+			: undefined;
 		let values: number[] = [];
-		if (kind === 'equal') values = Array(times).fill(startNumber);
+		if (difference === undefined) values = Array(times).fill(startNumber);
 		else {
 			for (let i = 0; i < times; i++) {
 				values.push(startNumber + difference * i);
