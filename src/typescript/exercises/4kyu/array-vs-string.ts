@@ -87,5 +87,21 @@ export function arrayToString(arr: number[]): string {
 }
 
 export function stringToArray(str: string): number[] {
-	
+	console.log({ str });
+	const initArray = str.split(',');
+	const rangesKind: (RangeKind & { chain: string; values: number[] })[] =
+		initArray.map((chain, index) => {
+			const separator = /(\d+):(\d+)([+\-]\d+)?/g;
+			const [_, value1, value2, value3] = [...chain.matchAll(separator)];
+            
+			return {
+				chain,
+				difference: 0,
+				kind: 'equal',
+				range: { init: index, final: index },
+				startNumber: 0,
+				values: [],
+			};
+		});
+	return rangesKind.map((rangeKind) => rangeKind.values).flat();
 }
