@@ -92,7 +92,7 @@ export function stringToArray(str: string): number[] {
 		const separator = /(-?\d+)?:(\d+)?([+\-]\d+)?/g;
 		const matchResult = [...chain.matchAll(separator)];
 		if (matchResult.length === 0) return [Number(chain)];
-		const [[_, value1, value2, value3]] = matchResult;
+		const [_, value1, value2, value3] = matchResult[0];
 		const startNumber = Number(value1);
 		const times = Number(value2);
 		const difference: number | undefined = value3
@@ -106,7 +106,6 @@ export function stringToArray(str: string): number[] {
 			}
 		}
 		return values;
-	});
-    
+	}); 
 	return arrayResults.flat();
 }
