@@ -18,3 +18,4 @@ export function speed(distance: number, friction: number): number {
 		(speedDown + Math.sqrt(speedDown ** 2 - 4 * speedDown * distance)) / 2;
 	return (3600 * msSpeed) / 1000; // Convert speed from m/s to km/h
 }
+
