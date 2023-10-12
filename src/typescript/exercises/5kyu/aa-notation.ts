@@ -4,27 +4,30 @@ const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 const sizeAlphabet = alphabet.length;
 
 export function formatNumber(startNum: number): string {
+	if (startNum === 0) return '0';
+
+	console.log('---->START', { startNum });
 	const sign = startNum < 0 ? '-' : '';
-	const cap = Math.pow(10, 3);
 	let num = Math.abs(startNum);
-	if (num > cap) console.log({ num });
-	let exp = 0;
-	while (num >= cap) {
-		
-		exp++;
+	const cap = Math.pow(10, 3);
+	let exp = Math.floor(Math.log10(num) / 3) - 1;
+	if (exp < 0) exp = 0;
+	num /= Math.pow(cap, exp);
+	if (cap <= num) {
 		num /= cap;
+		exp++;
 	}
-	console.log({ num });
+
+	console.log('AFTER', { num, chain: num.toString(), exp });
 	const int = Math.floor(num);
 	const intLength = 3 - int.toString().length;
 	const decLength = Math.pow(10, intLength);
 	const dec = decLength
 		? Math.floor((num - int) * decLength) / decLength // rounded
 		: 0;
-	console.log({ startNum });
 	const finalNum = int + dec;
 	const result = (finalNum ? sign : '') + finalNum + getLetters(exp);
-	console.log({ result, finalNum });
+	console.log('FINISH<------', { result, int, dec, finalNum });
 	return result;
 }
 
