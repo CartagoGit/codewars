@@ -28,28 +28,20 @@ const getLetters = (exp: number) => {
 	exp -= 5;
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 	const sizeAlphabet = alphabet.length;
-	const alphabetTimes = Math.floor(exp / sizeAlphabet);
-	const numLetters = Math.floor(Math.pow(alphabetTimes, 1 / exp));
-	let letters: string[] = [];
-	for (let i = 0; i <= numLetters; i++) {
-		const position = (exp + i) % sizeAlphabet;
-		console.log({
-			position,
-			letter: alphabet[position],
-			exp,
-			sizeAlphabet,
-			mod: exp % sizeAlphabet,
-		});
-		letters.unshift(alphabet[position]);
+	const firstPosition = exp % sizeAlphabet;
+	const alphabetRepeatedTimes = Math.floor(exp / sizeAlphabet);
+	let numFields = 1;
+	let counterTimes = alphabetRepeatedTimes;
+	while (counterTimes > 0) {
+		numFields++;
+		counterTimes = Math.floor(counterTimes / sizeAlphabet);
 	}
-	if (numLetters === 0) letters.unshift(alphabet[0]);
-	console.log({
-		exp,
-		sizeAlphabet,
-		letters,
-		alphabetTimes,
-		numLetters,
-		pow: Math.pow(sizeAlphabet, exp + 1),
-	});
+	console.log({ firstPosition, alphabetRepeatedTimes, numFields });
+	let letters: string[] = [alphabet[firstPosition]];
+	for (let field = 1; field < numFields; field++) {
+		
+		letters.unshift(alphabet[field]);
+	}
+	if (numFields === 1) letters.unshift(alphabet[0]);
 	return letters.join('');
 };
