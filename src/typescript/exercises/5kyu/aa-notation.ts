@@ -23,8 +23,12 @@ export function formatNumber(startNum: number): string {
 const getLetters = (exp: number) => {
 	const initLetters = ['', 'K', 'M', 'B', 'T'];
 	if (exp <= 4) return initLetters[exp];
+	exp -= 4;
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-	let letters = [alphabet[0], alphabet[0]];
-	
+	const sizeAlphabet = alphabet.length;
+	let letters: string[] = [alphabet[0], alphabet[0]];
+	const mod = exp % sizeAlphabet - 1;
+	const times = Math.floor(exp / sizeAlphabet);
+console.log({exp, sizeAlphabet, letters, mod, times});
 	return 'algo';
 };
