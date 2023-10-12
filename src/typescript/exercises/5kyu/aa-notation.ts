@@ -24,20 +24,32 @@ export function formatNumber(startNum: number): string {
 
 const getLetters = (exp: number) => {
 	const initLetters = ['', 'K', 'M', 'B', 'T'];
-	if (exp <= 4) return initLetters[exp];
-	exp -= 4;
+	if (exp < 5) return initLetters[exp];
+	exp -= 5;
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 	const sizeAlphabet = alphabet.length;
-	// const mod = (exp % sizeAlphabet) - 1;
 	const alphabetTimes = Math.floor(exp / sizeAlphabet);
-	const numLetters = alphabetTimes % sizeAlphabet;
+	const numLetters = Math.floor(Math.pow(alphabetTimes, 1 / exp));
 	let letters: string[] = [];
 	for (let i = 0; i <= numLetters; i++) {
-		const position = (exp % sizeAlphabet) - 1;
-		console.log({ position, letter: alphabet[position] });
+		const position = (exp + i) % sizeAlphabet;
+		console.log({
+			position,
+			letter: alphabet[position],
+			exp,
+			sizeAlphabet,
+			mod: exp % sizeAlphabet,
+		});
 		letters.unshift(alphabet[position]);
 	}
 	if (numLetters === 0) letters.unshift(alphabet[0]);
-	console.log({ exp, sizeAlphabet, letters, alphabetTimes, numLetters });
+	console.log({
+		exp,
+		sizeAlphabet,
+		letters,
+		alphabetTimes,
+		numLetters,
+		pow: Math.pow(sizeAlphabet, exp + 1),
+	});
 	return letters.join('');
 };
