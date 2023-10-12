@@ -1,5 +1,8 @@
 //* https://www.codewars.com/kata/64e4cdd7f2bfcd142a880011/train/typescript
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+const sizeAlphabet = alphabet.length;
+
 export function formatNumber(startNum: number): string {
 	const sign = startNum < 0 ? '-' : '';
 	const cap = Math.pow(10, 3);
@@ -26,22 +29,16 @@ const getLetters = (exp: number) => {
 	const initLetters = ['', 'K', 'M', 'B', 'T'];
 	if (exp < 5) return initLetters[exp];
 	exp -= 5;
-	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-	const sizeAlphabet = alphabet.length;
-	const firstPosition = exp % sizeAlphabet;
+	const result = getFromAlphabet(exp).join('');
+	return result.length > 1 ? result : 'a' + result;
+};
+
+const getFromAlphabet = (exp: number): string[] => {
 	const alphabetRepeatedTimes = Math.floor(exp / sizeAlphabet);
-	let numFields = 1;
-	let counterTimes = alphabetRepeatedTimes;
-	while (counterTimes > 0) {
-		numFields++;
-		counterTimes = Math.floor(counterTimes / sizeAlphabet);
-	}
-	console.log({ firstPosition, alphabetRepeatedTimes, numFields });
-	let letters: string[] = [alphabet[firstPosition]];
-	for (let field = 1; field < numFields; field++) {
-		
-		letters.unshift(alphabet[field]);
-	}
-	if (numFields === 1) letters.unshift(alphabet[0]);
-	return letters.join('');
+	let letters: string[] = [];
+	if (alphabetRepeatedTimes)
+		letters.push(...getFromAlphabet(alphabetRepeatedTimes));
+	const position = exp % sizeAlphabet;
+	letters.push(alphabet[position]);
+	return letters;
 };
