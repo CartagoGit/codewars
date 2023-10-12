@@ -15,7 +15,9 @@ export function formatNumber(startNum: number): string {
 	const dec = decLength
 		? Math.floor((num - int) * decLength) / decLength // rounded
 		: 0;
-	const result = sign + (int + dec) + getLetters(exp);
+	console.log({ startNum });
+	const finalNum = int + dec;
+	const result = (finalNum ? sign : '') + finalNum + getLetters(exp);
 	console.log({ result });
 	return result;
 }
@@ -26,9 +28,16 @@ const getLetters = (exp: number) => {
 	exp -= 4;
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz';
 	const sizeAlphabet = alphabet.length;
-	let letters: string[] = [alphabet[0], alphabet[0]];
-	const mod = exp % sizeAlphabet - 1;
-	const times = Math.floor(exp / sizeAlphabet);
-console.log({exp, sizeAlphabet, letters, mod, times});
-	return 'algo';
+	// const mod = (exp % sizeAlphabet) - 1;
+	const alphabetTimes = Math.floor(exp / sizeAlphabet);
+	const numLetters = alphabetTimes % sizeAlphabet;
+	let letters: string[] = [];
+	for (let i = 0; i <= numLetters; i++) {
+		const position = (exp % sizeAlphabet) - 1;
+		console.log({ position, letter: alphabet[position] });
+		letters.unshift(alphabet[position]);
+	}
+	if (numLetters === 0) letters.unshift(alphabet[0]);
+	console.log({ exp, sizeAlphabet, letters, alphabetTimes, numLetters });
+	return letters.join('');
 };
