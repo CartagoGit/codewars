@@ -5,8 +5,6 @@ const sizeAlphabet = alphabet.length;
 
 export function formatNumber(startNum: number): string {
 	if (startNum === 0) return '0';
-
-	console.log('---->START', { startNum });
 	const sign = startNum < 0 ? '-' : '';
 	let num = Math.abs(startNum);
 	const cap = Math.pow(10, 3);
@@ -18,16 +16,14 @@ export function formatNumber(startNum: number): string {
 		exp++;
 	}
 
-	console.log('AFTER', { num, chain: num.toString(), exp });
 	const int = Math.floor(num);
 	const intLength = 3 - int.toString().length;
 	const decLength = Math.pow(10, intLength);
 	const dec = decLength
 		? Math.floor((num - int) * decLength) / decLength // rounded
 		: 0;
-	const finalNum = int + dec;
+	const finalNum = Math.round((int + dec) * decLength) / decLength;
 	const result = (finalNum ? sign : '') + finalNum + getLetters(exp);
-	console.log('FINISH<------', { result, int, dec, finalNum });
 	return result;
 }
 
