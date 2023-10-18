@@ -1,4 +1,5 @@
-import { getFibonacciSequence } from "../../typescript/helpers/sequences";
+import { getFibonacciSequence } from '../../helpers/sequences';
+
 export const initNthFibo = (): number => {
 	return nthFibo(4);
 };
