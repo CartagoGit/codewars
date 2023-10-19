@@ -1,7 +1,6 @@
 //* https://www.codewars.com/kata/591eab1d192fe0435e000014/train/typescript
 
 export function escape(carpark: number[][]): string[] {
-	console.log({ carpark });
 	let startPlace: { floor: number; position: number };
 	// Get start place
 	carpark.forEach((element, index) => {
@@ -15,7 +14,6 @@ export function escape(carpark: number[][]): string[] {
 	for (let floor = startPlace!.floor; floor < carpark.length; floor++) {
 		const staircase = carpark[floor].indexOf(1);
 		// If is last floor
-		console.log({ staircase, actualPlace });
 		if (staircase === -1) {
 			if (actualPlace.position === carpark[floor].length - 1) break;
 			const steps = carpark[floor].length - actualPlace.position - 1;
