@@ -9,7 +9,7 @@ export function escape(carpark: number[][]): string[] {
 			return (startPlace = { floor: index, position: place });
 	});
 	let actualPlace = { ...startPlace! };
-	const result: string[] = [];
+	let result: string[] = [];
 
 	for (let floor = startPlace!.floor; floor < carpark.length; floor++) {
 		const staircase = carpark[floor].indexOf(1);
