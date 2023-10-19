@@ -5,7 +5,9 @@ const posibilities = ['Jack','Queen','King','Bar','Cherry','Seven','Shell','Bell
 export function fruit(reels: string[][], spins: number[]): number {
 	const result = [reels[0][spins[0]], reels[1][spins[1]], reels[2][spins[2]]] as typeof posibilities[number][];
 	const points = Math.max(
-		...result.map((reel) => {
+		...result.map((reel, index) => {
+            // Performance improvement
+            if([...result].splice(index + 1).includes(reel)) return 0;
 			const valuePossibility = posibilities.indexOf(reel ) + 1;
 			const counter = result.filter((element) => element === reel).length;
 			const hasWild = result.includes('Wild') && reel !== 'Wild';
