@@ -1,7 +1,6 @@
 //* https://www.codewars.com/kata/56cac350145912e68b0006f0/train/typescript
 
 export function arrange(strng: string): string {
-	console.log({ strng });
 	const words = strng.split(' ');
 	for (let i = 0; i < words.length - 1; i++) {
 		const prevWord = words[i + 1] ?? '';
