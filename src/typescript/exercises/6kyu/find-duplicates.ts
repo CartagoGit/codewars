@@ -5,11 +5,12 @@ export function duplicated(
 	keys: string[]
 ): Record<string, number>[] {
 	console.log({ arr, keys });
-	const result: any[] = [];
+	const result: Record<string, number>[] = [];
 	for (let index = 0; index < arr.length; index++) {
 		const item = arr[index];
 		const keysInItem = getKeysInItem(item, keys);
-		if (result.some((value) => areObjectsEqual(keysInItem, value)))
+		console.log({ keysInItem, result });
+		if (result.some((value) => areObjectsEqual(item, value)))
 			continue;
 		const someKeysInItemDuplicate = arr.some((value, index) => {
 			if (index === arr.indexOf(item)) return false;
