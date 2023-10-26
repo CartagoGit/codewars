@@ -1,40 +1,36 @@
 //* https://www.codewars.com/kata/58cc070abd22e324b300002a/train/typescript
 
-export function duplicated(
-	arr: Record<string, number>[],
+export const duplicated = (
+	initArray: Record<string, number>[],
 	keys: string[]
-): Record<string, number>[] {
-	console.log({ arr, keys });
+): Record<string, number>[] => {
 	const result: Record<string, number>[] = [];
-	for (let index = 0; index < arr.length; index++) {
-		const item = arr[index];
-		const keysInItem = getKeysInItem(item, keys);
-		console.log({ keysInItem, result });
-		if (result.some((value) => areObjectsEqual(item, value)))
-			continue;
-		const someKeysInItemDuplicate = arr.some((value, index) => {
-			if (index === arr.indexOf(item)) return false;
-			const keysInValue = getKeysInItem(value, keys);
-			return Object.entries(keysInItem).every(
-				([key, value]) => keysInValue[key] === value
-			);
-		});
-		console.log({ item, someKeysInItemDuplicate });
-		if (someKeysInItemDuplicate) result.push(item);
+	for (let item of initArray) {
+		const index = initArray.indexOf(item);
+		const keysInItem: Record<string, number> = getKeysInItem(item, keys);
+		const someKeysInItemDuplicate = [...initArray].some(
+			(someValue, someIndex) => {
+				if (someIndex === index) return false;
+				const keysInValue = getKeysInItem(someValue, keys);
+				return Object.entries(keysInItem).every(
+					([key, value]) => keysInValue[key] === value
+				);
+			}
+		);
+		if (!someKeysInItemDuplicate) continue;
+		result.push(item);
 	}
-
-	console.log({ result });
 	return result;
-}
+};
 
 const getKeysInItem = (
 	item: Record<string, number>,
 	keys: string[]
 ): Record<string, number> => {
 	const keysInItem: Record<string, number> = {};
-	Object.entries(item).forEach(([key, value]) => {
-		if (keys.includes(key)) keysInItem[key] = value;
-	});
+	for (let key of keys) {
+		keysInItem[key] = item[key];
+	}
 	return keysInItem;
 };
 
@@ -45,7 +41,6 @@ const areObjectsEqual = (
 	const keys1 = Object.keys(obj1);
 	const keys2 = Object.keys(obj2);
 	if (keys1.length !== keys2.length) return false;
-
 	for (const key of keys1) {
 		if (obj1[key] !== obj2[key]) return false;
 	}
