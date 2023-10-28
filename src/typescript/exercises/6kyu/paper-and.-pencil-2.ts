@@ -68,10 +68,9 @@ export const quadraticFormula = (
 };
 
 const getFormula = (b: number, c: number) => {
-	let bString = '';
-	if (b > 1) bString = `+${b}x`;
-	else if ([1, -1].includes(b)) bString = (b > 0 ? '+' : '-') + 'x';
-	else if (b < -1) bString = `${b}x`;
-	let cString = c === 0 ? '' : c > 0 ? `+${c}` : `${c}`;
-	return `x^2${bString}${cString}`;
+	const sign = (n: number) => (n > 0 ? '+' : '-');
+	let res = 'x^2';
+	if (b) res += sign(b) + (Math.abs(b) === 1 ? '' : Math.abs(b)) + 'x';
+	if (c) res += sign(c) + Math.abs(c);
+	return res;
 };
