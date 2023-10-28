@@ -16,9 +16,10 @@ export const quadraticFormula = (
 	y2: number,
 	y3: number
 ): [string, number, number] => {
-	const a = 1;
-	const b = (y2 - y1) / (2 * (2 - 1));
-	const c = y1 - b * (1 * 1) - 1 * 1 * (1 * 1);
+   const a = 1
+
+   const b = (y2 - y1) / (2 - 1) - (1 - 1) / (y1 - y1);
+   const c = y1 - b * 1 - a * Math.pow(1, 2);
 
 	const formula = getFormula(b, c);
 	const y4 = Math.pow(a * 4, 2) + b * 4 + c;
@@ -30,8 +31,8 @@ export const quadraticFormula = (
 const getFormula = (b: number, c: number) => {
 	let bString = '';
 	if (b > 1) bString = `+${b}x`;
-	else if (b === 1) bString = '+x';
-	else if (b < 0) bString = `${b}x`;
+	else if ([1,-1].includes(b)) bString = (b >0 ? '+' : '-') +'x';
+	else if (b < -1) bString = `${b}x`;
 	let cString = c === 0 ? '' : c > 0 ? `+${c}` : `${c}`;
 	return `x^2${bString}${cString}`;
 };
