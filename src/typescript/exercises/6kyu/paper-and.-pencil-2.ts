@@ -1,23 +1,40 @@
-//* https://www.codewars.com/kata/63bd8cc3a78e0578b608ac80/train/typescript
 export const quadraticFormula = (
-	first: number,
-	second: number,
-	third: number
+	y1: number,
+	y2: number,
+	y3: number
 ): [string, number, number] => {
-	// ax^2 + bx + c,
-	//      a*1^2 + b*1 + c = first
-	//      a*2^2 + b*2 + c = second
-	//      a*3^2 + b*3 + c = third
-	// a = 1 => x^2 + bx + c
-	let a = 1;
-	let b = (third - second - a * (3 ^ (2 - 2) ^ 2)) / (3 - 2);
-	let c = ((a * 2) ^ (2 + b * 2)) - (second - first);
+	let formula = `x^2`;
+	if (b !== 0) {
+		formula += `+${y2}x`;
+	}
+	if (c !== 0) {
+		formula += `+${c}`;
+	}
 
-	const formula = `${a}x^2${b > 0 ? '+' + b + 'x' : b < 0 ? b + 'x' : ''}${
-		c > 0 ? '+' + c : c < 0 ? c : ''
-	}`;
-	const fourth = a * 4 * 4 + b * 4 + c;
-	const fifth = a * 5 * 5 + b * 5 + c;
+	// Calcula los dos siguientes términos
+	const fourthTerm = a + 2 * b + c;
+	const fifthTerm = a + 3 * b + c;
 
-	return [formula, fourth, fifth];
+	return [formula, fourthTerm, fifthTerm];
 };
+
+/* 
+            y1 = a*1^2 + b*1 + c
+            y2 = a*2^2 + b*2 + c
+            y3 = a*3^2 + b*3 + c
+            ...
+            Resolve -> 
+            y4 = a*4^2 + b*4 + c
+            y5 = a*5^2 + b*5 + c
+*/
+
+// // Form the quadratic formula
+// const formula = `x^2${b > 0 ? '+' + b + 'x' : b < 0 ? b + 'x' : ''}${
+//     c > 0 ? '+' + c : c < 0 ? c : ''
+// }`;
+
+// // Calculate the fourth and fifth terms of the sequence
+// const y4 = a * 4 * 4 + b * 4 + c;
+// const y5 = a * 5 * 5 + b * 5 + c;
+
+// return [formula, y4, y5];
