@@ -5,17 +5,30 @@ export function clock(maxMemory: number, refList: number[]): number[] {
 	let iterator = 0;
 	for (let refIndex = 0; refIndex < refList.length; refIndex++) {
 		const reference = refList[refIndex];
-		console.log('START ->>', { reference, clock, iterator });
 		const clockIndex = clock.findIndex((item) => item.value === reference);
-		if (clockIndex !== -1) clock[clockIndex].rBit = true;
-		else {
-			if (clock.length < maxMemory) {
-				clock.push({ value: reference, rBit: false });
-				continue;
-			}
+        // If reference is in clock
+		if (clockIndex !== -1) {
+			clock[clockIndex].rBit = true;
+			continue;
 		}
-		iterator = iterator++ % maxMemory;
-		console.log('<<-- END', { reference, clock, iterator });
+		// If clock is not full
+        if (clock.length < maxMemory) {
+            clock.push({ value: reference, rBit: false });
+            iterator = ++iterator % maxMemory;
+			continue;
+		}
+        // Check value in iterator position on clock until find a value with rBit = false
+        while(true){
+            const actualItem = clock[iterator];
+            if(actualItem.rBit){
+                actualItem.rBit = false;
+            }else{
+                actualItem.value = reference;
+                iterator = ++iterator % maxMemory;
+                break;
+            }
+            iterator = ++iterator % maxMemory;
+        }
 	}
 	const fullClock = [
 		...clock.map((item) => item.value),
