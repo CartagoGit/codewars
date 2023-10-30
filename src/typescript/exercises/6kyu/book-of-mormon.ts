@@ -14,7 +14,7 @@ export function MormonsWhile(
 	return followers;
 }
 
-export function Mormons(
+export function MormonsAddingParam(
 	startingNumber: number,
 	reach: number,
 	target: number,
@@ -22,7 +22,7 @@ export function Mormons(
 ): number {
 	if (startingNumber >= target) return 0;
 	if (startingNumber + reach * startingNumber < target)
-		return Mormons(
+		return MormonsAddingParam(
 			startingNumber + reach * startingNumber,
 			reach,
 			target,
@@ -30,3 +30,17 @@ export function Mormons(
 		);
 	return followers;
 }
+
+export const Mormons = (
+	startingNumber: number,
+	reach: number,
+	target: number
+): number => {
+	return startingNumber >= target
+		? 0
+		: Mormons(
+				startingNumber + reach * startingNumber,
+				reach,
+				target
+		  ) + 1;
+};
