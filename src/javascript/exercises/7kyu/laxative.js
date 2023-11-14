@@ -8,24 +8,25 @@
  * @param {number} times - Number of times the shots are drunk.
  * @returns {number} Probability with two decimal places.
  */
-const getChance = (shots, lax, times) => {
-	const probability =
-		calculateCombination(shots - lax, times) /
-		calculateCombination(shots, times);
+const getChance = (n, x, a) => {
+	console.log({ n, x, a });
+	if (x >= n || n <= a) return NaN;
+	const totalPermutations = permutations(n, a);
+	const noLaxativePermutations = permutations(n - x, a);
+	const probability = noLaxativePermutations / totalPermutations;
+    console.log({ totalPermutations, noLaxativePermutations, probability });
 	return Math.round(probability * 100) / 100;
 };
 
-/**
- * Calculates the number of possible combinations.
- *
- * @param {number} elements - Total number of elements.
- * @param {number} selection - Number of elements to select in each combination.
- * @returns {number} - Number of possible combinations.
- */
-const calculateCombination = (elements, selection) => {
-	const factorial = (num) => (num > 1 ? num * factorial(num - 1) : 1);
-	return (
-		factorial(elements) /
-		(factorial(selection) * factorial(elements - selection))
-	);
+const factorial = (n) => {
+	let result = 1;
+	for (let i = 2; i <= n; i++) {
+		result *= i;
+	}
+	console.log({ result, n });
+	return result;
+};
+
+const permutations = (n, r) => {
+	return factorial(n) / factorial(n - r);
 };
