@@ -11,22 +11,18 @@
 const getChance = (n, x, a) => {
 	console.log({ n, x, a });
 	if (x >= n || n <= a) return NaN;
-	const totalPermutations = permutations(n, a);
-	const noLaxativePermutations = permutations(n - x, a);
-	const probability = noLaxativePermutations / totalPermutations;
-    console.log({ totalPermutations, noLaxativePermutations, probability });
+	const totalCombinations = combinations(n, a);
+	const noLaxativeCombinations = combinations(n - x, a);
+	const probability = noLaxativeCombinations / totalCombinations;
+	console.log({ totalCombinations, noLaxativeCombinations, probability });
 	return Math.round(probability * 100) / 100;
+	
 };
 
-const factorial = (n) => {
+const combinations = (n, r) => {
 	let result = 1;
-	for (let i = 2; i <= n; i++) {
-		result *= i;
+	for (let i = 1; i <= r; i++) {
+		result *= (n - r + i) / i;
 	}
-	console.log({ result, n });
 	return result;
-};
-
-const permutations = (n, r) => {
-	return factorial(n) / factorial(n - r);
 };
