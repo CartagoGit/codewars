@@ -1,29 +1,31 @@
 //* https://www.codewars.com/kata/5b02ae6aa2afd8f1b4001ba4/train/javascript
 
 /**
- * Get probability of laxative effect in a given number of shots.
+ * Get the probability of a laxative effect in a given number of shots.
  *
- * @param {number} shots - Shots.
- * @param {number} lax - Shoots with lax.
- * @param {number} times -  Drunk times.
- * @returns {number} Probability with two decimals.
+ * @param {number} shots - Total shots.
+ * @param {number} lax - Shots with laxative effect.
+ * @param {number} times - Number of times the shots are drunk.
+ * @returns {number} Probability with two decimal places.
  */
-const getChance = (shoots, lax, times) => {
+const getChance = (shots, lax, times) => {
 	const probability =
-		calculateCombination(shoots - lax, times) /
-		calculateCombination(shoots, times);
+		calculateCombination(shots - lax, times) /
+		calculateCombination(shots, times);
 	return Math.round(probability * 100) / 100;
 };
 
 /**
  * Calculates the number of possible combinations.
  *
- * @param {number} shoots - Total number of elements.
- * @param {number} times - Number of elements to select in each combination.
+ * @param {number} elements - Total number of elements.
+ * @param {number} selection - Number of elements to select in each combination.
  * @returns {number} - Number of possible combinations.
  */
-const calculateCombination = (shoots, times) => {
-	const factorial = (shoots) =>
-		shoots > 1 ? shoots * factorial(shoots - 1) : 1;
-	return factorial(times) / (factorial(times) * factorial(shoots - times));
+const calculateCombination = (elements, selection) => {
+	const factorial = (num) => (num > 1 ? num * factorial(num - 1) : 1);
+	return (
+		factorial(elements) /
+		(factorial(selection) * factorial(elements - selection))
+	);
 };
