@@ -1,8 +1,12 @@
 //* https://www.codewars.com/kata/5601409514fc93442500010b/train/typescript
 
-export function betterThanAverage(
+export const betterThanAverage = (
 	classPoints: number[],
 	yourPoints: number
-): boolean {
-	return true;
-}
+): boolean => {
+	return (
+		yourPoints >
+		classPoints.reduce((acc, point) => acc + point, yourPoints) /
+			(classPoints.length + 1)
+	);
+};
