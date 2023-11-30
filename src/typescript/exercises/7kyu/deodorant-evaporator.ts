@@ -5,5 +5,11 @@ export function evaporator(
 	evapPerDay: number,
 	threshold: number
 ): number {
-	return 0;
+	let days = 0;
+	let percentageContent = 100;
+	while (percentageContent > threshold) {
+		percentageContent -= percentageContent * (evapPerDay / 100);
+		days++;
+	}
+	return days;
 }
