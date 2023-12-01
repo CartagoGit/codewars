@@ -6,5 +6,5 @@ interface String {
 }
 
 String.prototype.digit = function (): boolean {
-	return false;
+	return /^\d$/.test(`${this}`);
 };
