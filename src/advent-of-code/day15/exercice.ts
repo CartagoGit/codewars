@@ -24,3 +24,18 @@ const getHash = (input: string): number => {
 const getAscii = (input: string): number => {
 	return input.charCodeAt(0);
 };
+
+
+const getHashOneLine = (input: string): number =>
+	input
+		.split(',')
+		.map((chain) =>
+			chain
+				.trim()
+				.split('')
+				.reduce(
+					(curr, char) => ((char.charCodeAt(0) + curr) * 17) % 256,
+					0
+				)
+		)
+		.reduce((acc, curr) => acc + curr, 0);
