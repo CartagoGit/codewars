@@ -51,6 +51,7 @@ const hasAdjacentSymbol = (data: {
 		if (row < 0 || row >= matrix.length) continue;
 		for (let cell = initCell - 1; cell <= lastCell + 1; cell++) {
 			if (cell < 0 || cell >= matrix[row].length) continue;
+            if(row === numberRow && cell >= initCell && cell <= lastCell) continue;
 			if (isSymbol(matrix[row][cell])) return true;
 		}
 	}
