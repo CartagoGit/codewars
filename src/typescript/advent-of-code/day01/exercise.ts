@@ -5,5 +5,15 @@ export const initDay01 = () => {
 };
 
 const trebuchet = (input: string): number => {
-  return 0
+	return input.split('\n').reduce((acc, curr) => {
+		const numbersInString = curr
+			.trim()
+			.split('')
+			.filter((char) => char.match(/\d/))
+			.join('');
+		const number = Number(
+			numbersInString[0] + numbersInString[numbersInString.length - 1]
+		);
+		return acc + number;
+	}, 0);
 };
