@@ -1,5 +1,6 @@
-import { initHashProblem } from '../../advent-of-code/day15/exercice';
+import { initDay01 } from "../../advent-of-code/day01/exercise";
 
-const result = initHashProblem();
+
+const result = initDay01();
 
 console.log('❗FINAL result ➽ ⏩', result);

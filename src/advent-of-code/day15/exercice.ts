@@ -1,6 +1,6 @@
-import { INIT_SEQUENCE } from './init-core';
+import { INIT_SEQUENCE } from './init-input';
 
-export const initHashProblem = () => {
+export const initDay15 = () => {
 	return getHash(INIT_SEQUENCE);
 };
 
