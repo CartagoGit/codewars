@@ -1,6 +1,6 @@
-import { initDay01 } from "../advent-of-code/day01/exercise";
+import { initDay02 } from "../advent-of-code/day02/exercise";
 
 
-const result = initDay01();
+const result = initDay02();
 
 console.log('❗FINAL result ➽ ⏩', result);
