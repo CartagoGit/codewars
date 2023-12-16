@@ -1,7 +1,7 @@
-import { INIT_SEQUENCE } from './init-input';
+import { INPUT_DAY_15 } from './input';
 
 export const initDay15 = () => {
-	return getHash(INIT_SEQUENCE);
+	return getHash(INPUT_DAY_15);
 };
 
 const getHash = (input: string): number => {

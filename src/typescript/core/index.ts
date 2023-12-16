@@ -1,4 +1,4 @@
-import { initDay01 } from "../../advent-of-code/day01/exercise";
+import { initDay01 } from "../advent-of-code/day01/exercise";
 
 
 const result = initDay01();
