@@ -5,5 +5,11 @@ export const initDay17 = (): number => {
 };
 
 const getClumsyCrucible = (input: string): number => {
+	const lavaPool: number[][] = input.split('\n').map((line) =>
+		line
+			.trim()
+			.split('')
+			.map((char) => Number(char))
+	);
 	return 0;
 };
