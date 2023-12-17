@@ -8,12 +8,14 @@ interface Position {
 const directionsArray = ['up', 'down', 'left', 'right', 'none'] as const;
 type Direction = (typeof directionsArray)[number];
 
-// type Vertex = Position & {
-// 	direction: Direction;
-// 	countSameDirection: number;
-// 	heat: number;
-// 	prev?: Vertex;
-// };
+type Vertex = {
+	x: number;
+	y: number;
+	lastSide: Direction;
+	steps: number;
+	heat: number;
+	lowestHeat: number;
+};
 
 //!! INIT
 export const initDay17 = (): number => {
@@ -36,166 +38,82 @@ const getClumsyCrucible = (input: string): number => {
 		y: lavaMap.length - 1,
 	};
 
-	const result = dijkstra(lavaMap, initialPosition, endPosition);
+	const result = calculateHeat({ start: initialPosition, end: endPosition});
 
 	return result;
 };
 
-type Node = {
-	x: number;
-	y: number;
-	direction: Direction;
-	steps: number;
-};
-
-const directions: (Position & { side: Direction })[] = [
-	{ x: 0, y: -1, side: 'up' },
-	{ x: 1, y: 0, side: 'right' },
-	{ x: 0, y: 1, side: 'down' },
-	{ x: -1, y: 0, side: 'left' },
-];
-
-function dijkstra(map: number[][], start: Position, end: Position) {
-	const distance: number[][] = Array(map.length)
-		.fill(Infinity)
-		.map(() => Array(map[0].length).fill(Infinity));
-	const queue: Node[] = [{ ...start, steps: 0, direction: 'none' }];
-
-	distance[start.y][start.x] = 0;
+const calculateHeat = ( data: {start: Position, end: Position}) => {
+    const { start, end } = data;
+	const queue: Vertex[] = [
+		{
+			...start,
+			steps: 0,
+			lastSide: 'none',
+			heat: lavaMap[start.y][start.x],
+			lowestHeat: lavaMap[start.y][start.x],
+		},
+	];
 
 	while (queue.length > 0) {
 		const current = queue.shift()!;
-		const currentDistance = distance[current.y][current.x];
 
-		for (const direction of directions) {
-			if (current.direction !== direction.side && current.steps === 3)
+		console.log(current);
+		const neighbors = getNeighbors(current);
+		for (const neighbor of neighbors) {
+			if (current.lastSide === neighbor.lastSide && current.steps === 3)
 				continue;
 
-			const newX = current.x + direction.x;
-			const newY = current.y + direction.y;
+			const newX = current.x + neighbor.x;
+			const newY = current.y + neighbor.y;
 
-			if (
-				newX < 0 ||
-				newY < 0 ||
-				newX >= map[0].length ||
-				newY >= map.length
-			)
-				continue;
-
-			const newDistance = currentDistance + map[newY][newX];
-			if (!(newDistance < distance[newY][newX])) continue;
+			const newHeat = neighbor.lowestHeat;
+			if ((newHeat >= distance[newY][newX])) continue;
 			distance[newY][newX] = newDistance;
-			queue.push({
-				x: newX,
-				y: newY,
-				direction: direction.side,
-				steps:
-					current.direction === direction.side
-						? current.steps + 1
-						: 1,
-			});
+			queue.push(neighbor);
 		}
 	}
 
-	return distance[end.y][end.x];
-}
+};
 
-// function calculateHeat(data: { start: Position; end: Position }): number {
-// 	const { start, end } = data;
-// 	const rows = lavaMap.length;
-// 	const cols = lavaMap[0].length;
+const getNeighbors = (current: Vertex): Vertex[] => {
+	let neighbors: Vertex[] = [];
+	for (const direction of directionsArray) {
+		if (direction === 'none') continue;
+		const newPosition: Omit<{ [key in Direction]: Position }, 'none'> = {
+			up: { x: 0, y: -1 },
+			down: { x: 0, y: 1 },
+			left: { x: -1, y: 0 },
+			right: { x: 1, y: 0 },
+		};
+		const newDirection = newPosition[direction];
+		if (!isValidDirection({ current, neighbor: newDirection })) continue;
+		const newNeighbor = {
+			...newPosition[direction],
+			lastSide: direction,
+			steps: current.lastSide === direction ? current.steps + 1 : 1,
+			heat: lavaMap[newDirection.y][newDirection.x],
+			lowestHeat:
+				current.lowestHeat + lavaMap[newDirection.y][newDirection.x],
+		};
+		if (newNeighbor.steps > 3) continue;
 
-// 	distances[start.x][start.y] = 0;
+		neighbors.push(newNeighbor);
+	}
+	return neighbors;
+};
 
-// 	const queue: Vertex[] = [
-// 		{
-// 			x: start.x,
-// 			y: start.y,
-// 			direction: 'none',
-// 			countSameDirection: 1,
-// 			heat: 0,
-// 		},
-// 	];
-
-// 	while (queue.length > 0) {
-// 		const current = queue.shift()!;
-
-// 		if (current.x === end.x && current.y === end.y) {
-// 			break;
-// 		}
-
-// 		const neighbors: Vertex[] = getNeighbors(current);
-
-// 		for (const neighbor of neighbors) {
-// 			if (!isValidNeighbor({ neighbor, rows, cols })) continue;
-// 			if (
-// 				current.direction === neighbor.direction &&
-// 				current.countSameDirection < 4
-// 			) {
-// 				neighbor.countSameDirection = current.countSameDirection + 1;
-// 			} else {
-// 				neighbor.countSameDirection = 1;
-// 			}
-// 			if (neighbor.countSameDirection > 3) continue;
-
-// 			const tentativeDistance =
-// 				distances[current.x][current.y] +
-// 				matrix[neighbor.x][neighbor.y];
-
-// 			if (tentativeDistance < distances[neighbor.x][neighbor.y]) {
-// 				distances[neighbor.x][neighbor.y] = tentativeDistance;
-
-// 				queue.push(neighbor);
-// 			}
-// 		}
-// 	}
-
-// 	return distances[end.x][end.y];
-// }
-
-// const isValidNeighbor = (data: {
-// 	neighbor: Vertex;
-// 	rows: number;
-// 	cols: number;
-// }) => {
-// 	const { neighbor, rows, cols } = data;
-// 	return (
-// 		neighbor.x >= 0 &&
-// 		neighbor.x < rows &&
-// 		neighbor.y >= 0 &&
-// 		neighbor.y < cols
-// 	);
-// };
-
-// const getNeighbors = (current: Vertex): Vertex[] => {
-// 	return [
-// 		{
-// 			x: current.x - 1,
-// 			y: current.y,
-// 			direction: 'left',
-// 			prev: current,
-// 			countSameDirection: 0,
-// 		},
-// 		{
-// 			x: current.x + 1,
-// 			y: current.y,
-// 			direction: 'right',
-// 			prev: current,
-// 			countSameDirection: 0,
-// 		},
-// 		{
-// 			x: current.x,
-// 			y: current.y - 1,
-// 			direction: 'up',
-// 			prev: current,
-// 			countSameDirection: 0,
-// 		},
-// 		{
-// 			x: current.x,
-// 			y: current.y + 1,
-// 			direction: 'down',
-// 			prev: current,
-// 			countSameDirection: 0,
-// 		},
-// 	];
-// };
+const isValidDirection = (data: {
+	current: Position;
+	neighbor: Position;
+}): boolean => {
+	const { current, neighbor } = data;
+	const newX = current.x + neighbor.x;
+	const newY = current.y + neighbor.y;
+	return (
+		newX >= 0 &&
+		newX < lavaMap[0].length &&
+		newY >= 0 &&
+		newY < lavaMap.length
+	);
+};
