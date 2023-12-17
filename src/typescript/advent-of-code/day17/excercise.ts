@@ -1,145 +1,190 @@
 import { INPUT_DAY_17, INPUT_EXAMPLE_17 } from './input';
 
-interface Position {
-	row: number;
-	col: number;
-}
-
-type Direction = 'up' | 'down' | 'left' | 'right';
-
-const possibleDirections = ['up', 'down', 'left', 'right'] as const;
-
+//!! INIT
 export const initDay17 = (): number => {
 	// return getClumsyCrucible(INPUT_DAY_17);
 	return getClumsyCrucible(INPUT_EXAMPLE_17);
 };
 
+interface Position {
+	x: number;
+	y: number;
+}
+
+type Vertex = Position & {
+	lostHeat: number;
+	prev?: Vertex;
+	timesSameDirection: number;
+};
+
+const directions = ['up', 'down', 'left', 'right', 'none'] as const;
+type Direction = (typeof directions)[number];
+
+let lavaMap: number[][] = [];
+
 const getClumsyCrucible = (input: string): number => {
-	const lavaPool: number[][] = input.split('\n').map((line) =>
+	lavaMap = input.split('\n').map((line) =>
 		line
 			.trim()
 			.split('')
-			.map((char) => Number(char))
+			.map((char) => Number(char.trim()))
 	);
-	const initPosition: Position = { row: 0, col: 0 };
-	const finishPosition: Position = {
-		row: lavaPool.length - 1,
-		col: lavaPool[0].length - 1,
+	const initialPosition: Position = { x: 0, y: 0 };
+	const endPosition: Position = {
+		x: lavaMap[0].length - 1,
+		y: lavaMap.length - 1,
 	};
 
-
-	const coldestPath = findColdestPath({
-		lavaPool,
-		actualPosition: initPosition,
-		finishPosition,
-		totalHeat: 0,
-		timesSameDirection: 0,
-	});
-	return Math.min(...coldestPath);
+	// const path = aStar({ initialPosition, endPosition });
+	// const result = getLostHeat({ path });
+	// return result;
+    return 0
 };
 
-const findColdestPath = (data: {
-	lavaPool: number[][];
-	actualPosition: Position;
-	finishPosition: Position;
-	totalHeat: number;
-	timesSameDirection: number;
-	lastDirection?: Direction | undefined;
-}): number[] => {
-	const {
-		lavaPool,
-		actualPosition,
-		finishPosition,
-		totalHeat,
-		lastDirection,
-		timesSameDirection,
-	} = data;
-    console.log({actualPosition, finishPosition, totalHeat, lastDirection, timesSameDirection});
-	const possiblePaths: number[] = [];
-	for (let direction of possibleDirections) {
-      
-		if (
-			!canWalk({
-				position: actualPosition,
-				nextDirection: direction,
-				lastDirection,
-				finishPosition,
-				timesSameDirection,
-			})
-		) {
-			continue;
+const dijkstra = (data: {
+    initialPosition: Position;
+    endPosition: Position;
+}) => {
+    const { initialPosition, endPosition } = data;
+   
+}
+
+// const aStar = (data: {
+// 	initialPosition: Position;
+// 	endPosition: Position;
+// }): Vertex[] => {
+// 	const { initialPosition, endPosition } = data;
+// 	let openList: Vertex[] = [];
+// 	let closedList: Vertex[] = [];
+// 	openList.push({
+// 		x: initialPosition.x,
+// 		y: initialPosition.y,
+// 		lostHeat: 0,
+// 		timesSameDirection: 0,
+// 	});
+
+// 	while (openList.length > 0) {
+// 		openList.sort((a, b) => a.lostHeat - b.lostHeat);
+// 		// openList.sort((a, b) => b.lostHeat - a.lostHeat);
+// 		let current = openList.shift() as Vertex;
+// 		closedList.push(current);
+
+// 		if (current.x === endPosition.x && current.y === endPosition.y) {
+// 			let path = [];
+// 			while (current.prev) {
+// 				path.unshift(current);
+// 				current = current.prev;
+// 			}
+// 			return path;
+// 		}
+
+// 		let neighbors = getNeighbors(current);
+// 		for (let neighbor of neighbors) {
+// 			if (
+// 				!isInLavaMap({ vertex: neighbor, lavaMap }) ||
+// 				lavaMap[neighbor.y][neighbor.x] === 1 ||
+// 				isInList({ vertex: neighbor, list: closedList })
+// 			) {
+// 				continue;
+// 			}
+// 			// neighbor.lostHeat =
+// 			// 	current.lostHeat +
+// 			// 	1 +
+// 			// 	heuristic({ vertex: neighbor, end: endPosition });
+// 			neighbor.prev = current;
+
+// 			if (!isInList({ vertex: neighbor, list: openList })) {
+// 				openList.push(neighbor);
+// 			}
+// 		}
+// 	}
+// 	return [];
+// };
+
+const isInList = (data: { vertex: Vertex; list: Vertex[] }): boolean => {
+	const { vertex, list } = data;
+	for (let element of list) {
+		if (element.x === vertex.x && element.y === vertex.y) {
+			return true;
 		}
-		const nextPosition = walk({ position: actualPosition, direction });
-		if (nextPosition === finishPosition) {
-			possiblePaths.push(
-				totalHeat + lavaPool[nextPosition.row][nextPosition.col]
-			);
-			continue;
-		}
-		const nextData = {
-			lavaPool,
-			actualPosition: nextPosition,
-			finishPosition,
-			totalHeat: totalHeat + lavaPool[nextPosition.row][nextPosition.col],
-			lastDirection: direction,
-			timesSameDirection:
-				direction === lastDirection ? timesSameDirection + 1 : 0,
-		};
-		possiblePaths.push(...findColdestPath(nextData));
 	}
-    
-	return possiblePaths;
+	return false;
 };
 
-const canWalk = (data: {
-	position: Position;
-	nextDirection: Direction;
-	lastDirection: Direction | undefined;
-	finishPosition: Position;
-	timesSameDirection: number;
+const getLastDirection = (data: {
+	prev: Vertex | undefined;
+	current: Vertex;
+}): Direction => {
+	const { prev, current } = data;
+	if (!prev) return 'none';
+	if (current.x === prev.x) {
+		return current.y > prev.y ? 'down' : 'up';
+	} else {
+		return current.x > prev.x ? 'right' : 'left';
+	}
+};
+
+const isInLavaMap = (data: {
+	vertex: Vertex;
+	lavaMap: number[][];
 }): boolean => {
-	const maxSameDirection = 3;
-	const {
-		position,
-		nextDirection,
-		lastDirection,
-		finishPosition,
-		timesSameDirection,
-	} = data;
-	const impossibleDirections: Record<Direction, Direction> = {
-		up: 'down',
-		down: 'up',
-		left: 'right',
-		right: 'left',
-	};
+	const { vertex, lavaMap } = data;
 	if (
-		(!!lastDirection &&
-			nextDirection === impossibleDirections[lastDirection]) ||
-		(nextDirection === lastDirection &&
-			timesSameDirection + 1 > maxSameDirection)
-	) {
-		return false;
-	}
-
-	const nextPosition = walk({ position, direction: nextDirection });
-	if (
-		nextPosition.row < 0 ||
-		nextPosition.col < 0 ||
-		nextPosition.row > finishPosition.row ||
-		nextPosition.col > finishPosition.col
+		vertex.x < 0 ||
+		vertex.x >= lavaMap[0].length ||
+		vertex.y < 0 ||
+		vertex.y >= lavaMap.length
 	) {
 		return false;
 	}
 	return true;
 };
 
-const walk = (data: { position: Position; direction: Direction }) => {
-	const { position, direction } = data;
-	const possibilities: Record<Direction, Position> = {
-		up: { row: position.row - 1, col: position.col },
-		down: { row: position.row + 1, col: position.col },
-		left: { row: position.row, col: position.col - 1 },
-		right: { row: position.row, col: position.col + 1 },
-	};
-	return possibilities[direction];
+// const heuristic = (data: { vertex: Vertex; end: Position }): number => {
+// 	const { vertex, end } = data;
+// 	let dx = Math.abs(vertex.x - end.x);
+// 	let dy = Math.abs(vertex.y - end.y);
+// 	return dx + dy;
+// };
+
+// const getNeighbors = (vertex: Vertex): Vertex[] => {
+// 	const lastDirection = getLastDirection({
+// 		prev: vertex.prev,
+// 		current: vertex,
+// 	});
+// 	const neighbors = [];
+// 	for (let direction of directions) {
+// 		if (direction === 'none') continue;
+// 		let { timesSameDirection } = vertex;
+// 		console.log({ direction, lastDirection, timesSameDirection });
+// 		if (direction === lastDirection) timesSameDirection++;
+// 		else timesSameDirection = 0;
+// 		if (timesSameDirection > 3) continue;
+// 		const newNeighbor = {
+// 			// lostHeat: getLostHeat({ path: [vertex] }),
+// 			lostHeat: lavaMap[vertex.y][vertex.x],
+// 			timesSameDirection,
+// 			prev: vertex,
+// 		};
+// 		const newPosition: Omit<Record<Direction, Position>, 'none'> = {
+// 			up: { x: vertex.x, y: vertex.y - 1 },
+// 			down: { x: vertex.x, y: vertex.y + 1 },
+// 			left: { x: vertex.x - 1, y: vertex.y },
+// 			right: { x: vertex.x + 1, y: vertex.y },
+// 		};
+
+// 		neighbors.push({ ...newNeighbor, ...newPosition[direction] });
+// 	}
+// 	return neighbors;
+// };
+
+const getLostHeat = (data: { path: Vertex[] }): number => {
+	const { path } = data;
+	let lostHeat = 0;
+	for (let vertex of path) {
+		lostHeat += lavaMap[vertex.y][vertex.x];
+        console.log(getLastDirection({ prev: vertex.prev, current: vertex }));
+	}
+    lostHeat += lavaMap[path[path.length - 1].y][path[path.length - 1].x];
+	return lostHeat;
 };
