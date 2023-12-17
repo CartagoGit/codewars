@@ -38,13 +38,13 @@ const getClumsyCrucible = (input: string): number => {
 		y: lavaMap.length - 1,
 	};
 
-	const result = calculateHeat({ start: initialPosition, end: endPosition});
+	const result = calculateHeat({ start: initialPosition, end: endPosition });
 
 	return result;
 };
 
-const calculateHeat = ( data: {start: Position, end: Position}) => {
-    const { start, end } = data;
+const calculateHeat = (data: { start: Position; end: Position }) => {
+	const { start, end } = data;
 	const queue: Vertex[] = [
 		{
 			...start,
@@ -54,32 +54,38 @@ const calculateHeat = ( data: {start: Position, end: Position}) => {
 			lowestHeat: lavaMap[start.y][start.x],
 		},
 	];
+	let possibilities: number[] = [];
 
 	while (queue.length > 0) {
 		const current = queue.shift()!;
-
-		console.log(current);
 		const neighbors = getNeighbors(current);
 		for (const neighbor of neighbors) {
-			if (current.lastSide === neighbor.lastSide && current.steps === 3)
+			if (neighbor.x === end.x && neighbor.y === end.y) {
+				possibilities.push(neighbor.lowestHeat);
 				continue;
-
-			const newX = current.x + neighbor.x;
-			const newY = current.y + neighbor.y;
-
-			const newHeat = neighbor.lowestHeat;
-			if ((newHeat >= distance[newY][newX])) continue;
-			distance[newY][newX] = newDistance;
+			}
 			queue.push(neighbor);
 		}
 	}
-
+	return Math.min(...possibilities);
 };
 
 const getNeighbors = (current: Vertex): Vertex[] => {
 	let neighbors: Vertex[] = [];
+	const inverseDirections: Omit<Record<Direction, Direction>, 'none'> = {
+		up: 'down',
+		down: 'up',
+		left: 'right',
+		right: 'left',
+	};
 	for (const direction of directionsArray) {
-		if (direction === 'none') continue;
+		if (
+			direction === 'none' ||
+			(current.lastSide !== 'none' &&
+				inverseDirections[current.lastSide] === direction)
+		) {
+			continue;
+		}
 		const newPosition: Omit<{ [key in Direction]: Position }, 'none'> = {
 			up: { x: 0, y: -1 },
 			down: { x: 0, y: 1 },
@@ -87,7 +93,7 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 			right: { x: 1, y: 0 },
 		};
 		const newDirection = newPosition[direction];
-		if (!isValidDirection({ current, neighbor: newDirection })) continue;
+		if (!isValidDirection({ neighbor: newDirection })) continue;
 		const newNeighbor = {
 			...newPosition[direction],
 			lastSide: direction,
@@ -103,17 +109,12 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 	return neighbors;
 };
 
-const isValidDirection = (data: {
-	current: Position;
-	neighbor: Position;
-}): boolean => {
-	const { current, neighbor } = data;
-	const newX = current.x + neighbor.x;
-	const newY = current.y + neighbor.y;
+const isValidDirection = (data: { neighbor: Position }): boolean => {
+	const { neighbor } = data;
 	return (
-		newX >= 0 &&
-		newX < lavaMap[0].length &&
-		newY >= 0 &&
-		newY < lavaMap.length
+		neighbor.x >= 0 &&
+		neighbor.x < lavaMap[0].length &&
+		neighbor.y >= 0 &&
+		neighbor.y < lavaMap.length
 	);
 };
