@@ -45,29 +45,38 @@ const getClumsyCrucible = (input: string): number => {
 
 const calculateHeat = (data: { start: Position; end: Position }) => {
 	const { start, end } = data;
-	const queue: Vertex[] = [
-		{
-			...start,
-			steps: 0,
-			lastSide: 'none',
-			heat: lavaMap[start.y][start.x],
-			lowestHeat: lavaMap[start.y][start.x],
-		},
-	];
-	let possibilities: number[] = [];
+	const initVertex: Vertex = {
+		...start,
+		steps: 0,
+		lastSide: 'none',
+		heat: lavaMap[start.y][start.x],
+		lowestHeat: lavaMap[start.y][start.x],
+	};
+	let possibilities: Vertex[] = [];
 
-	while (queue.length > 0) {
-		const current = queue.shift()!;
-		const neighbors = getNeighbors(current);
-		for (const neighbor of neighbors) {
-			if (neighbor.x === end.x && neighbor.y === end.y) {
-				possibilities.push(neighbor.lowestHeat);
-				continue;
-			}
-			queue.push(neighbor);
+	getPath({ end, current: initVertex, possibilities });
+
+	return Math.min(
+		...possibilities.map((possibility) => possibility.lowestHeat)
+	);
+};
+
+const getPath = (data: {
+	end: Position;
+	current: Vertex;
+	possibilities: Vertex[];
+}): void => {
+	const { end, current, possibilities } = data;
+	const neighbors = getNeighbors(current);
+	let result;
+	for (const neighbor of neighbors) {
+		if (neighbor.x === end.x && neighbor.y === end.y) {
+			possibilities.push(neighbor);
+			continue;
 		}
+		getPath({ end, current: neighbor, possibilities });
 	}
-	return Math.min(...possibilities);
+	return result;
 };
 
 const getNeighbors = (current: Vertex): Vertex[] => {
