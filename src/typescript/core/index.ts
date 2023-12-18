@@ -1,4 +1,4 @@
-import { initDay17 } from "../advent-of-code/day17/excercise-try-2";
+import { initDay17 } from "../advent-of-code/day17/dijkstra";
 
 const result = initDay17();
 
