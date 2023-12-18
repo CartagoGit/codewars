@@ -15,17 +15,16 @@ type Vertex = {
 	steps: number;
 	heat: number;
 	lowestHeat: number;
-	visited: boolean[][];
-	heatMap: number[][];
 };
 
 //!! INIT
 export const initDay17 = (): number => {
-	// return getClumsyCrucible(INPUT_DAY_17);
-	return getClumsyCrucible(INPUT_EXAMPLE_17);
+	return getClumsyCrucible(INPUT_DAY_17);
+	// return getClumsyCrucible(INPUT_EXAMPLE_17);
 };
 
 let lavaMap: number[][] = [];
+let heatMap: number[][] = [];
 
 const getClumsyCrucible = (input: string): number => {
 	lavaMap = input.split('\n').map((line) =>
@@ -34,6 +33,9 @@ const getClumsyCrucible = (input: string): number => {
 			.split('')
 			.map((char) => Number(char.trim()))
 	);
+	heatMap = new Array(lavaMap.length)
+		.fill(-1)
+		.map(() => new Array(lavaMap[0].length).fill(-1));
 	const initialPosition: Position = { x: 0, y: 0 };
 	const endPosition: Position = {
 		x: lavaMap[0].length - 1,
@@ -50,47 +52,24 @@ const calculateHeat = (data: { start: Position; end: Position }) => {
 	const visited = new Array(lavaMap.length)
 		.fill(false)
 		.map(() => new Array(lavaMap[0].length).fill(false));
-	const heatMap = new Array(lavaMap.length)
-		.fill(false)
-		.map(() => new Array(lavaMap[0].length).fill(-1));
 	visited[start.y][start.x] = true;
-	heatMap[start.y][start.x] = lavaMap[start.y][start.x];
 	const initVertex: Vertex = {
 		...start,
 		steps: 0,
 		lastSide: 'none',
 		heat: lavaMap[start.y][start.x],
 		lowestHeat: lavaMap[start.y][start.x],
-		// lowestHeat: 0,
-		heatMap,
-		visited,
 	};
 	let possibilities: Vertex[] = [];
 
 	getPath({ end, current: initVertex, possibilities });
-    const minHeat = Math.min(
+	const minHeat = Math.min(
 		...possibilities.map((possibility) => possibility.lowestHeat)
 	);
-    const vertex = possibilities.find((possibility) => possibility.lowestHeat === minHeat);
-    console.log(vertex?.visited);
-	return minHeat
+	// const vertex = possibilities.find((possibility) => possibility.lowestHeat === minHeat);
+	// console.log(vertex?.visited);
+	return minHeat;
 };
-
-// const getPath = (data: {
-// 	end: Position;
-// 	current: Vertex;
-// 	possibilities: Vertex[];
-// }): void => {
-// 	const { end, current, possibilities } = data;
-// 	const neighbors = getNeighbors(current);
-// 	for (const neighbor of neighbors) {
-// 		if (neighbor.x === end.x && neighbor.y === end.y) {
-// 			possibilities.push(neighbor);
-// 			continue;
-// 		}
-// 		getPath({ end, current: neighbor, possibilities });
-// 	}
-// };
 
 const getPath = (data: {
 	end: Position;
@@ -131,10 +110,7 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 
 		const newPosition = getNewPosition({ current, direction });
 		if (!isValidDirection({ newPosition, current })) continue;
-		let visitedNeighbor = current.visited.map((row) => [...row]);
-		visitedNeighbor[newPosition.y][newPosition.x] = true;
-
-		current.heatMap[newPosition.y][newPosition.x] =
+		heatMap[newPosition.y][newPosition.x] =
 			current.lowestHeat + lavaMap[newPosition.y][newPosition.x];
 		const newNeighbor = {
 			...newPosition,
@@ -143,8 +119,6 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 			heat: lavaMap[newPosition.y][newPosition.x],
 			lowestHeat:
 				current.lowestHeat + lavaMap[newPosition.y][newPosition.x],
-			visited: visitedNeighbor,
-			heatMap: current.heatMap,
 		};
 		if (newNeighbor.steps > 3) continue;
 		neighbors.push(newNeighbor);
@@ -181,9 +155,8 @@ const isValidDirection = (data: {
 		newPosition.x < lavaMap[0].length &&
 		newPosition.y >= 0 &&
 		newPosition.y < lavaMap.length &&
-		current.visited[newPosition.y][newPosition.x] === false &&
-		(current.heatMap[newPosition.y][newPosition.x] === -1 ||
-			current.heatMap[newPosition.y][newPosition.x] >
+		(heatMap[newPosition.y][newPosition.x] === -1 ||
+			heatMap[newPosition.y][newPosition.x] >
 				current.lowestHeat + lavaMap[newPosition.y][newPosition.x])
 	);
 };
