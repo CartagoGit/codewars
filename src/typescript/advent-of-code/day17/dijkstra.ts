@@ -15,10 +15,14 @@ const exercise = (input: string): number => {
 	return new Dijkstra({ chart: lavaMap }).findShortestPath();
 };
 
+const directions = ['up', 'down', 'left', 'right'] as const;
+type Direction = (typeof directions)[number];
+
 interface AdjacentVertex {
 	name: string;
 	weight: number;
 	position: Position;
+	direction: Direction;
 }
 
 interface Position {
@@ -32,6 +36,8 @@ class Vertex {
 	public readonly chart: number[][];
 	public readonly weight: number;
 	public readonly name: string;
+	public lastDirection: Direction | undefined = undefined;
+	public timesSameDirection = 0;
 
 	constructor(data: {
 		position: Position;
@@ -59,6 +65,7 @@ class Vertex {
 				name: `${x - 1},${y}`,
 				weight: matrix[x - 1][y],
 				position: { x: x - 1, y },
+				direction: 'left',
 			});
 		}
 		if (x < matrix.length - 1) {
@@ -66,6 +73,7 @@ class Vertex {
 				name: `${x + 1},${y}`,
 				weight: matrix[x + 1][y],
 				position: { x: x + 1, y },
+				direction: 'right',
 			});
 		}
 		if (y > 0) {
@@ -73,6 +81,7 @@ class Vertex {
 				name: `${x},${y - 1}`,
 				weight: matrix[x][y - 1],
 				position: { x, y: y - 1 },
+				direction: 'up',
 			});
 		}
 		if (y < matrix[x].length - 1) {
@@ -80,6 +89,7 @@ class Vertex {
 				name: `${x},${y + 1}`,
 				weight: matrix[x][y + 1],
 				position: { x, y: y + 1 },
+				direction: 'down',
 			});
 		}
 
@@ -145,16 +155,31 @@ class Dijkstra {
 			let shortestStep = pq.dequeue();
 			let currentVertexName = shortestStep[0];
 
-			this.vertices
-				.find((vertex) => vertex.name === currentVertexName)
-				?.adjacentVertices.forEach((neighbor) => {
-					let weight = weights[currentVertexName] + neighbor.weight;
-					if (weight < weights[neighbor.name]) {
-						weights[neighbor.name] = weight;
-						backtrace[neighbor.name] = currentVertexName;
-						pq.enqueue([neighbor.name, weight]);
-					}
-				});
+			const currentVertex = this.vertices.find(
+				(vertex) => vertex.name === currentVertexName
+			);
+			if (!currentVertex) continue;
+			for (let adjacentVertex of currentVertex.adjacentVertices) {
+				let weight = weights[currentVertexName] + adjacentVertex.weight;
+				const { direction } = adjacentVertex;
+				let timesSameDirection = currentVertex.timesSameDirection;
+				if (direction === currentVertex.lastDirection)
+					timesSameDirection++;
+				else timesSameDirection = 0;
+				if (
+					weight < weights[adjacentVertex.name] &&
+					timesSameDirection <= 3
+				) {
+					const neighbor = this.vertices.find((vertex) =>
+						vertex.isSamePosition(adjacentVertex.position)
+					)!;
+                    neighbor.lastDirection = direction;
+                    neighbor.timesSameDirection = timesSameDirection;
+					weights[neighbor.name] = weight;
+					backtrace[neighbor.name] = currentVertexName;
+					pq.enqueue([neighbor.name, weight]);
+				}
+			}
 		}
 
 		let path = [endVertexName];
