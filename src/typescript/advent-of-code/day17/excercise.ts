@@ -21,8 +21,8 @@ type Vertex = {
 
 //!! INIT
 export const initDay17 = (): number => {
-	return getClumsyCrucible(INPUT_DAY_17);
-	// return getClumsyCrucible(INPUT_EXAMPLE_17);
+	// return getClumsyCrucible(INPUT_DAY_17);
+	return getClumsyCrucible(INPUT_EXAMPLE_17);
 };
 
 let lavaMap: number[][] = [];
@@ -61,16 +61,36 @@ const calculateHeat = (data: { start: Position; end: Position }) => {
 		lastSide: 'none',
 		heat: lavaMap[start.y][start.x],
 		lowestHeat: lavaMap[start.y][start.x],
+		// lowestHeat: 0,
 		heatMap,
 		visited,
 	};
 	let possibilities: Vertex[] = [];
 
 	getPath({ end, current: initVertex, possibilities });
-	return Math.min(
-		...possibilities.map((possibility) => possibility.lowestHeat - possibility.heat)
+    const minHeat = Math.min(
+		...possibilities.map((possibility) => possibility.lowestHeat)
 	);
+    const vertex = possibilities.find((possibility) => possibility.lowestHeat === minHeat);
+    console.log(vertex?.visited);
+	return minHeat
 };
+
+// const getPath = (data: {
+// 	end: Position;
+// 	current: Vertex;
+// 	possibilities: Vertex[];
+// }): void => {
+// 	const { end, current, possibilities } = data;
+// 	const neighbors = getNeighbors(current);
+// 	for (const neighbor of neighbors) {
+// 		if (neighbor.x === end.x && neighbor.y === end.y) {
+// 			possibilities.push(neighbor);
+// 			continue;
+// 		}
+// 		getPath({ end, current: neighbor, possibilities });
+// 	}
+// };
 
 const getPath = (data: {
 	end: Position;
@@ -78,13 +98,17 @@ const getPath = (data: {
 	possibilities: Vertex[];
 }): void => {
 	const { end, current, possibilities } = data;
-	const neighbors = getNeighbors(current);
-	for (const neighbor of neighbors) {
-		if (neighbor.x === end.x && neighbor.y === end.y) {
-			possibilities.push(neighbor);
-			continue;
+	const stack = [{ current, possibilities }];
+	while (stack.length > 0) {
+		const { current, possibilities } = stack.pop()!;
+		const neighbors = getNeighbors(current);
+		for (const neighbor of neighbors) {
+			if (neighbor.x === end.x && neighbor.y === end.y) {
+				possibilities.push(neighbor);
+				break;
+			}
+			stack.push({ current: neighbor, possibilities });
 		}
-		getPath({ end, current: neighbor, possibilities });
 	}
 };
 
@@ -115,7 +139,7 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 		const newNeighbor = {
 			...newPosition,
 			lastSide: direction,
-			steps: current.lastSide === direction ? current.steps + 1 : 1,
+			steps: current.lastSide === direction ? current.steps + 1 : 0,
 			heat: lavaMap[newPosition.y][newPosition.x],
 			lowestHeat:
 				current.lowestHeat + lavaMap[newPosition.y][newPosition.x],
