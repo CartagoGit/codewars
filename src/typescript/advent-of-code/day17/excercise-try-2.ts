@@ -15,6 +15,7 @@ type Vertex = {
 	steps: number;
 	heat: number;
 	lowestHeat: number;
+	prev?: Vertex;
 };
 
 //!! INIT
@@ -59,6 +60,7 @@ const calculateHeat = (data: { start: Position; end: Position }) => {
 		lastSide: 'none',
 		heat: lavaMap[start.y][start.x],
 		lowestHeat: lavaMap[start.y][start.x],
+		prev: undefined,
 	};
 	let possibilities: Vertex[] = [];
 
@@ -66,8 +68,6 @@ const calculateHeat = (data: { start: Position; end: Position }) => {
 	const minHeat = Math.min(
 		...possibilities.map((possibility) => possibility.lowestHeat)
 	);
-	// const vertex = possibilities.find((possibility) => possibility.lowestHeat === minHeat);
-	// console.log(vertex?.visited);
 	return minHeat;
 };
 
@@ -80,12 +80,12 @@ const getPath = (data: {
 	const stack = [{ current, possibilities }];
 	while (stack.length > 0) {
 		// console.log(stack.length);
-		const { current, possibilities } = stack.pop()!;
+		const { current, possibilities } = stack.shift()!;
 		const neighbors = getNeighbors(current);
-		for (const neighbor of neighbors) {
+		Neighbor: for (const neighbor of neighbors) {
 			if (neighbor.x === end.x && neighbor.y === end.y) {
 				possibilities.push(neighbor);
-				break;
+				break Neighbor;
 			}
 			stack.push({ current: neighbor, possibilities });
 		}
@@ -115,6 +115,7 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 			current.lowestHeat + lavaMap[newPosition.y][newPosition.x];
 		const newNeighbor = {
 			...newPosition,
+			prev: current,
 			lastSide: direction,
 			steps: current.lastSide === direction ? current.steps + 1 : 0,
 			heat: lavaMap[newPosition.y][newPosition.x],
@@ -124,7 +125,7 @@ const getNeighbors = (current: Vertex): Vertex[] => {
 		if (newNeighbor.steps > 3) continue;
 		neighbors.push(newNeighbor);
 	}
-	return neighbors;
+	return neighbors.sort((a, b) => a.lowestHeat - b.lowestHeat);
 };
 
 const getNewPosition = (data: {
