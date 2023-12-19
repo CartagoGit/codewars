@@ -1,20 +1,5 @@
 import { INPUT_DAY_17, INPUT_EXAMPLE_17 } from './input';
 
-export const initDay17 = (): number => {
-	// return exercise(INPUT_DAY_17);
-	return exercise(INPUT_EXAMPLE_17);
-};
-
-const exercise = (input: string): number => {
-	const lavaMap = input.split('\n').map((line) =>
-		line
-			.trim()
-			.split('')
-			.map((char) => Number(char.trim()))
-	);
-	return new Dijkstra({ chart: lavaMap }).findShortestPath();
-};
-
 const directions = ['up', 'down', 'left', 'right'] as const;
 type Direction = (typeof directions)[number];
 
@@ -30,6 +15,23 @@ interface Position {
 	x: number;
 	y: number;
 }
+
+//!! INIT
+export const initDay17 = (): number => {
+	// return exercise(INPUT_DAY_17);
+	return exercise(INPUT_EXAMPLE_17);
+};
+
+const exercise = (input: string): number => {
+	const lavaMap = input.split('\n').map((line) =>
+		line
+			.trim()
+			.split('')
+			.map((char) => Number(char.trim()))
+	);
+	return new Dijkstra({ chart: lavaMap }).findShortestPath();
+};
+
 
 class Vertex {
 	public readonly position: Position;
@@ -47,17 +49,18 @@ class Vertex {
 	}) {
 		const { position, weight, chart } = data;
 		this.position = position;
-		this.adjacentVertices = this._getAdjacentVertices(chart);
 		this.weight = weight;
 		this.chart = chart.map((row) => [...row]);
+		this.adjacentVertices = this._getAdjacentVertices();
 		this.name = this._getName();
 	}
 
 	private _getName = (): string => {
-		return `${this.position.x},${this.position.y}`;
+		return `${this.position.y},${this.position.x}`;
 	};
 
-	private _getAdjacentVertices(matrix: number[][]): AdjacentVertex[] {
+	private _getAdjacentVertices(): AdjacentVertex[] {
+		const matrix = this.chart;
 		let adj: AdjacentVertex[] = [];
 		let x = this.position.x;
 		let y = this.position.y;
@@ -72,25 +75,24 @@ class Vertex {
 				const direction = 'left';
 				let weight = 0;
 				for (let i = 1; i <= index; i++) {
-					weight += matrix[x - i][y];
+					weight += matrix[y][x - i];
 				}
-
 				adj.push({
-					name: `${minusX},${y}`,
+					name: `${y},${minusX}`,
 					weight,
 					position: { x: minusX, y },
 					direction,
 					timesSameDirection: index,
 				});
 			}
-			if (plusX < matrix.length) {
+			if (plusX < matrix[y].length) {
 				const direction = 'right';
 				let weight = 0;
 				for (let i = 1; i <= index; i++) {
-					weight += matrix[x + i][y];
+					weight += matrix[y][x + i];
 				}
 				adj.push({
-					name: `${plusX},${y}`,
+					name: `${y},${plusX}`,
 					weight,
 					position: { x: plusX, y },
 					direction,
@@ -101,25 +103,25 @@ class Vertex {
 				const direction = 'up';
 				let weight = 0;
 				for (let i = 1; i <= index; i++) {
-					weight += matrix[x][y - i];
+					weight += matrix[y - i][x];
 				}
 				adj.push({
-					name: `${x},${minusY}`,
+					name: `${minusY},${x}`,
 					weight,
 					position: { x, y: minusY },
 					direction,
 					timesSameDirection: index,
 				});
 			}
-			if (plusY < matrix[x].length) {
+			if (plusY < matrix.length) {
 				const direction = 'down';
 
 				let weight = 0;
 				for (let i = 1; i <= index; i++) {
-					weight += matrix[x][y + i];
+					weight += matrix[y + i][x];
 				}
 				adj.push({
-					name: `${x},${plusY}`,
+					name: `${plusY},${x}`,
 					weight,
 					position: { x, y: plusY },
 					direction,
@@ -140,7 +142,7 @@ class Dijkstra {
 	public vertices: Vertex[] = [];
 	private _startVertex!: Vertex;
 	private _endVertex!: Vertex;
-	private _visited: Map<string, boolean> = new Map();
+	// private _visited: Map<string, boolean> = new Map();
 	private _oppositeDirection = {
 		up: 'down',
 		down: 'up',
@@ -157,7 +159,7 @@ class Dijkstra {
 		for (let row = 0; row < chart.length; row++) {
 			for (let cell = 0; cell < chart[row].length; cell++) {
 				const vertex = new Vertex({
-					position: { x: row, y: cell },
+					position: { x: cell, y: row },
 					weight: chart[row][cell],
 					chart,
 				});
@@ -196,14 +198,13 @@ class Dijkstra {
 		while (!pq.isEmpty()) {
 			let shortestStep = pq.dequeue();
 			let currentVertexName = shortestStep[0];
-			if (this._visited.has(currentVertexName)) continue;
-			this._visited.set(currentVertexName, true);
+			// if (this._visited.has(currentVertexName)) continue;
+			// this._visited.set(currentVertexName, true);
 
 			const currentVertex = this.vertices.find(
 				(vertex) => vertex.name === currentVertexName
 			);
 			if (!currentVertex) continue;
-			console.log(currentVertex.adjacentVertices.length);
 			for (let adjacentVertex of currentVertex.adjacentVertices) {
 				if (
 					adjacentVertex.direction === currentVertex.lastDirection ||
@@ -218,12 +219,13 @@ class Dijkstra {
 						vertex.isSamePosition(adjacentVertex.position)
 					)!;
 					neighbor.lastDirection = adjacentVertex.direction;
+					neighbor.timesSameDirection =
+						adjacentVertex.timesSameDirection;
 					weights[neighbor.name] = weight;
 					backtrace[neighbor.name] = currentVertexName;
 					pq.enqueue([neighbor.name, weight]);
 				}
 			}
-			currentVertex.timesSameDirection = 1;
 		}
 
 		let path = [endVertexName];
@@ -234,41 +236,52 @@ class Dijkstra {
 			lastStep = backtrace[lastStep];
 		}
 		console.log(`Shortest path: ${path.join(' -> ')}`);
-
+		const moreData = path.map((vertexName) => {
+			const vertex = this.vertices.find(
+				(vertex) => vertex.name === vertexName
+			)!;
+			// console.log({vertex});
+			return {
+				name: vertexName,
+				weight: vertex.weight,
+				timesSameDirection: vertex.timesSameDirection,
+				lastDirection: vertex.lastDirection,
+			};
+		});
+		// console.log(moreData);
+		console.log({ weights });
 		return weights[endVertexName];
 	}
 }
 
 class PriorityQueue {
-	collection: any[];
+	private _collection: any[] = [];
 
-	constructor() {
-		this.collection = [];
-	}
+	constructor() {}
 
 	public enqueue(element: any[]) {
 		if (this.isEmpty()) {
-			this.collection.push(element);
+			this._collection.push(element);
 		} else {
 			let added = false;
-			for (let i = 1; i <= this.collection.length; i++) {
-				if (element[1] < this.collection[i - 1][1]) {
-					this.collection.splice(i - 1, 0, element);
+			for (let i = 1; i <= this._collection.length; i++) {
+				if (element[1] < this._collection[i - 1][1]) {
+					this._collection.splice(i - 1, 0, element);
 					added = true;
 					break;
 				}
 			}
 			if (!added) {
-				this.collection.push(element);
+				this._collection.push(element);
 			}
 		}
 	}
 
 	public dequeue() {
-		return this.collection.shift();
+		return this._collection.shift();
 	}
 
 	public isEmpty() {
-		return this.collection.length === 0;
+		return this._collection.length === 0;
 	}
 }
