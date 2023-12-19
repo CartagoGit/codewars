@@ -23,6 +23,7 @@ interface AdjacentVertex {
 	weight: number;
 	position: Position;
 	direction: Direction;
+	timesSameDirection: number;
 }
 
 interface Position {
@@ -36,7 +37,7 @@ class Vertex {
 	public readonly chart: number[][];
 	public readonly weight: number;
 	public readonly name: string;
-	public fromDirection: Direction | undefined = undefined;
+	public lastDirection: Direction | undefined = undefined;
 	public timesSameDirection = 1;
 
 	constructor(data: {
@@ -60,77 +61,72 @@ class Vertex {
 		let adj: AdjacentVertex[] = [];
 		let x = this.position.x;
 		let y = this.position.y;
+
 		const maxInDirection = 3;
-		for (let index = 0; index < maxInDirection; index++) {
+		for (let index = 1; index <= maxInDirection; index++) {
 			const minusX = x - index;
 			const plusX = x + index;
 			const minusY = y - index;
 			const plusY = y + index;
 			if (minusX >= 0) {
+				const direction = 'left';
+				let weight = 0;
+				for (let i = 1; i <= index; i++) {
+					weight += matrix[x - i][y];
+				}
+
 				adj.push({
 					name: `${minusX},${y}`,
-					weight: matrix[minusX][y],
+					weight,
 					position: { x: minusX, y },
-					direction: 'left',
+					direction,
+					timesSameDirection: index,
 				});
 			}
 			if (plusX < matrix.length) {
+				const direction = 'right';
+				let weight = 0;
+				for (let i = 1; i <= index; i++) {
+					weight += matrix[x + i][y];
+				}
 				adj.push({
 					name: `${plusX},${y}`,
-					weight: matrix[plusX][y],
+					weight,
 					position: { x: plusX, y },
-					direction: 'right',
+					direction,
+					timesSameDirection: index,
 				});
 			}
 			if (minusY >= 0) {
+				const direction = 'up';
+				let weight = 0;
+				for (let i = 1; i <= index; i++) {
+					weight += matrix[x][y - i];
+				}
 				adj.push({
 					name: `${x},${minusY}`,
-					weight: matrix[x][minusY],
+					weight,
 					position: { x, y: minusY },
-					direction: 'up',
+					direction,
+					timesSameDirection: index,
 				});
 			}
 			if (plusY < matrix[x].length) {
+				const direction = 'down';
+
+				let weight = 0;
+				for (let i = 1; i <= index; i++) {
+					weight += matrix[x][y + i];
+				}
 				adj.push({
 					name: `${x},${plusY}`,
-					weight: matrix[x][plusY],
+					weight,
 					position: { x, y: plusY },
-					direction: 'down',
+					direction,
+					timesSameDirection: index,
 				});
 			}
 		}
-		// if (x > 0) {
-		// 	adj.push({
-		// 		name: `${x - 1},${y}`,
-		// 		weight: matrix[x - 1][y],
-		// 		position: { x: x - 1, y },
-		// 		direction: 'left',
-		// 	});
-		// }
-		// if (x < matrix.length - 1) {
-		// 	adj.push({
-		// 		name: `${x + 1},${y}`,
-		// 		weight: matrix[x + 1][y],
-		// 		position: { x: x + 1, y },
-		// 		direction: 'right',
-		// 	});
-		// }
-		// if (y > 0) {
-		// 	adj.push({
-		// 		name: `${x},${y - 1}`,
-		// 		weight: matrix[x][y - 1],
-		// 		position: { x, y: y - 1 },
-		// 		direction: 'up',
-		// 	});
-		// }
-		// if (y < matrix[x].length - 1) {
-		// 	adj.push({
-		// 		name: `${x},${y + 1}`,
-		// 		weight: matrix[x][y + 1],
-		// 		position: { x, y: y + 1 },
-		// 		direction: 'down',
-		// 	});
-		// }
 
 		return adj;
 	}
@@ -145,6 +141,12 @@ class Dijkstra {
 	private _startVertex!: Vertex;
 	private _endVertex!: Vertex;
 	private _visited: Map<string, boolean> = new Map();
+	private _oppositeDirection = {
+		up: 'down',
+		down: 'up',
+		left: 'right',
+		right: 'left',
+	};
 
 	constructor(data: { chart: number[][] }) {
 		const { chart } = data;
@@ -201,22 +203,21 @@ class Dijkstra {
 				(vertex) => vertex.name === currentVertexName
 			);
 			if (!currentVertex) continue;
+			console.log(currentVertex.adjacentVertices.length);
 			for (let adjacentVertex of currentVertex.adjacentVertices) {
-				let weight = weights[currentVertexName] + adjacentVertex.weight;
-				const { direction } = adjacentVertex;
-				let timesSameDirection = currentVertex.timesSameDirection;
-				if (direction === currentVertex.fromDirection)
-					timesSameDirection++;
-				else timesSameDirection = 1;
 				if (
-					weight < weights[adjacentVertex.name] &&
-					timesSameDirection <= 3
+					adjacentVertex.direction === currentVertex.lastDirection ||
+					this._oppositeDirection[adjacentVertex.direction] ===
+						currentVertex.lastDirection
 				) {
+					continue;
+				}
+				let weight = weights[currentVertexName] + adjacentVertex.weight;
+				if (weight < weights[adjacentVertex.name]) {
 					const neighbor = this.vertices.find((vertex) =>
 						vertex.isSamePosition(adjacentVertex.position)
 					)!;
-					neighbor.fromDirection = direction;
-					neighbor.timesSameDirection = timesSameDirection;
+					neighbor.lastDirection = adjacentVertex.direction;
 					weights[neighbor.name] = weight;
 					backtrace[neighbor.name] = currentVertexName;
 					pq.enqueue([neighbor.name, weight]);
