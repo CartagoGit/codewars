@@ -61,7 +61,7 @@ class Vertex {
 
 	private _getAdjacentVertices(): AdjacentVertex[] {
 		const matrix = this.chart;
-		let adj: AdjacentVertex[] = [];
+		let adjacent: AdjacentVertex[] = [];
 		let x = this.position.x;
 		let y = this.position.y;
 
@@ -77,7 +77,7 @@ class Vertex {
 				for (let i = 1; i <= index; i++) {
 					weight += matrix[y][x - i];
 				}
-				adj.push({
+				adjacent.push({
 					name: `${y},${minusX}`,
 					weight,
 					position: { x: minusX, y },
@@ -91,7 +91,7 @@ class Vertex {
 				for (let i = 1; i <= index; i++) {
 					weight += matrix[y][x + i];
 				}
-				adj.push({
+				adjacent.push({
 					name: `${y},${plusX}`,
 					weight,
 					position: { x: plusX, y },
@@ -105,7 +105,7 @@ class Vertex {
 				for (let i = 1; i <= index; i++) {
 					weight += matrix[y - i][x];
 				}
-				adj.push({
+				adjacent.push({
 					name: `${minusY},${x}`,
 					weight,
 					position: { x, y: minusY },
@@ -120,7 +120,7 @@ class Vertex {
 				for (let i = 1; i <= index; i++) {
 					weight += matrix[y + i][x];
 				}
-				adj.push({
+				adjacent.push({
 					name: `${plusY},${x}`,
 					weight,
 					position: { x, y: plusY },
@@ -130,7 +130,7 @@ class Vertex {
 			}
 		}
 
-		return adj;
+		return adjacent;
 	}
 
 	public isSamePosition = (position: Position): boolean => {
