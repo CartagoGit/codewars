@@ -142,7 +142,7 @@ class Dijkstra {
 	public vertices: Vertex[] = [];
 	private _startVertex!: Vertex;
 	private _endVertex!: Vertex;
-	// private _visited: Map<string, boolean> = new Map();
+	private _visited: Map<string, boolean> = new Map();
 	private _oppositeDirection = {
 		up: 'down',
 		down: 'up',
@@ -198,8 +198,8 @@ class Dijkstra {
 		while (!pq.isEmpty()) {
 			let shortestStep = pq.dequeue();
 			let currentVertexName = shortestStep[0];
-			// if (this._visited.has(currentVertexName)) continue;
-			// this._visited.set(currentVertexName, true);
+			if (this._visited.has(currentVertexName)) continue;
+			this._visited.set(currentVertexName, true);
 
 			const currentVertex = this.vertices.find(
 				(vertex) => vertex.name === currentVertexName
