@@ -1,8 +1,10 @@
 // https://www.codewars.com/kata/51f9d93b4095e0a7200001b8/train/typescript
 
 export function howManyLightsabersDoYouOwn(name?: any): number {
-    // So, how many?
-    return 0;
+	const options = {
+		Zach: 18,
+		default: 0,
+	};
+	if (typeof name !== 'string') return options.default;
+	return options[name as keyof typeof options] ?? options.default;
 }
-
-// The question mark (?) after name attribute marks it as optional.
