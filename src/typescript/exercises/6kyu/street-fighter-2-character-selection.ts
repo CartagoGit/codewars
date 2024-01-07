@@ -8,30 +8,52 @@ interface Position {
 
 export function streetFighterSelection(
 	fighters: string[][],
-	position: number[],
+	coordinates: number[],
 	moves: Move[]
 ) {
-	console.log({ fighters, position, moves });
+    let position = {
+        x : coordinates[1],
+        y : coordinates[0]
+    }
+	console.log({ fighters, position, moves, coordinates });
 	const xLimit = fighters[0].length - 1;
 	const yLimit = fighters.length - 1;
-	const awayLimit = (data: { kind: 'x' | 'y'; next: number }) => {
-		const { kind, next } = data;
+	const awayLimit = (data: {
+		kind: 'x' | 'y';
+		next: number;
+		actualPosition: Position;
+	}) => {
+		const { kind, next, actualPosition } = data;
 		const limit = kind === 'x' ? xLimit : yLimit;
-		const actualPosition = position[kind === 'x' ? 0 : 1];
-		if (actualPosition + next > limit) return 0;
-		else if (actualPosition + next < 0) return limit;
-		else return actualPosition + next;
+		const kindPosition = actualPosition[kind];
+		if (kindPosition + next > limit) return kind === 'x' ? 0 : limit;
+		else if (kindPosition + next < 0) return kind === 'x' ? limit : 0;
+		else return kindPosition + next;
 	};
-	const newPosition: Record<Move, Position> = {
-		up: { x: position[0], y: awayLimit({ kind: 'y', next: -1 }) },
-		down: { x: position[0], y: awayLimit({ kind: 'y', next: 1 }) },
-		left: { x: awayLimit({ kind: 'x', next: -1 }), y: position[1] },
-		right: { x: awayLimit({ kind: 'x', next: 1 }), y: position[1] },
+	const newPosition: Record<Move, (actualPosition: Position) => Position> = {
+		up: (actualPosition: Position) => ({
+			x: position.x,
+			y: awayLimit({ kind: 'y', next: -1, actualPosition }),
+		}),
+		down: (actualPosition: Position) => ({
+			x: position.x,
+			y: awayLimit({ kind: 'y', next: 1, actualPosition }),
+		}),
+		right: (actualPosition: Position) => ({
+			x: awayLimit({ kind: 'x', next: 1, actualPosition }),
+			y: position.y,
+		}),
+		left: (actualPosition: Position) => ({
+			x: awayLimit({ kind: 'x', next: -1, actualPosition }),
+			y: position.y,
+		}),
 	};
 	const result = moves.map((move) => {
-		const { x, y } = newPosition[move];
-		position = [x, y];
+		const { x, y } = newPosition[move](position);
+		position = { x, y };
 		return fighters[y][x];
 	});
 	return result;
 }
+
+
