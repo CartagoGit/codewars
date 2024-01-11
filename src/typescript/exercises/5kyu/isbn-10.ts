@@ -1,6 +1,6 @@
 //* https://www.codewars.com/kata/51fc12de24a9d8cb0e000001/train/typescript
 
-//  (arr[0]*1 + arr[1]*2 + arr[2]*3 + arr[3]*4 + arr[4]*5 + arr[5]*6 + arr[6]*7 + arr[7]*8 + arr[8]*9 + arr[9]*10 +) % 11 === 0
+//  (arr[0]*1 + arr[1]*2 + arr[2]*3 + arr[3]*4 + arr[4]*5 + arr[5]*6 + arr[6]*7 + arr[7]*8 + arr[8]*9 + arr[9]*10) % 11 === 0
 
 export function validISBN10(isbn: string): boolean {
 	if (
@@ -11,10 +11,8 @@ export function validISBN10(isbn: string): boolean {
 	) {
 		return false;
 	}
-	const isbnArr = isbn
-		.split('')
-		.map((char, i) => (char.toLowerCase() === 'x' ? 10 : parseInt(char, 10)));
-	const result =
-		isbnArr.reduce((acc, curr, i) => acc + curr * (i + 1), 0) % 11;
-	return result === 0;
+	const result = isbn.split('').reduce((acc, curr, i) => {
+		return acc + (curr.toLowerCase() === 'x' ? 10 : Number(curr)) * (i + 1);
+	}, 0);
+	return result % 11 === 0;
 }
