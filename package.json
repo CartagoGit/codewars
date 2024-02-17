@@ -21,7 +21,7 @@
 			"src"
 		],
 		"ext": "ts",
-		"exec": "npx ts-node src/core/index.ts"
+		"exec": "npx ts-node src/typescript/core/index.ts"
 	},
 	"keywords": [],
 	"devDependencies": {

@@ -1,13 +1,5 @@
+import { initDay17 } from "../advent-of-code/day17/dijkstra-try-2";
 
-import { initCountDigits } from '../exercices/7kyu/count-digit';
+const result = initDay17();
 
-
-
-const result =initCountDigits();
-
-console.log("❗FINAL result ➽ ⏩", result);
-
-
-
-
-
+console.log('❗FINAL result ➽ ⏩', result);
