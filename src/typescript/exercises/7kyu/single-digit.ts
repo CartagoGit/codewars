@@ -3,10 +3,7 @@
 export function singleDigit(n: number): number {
 	while (n.toString().length > 1) {
 		const binary = n.toString(2);
-		n = binary
-			.toString()
-			.split('')
-			.reduce((acc, cur) => acc + parseInt(cur), 0);
+		n = binary.split('').reduce((acc, cur) => acc + parseInt(cur), 0);
 	}
 	return n;
 }
