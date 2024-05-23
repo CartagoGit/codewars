@@ -13,6 +13,14 @@ for (let key in baseCipher) {
 }
 const cipher = { ...baseCipher, ...inverseCipher };
 
-export const encode = (str: string): string=> str.split('').map((char: string) => cipher[char] ?? char).join('');
+export const encode = (str: string): string => {
+	return str
+		.split('')
+		.map((char: string) => {
+			const converse = cipher[char.toLowerCase()] ?? char;
+            return char === char.toLowerCase() ? converse : converse.toUpperCase();
+		})
+		.join('');
+};
 
 export const decode = encode;
