@@ -14,16 +14,27 @@ export function fromProquint(proquint: string): number {
 }
 
 export function toProquint(number: number): string {
-    const bits32 = number.toString(2).padStart(32, '0');
-    let bits : string[] = [];
-    let isVowel = false;
-    for (let i = 0; i < bits32.length; i += isVowel ? 2 : 4) {
-        const kindChain = isVowel ? vowels : consonants;
-        let index = parseInt(bits32.slice(i, i + (isVowel ? 2 : 4)), 2);
-        bits.push(kindChain[index]);
-        isVowel = !isVowel;
-    }
-    
-
-	return 'babab-babab';
+	const numBits = 32;
+	const bits = number.toString(2).padStart(numBits, '0');
+	const [firstChain, secondChain] = [
+		bits.slice(0, numBits / 2),
+		bits.slice(numBits / 2),
+	];
+	const convertBitsToChain = (bitsToConvert: string): string => {
+		let chain: string[] = [];
+		let isVowel = true;
+		for (let i = 0; i < bitsToConvert.length; i += isVowel ? 2 : 4) {
+			isVowel = !isVowel;
+			const kindChain = isVowel ? vowels : consonants;
+			let index = parseInt(
+				bitsToConvert.slice(i, i + (isVowel ? 2 : 4)),
+				2
+			);
+			chain.push(kindChain[index]);
+		}
+		return chain.join('');
+	};
+	return `${convertBitsToChain(firstChain)}-${convertBitsToChain(
+		secondChain
+	)}`;
 }
