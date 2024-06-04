@@ -6,7 +6,6 @@ export function isSatorSquare(tablet: string[][]): boolean {
 		tablet.some((row) => row.length !== tablet.length)
 	)
 		return false;
-	if (tablet.some((row) => row.some((cell) => !cell))) return false;
 
 	const permutedArray = getPermutedArray(tablet);
 	const permutedChain = permutedArray.map((row) => [...row].join(''));
@@ -30,10 +29,13 @@ export function isSatorSquare(tablet: string[][]): boolean {
 }
 
 const getPermutedArray = (tablet: string[][]) => {
-	let permutedArray: string[][] = [...tablet];
+	let permutedArray: string[][] = Array.from(
+		{ length: tablet.length },
+		() => []
+	);
 	for (let i = 0; i < tablet.length; i++) {
 		for (let j = 0; j < tablet.length; j++) {
-			permutedArray[i][j] = tablet[j][i];
+			permutedArray[i][j] = [...tablet][j][i];
 		}
 	}
 	return permutedArray;
