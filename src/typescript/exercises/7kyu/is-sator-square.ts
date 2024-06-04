@@ -6,13 +6,12 @@ export function isSatorSquare(tablet: string[][]): boolean {
 		tablet.some((row) => row.length !== tablet.length)
 	)
 		return false;
-
 	const permutedArray = getPermutedArray(tablet);
 	const permutedChain = permutedArray.map((row) => [...row].join(''));
 	const permutedReverseChain = permutedArray.map((row) =>
 		[...row].reverse().join('')
 	);
-	for (let [row, horizontal] of tablet.entries()) {
+	for (let horizontal of tablet) {
 		const restReverseHorizontalChain = tablet.map((row) =>
 			[...row].reverse().join('')
 		);
