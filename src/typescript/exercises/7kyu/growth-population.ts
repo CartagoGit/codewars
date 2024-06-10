@@ -6,5 +6,11 @@ export const nbYear = (
 	aug: number,
 	p: number
 ): number => {
-	// your code
+	let years = 0;
+	while (p0 < p) {
+		p0 += p0 * (percent / 100) + aug;
+        p0 = Math.floor(p0);
+		years++;
+	}
+	return years;
 };
