@@ -5,5 +5,5 @@ export const zeroFuel = (
 	mpg: number,
 	fuelLeft: number
 ): boolean => {
-	throw new Error('Not implemented');
+	return distance <= mpg * fuelLeft;
 };
