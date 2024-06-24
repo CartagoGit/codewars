@@ -1,23 +1,23 @@
 //* https://www.codewars.com/kata/56e7d40129035aed6c000632/train/typescript
 
 export function easyLine(n: number): number {
-	let sumOfSquares = 0;
+	let sumOfSquares = 0n;
 	for (let k = 0; k <= n; k++) {
 		const coeff = binomialCoefficient(n, k);
-		sumOfSquares = coeff * coeff + sumOfSquares;
+		sumOfSquares = sumOfSquares + BigInt(coeff.toString()) * BigInt(coeff.toString());
 	}
 	// Aplicando la aproximación logarítmica para evitar problemas con números muy grandes
 	return Math.round(Math.log(Number(sumOfSquares)));
 }
 
-function factorial(n: number): number {
-	let result = 1;
-	for (let i = 2; i <= n; i++) {
+function factorial(n: number): bigint {
+	let result = 1n;
+	for (let i = 2n; i <= n; i++) {
 		result *= i;
 	}
 	return result;
 }
 
-function binomialCoefficient(n: number, k: number): number {
+function binomialCoefficient(n: number, k: number): bigint {
 	return factorial(n) / factorial(k) / factorial(n - k);
 }
