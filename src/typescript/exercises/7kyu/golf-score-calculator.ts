@@ -4,5 +4,10 @@ export function golfScoreCalculator(
 	parList: string,
 	scoreList: string
 ): number {
-
+	return parList
+		.split('')
+		.reduce(
+			(acc, par, index) => acc + (Number(scoreList[index]) - Number(par)),
+			0
+		);
 }
