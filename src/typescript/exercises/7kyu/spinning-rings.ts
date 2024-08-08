@@ -7,8 +7,7 @@ export function spinningRings(innerMax: number, outerMax: number): number {
 	let [inner, outer] = [0, 0];
 	do {
 		numberOfSpinsTillRingsAreEqual++;
-		inner = nextInner(inner);
-		outer = nextOuter(outer);
+		[inner, outer] = [nextInner(inner), nextOuter(outer)];
 	} while (inner !== outer);
 	return numberOfSpinsTillRingsAreEqual;
 }
