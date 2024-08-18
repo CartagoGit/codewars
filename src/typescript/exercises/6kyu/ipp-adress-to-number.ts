@@ -1,16 +1,13 @@
 //* https://www.codewars.com/kata/541a354c39c5efa5fa001372/train/typescript
 
 export function ipToNum(ip: string): number {
-	console.log({ ip });
 	const octets = ip.split('.');
 	const binaryOctets = octets.map((octet) =>
 		parseInt(octet, 10).toString(2).padStart(8, '0')
 	);
-    const result = parseInt(octets.join(''), 10);
-
-	console.log({ip, octets, binaryOctets, result});
-	// return parseInt(octets.join(''), 10);
-	return parseInt(octets.join(''), 2);
+    const binaryOctetsString = binaryOctets.join('');
+    const result = parseInt(binaryOctetsString, 2);
+	return result;
 }
 
 export function numToIp(x: number): string {
