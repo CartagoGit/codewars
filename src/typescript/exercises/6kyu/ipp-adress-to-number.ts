@@ -5,20 +5,26 @@ export function ipToNum(ip: string): number {
 	const binaryOctets = octets.map((octet) =>
 		parseInt(octet, 10).toString(2).padStart(8, '0')
 	);
-    const binaryOctetsString = binaryOctets.join('');
-    const result = parseInt(binaryOctetsString, 2);
+	const binaryOctetsString = binaryOctets.join('');
+	const result = parseInt(binaryOctetsString, 2);
 	return result;
 }
 
-export function numToIp(x: number): string {
-	return '0.0.0.0';
+export function numToIp(num: number): string {
+	const binary = num.toString(2).padStart(32, '0');
+	const binaryOctets = binary.match(/.{1,8}/g)!;
+	const octets = binaryOctets.map((binaryOctet) =>
+		parseInt(binaryOctet, 2).toString()
+	);
+	const result = octets?.join('.');
+	return result;
 }
 
-console.log(ipToNum('192.168.1.1'), ' ---> ' + 3232235777);
-console.log(ipToNum('10.0.0.0'), ' ---> ' + 167772160);
-console.log(ipToNum('176.16.0.1'), ' ---> ' + 2953838593);
+// console.log(ipToNum('192.168.1.1'), ' ---> ' + 3232235777);
+// console.log(ipToNum('10.0.0.0'), ' ---> ' + 167772160);
+// console.log(ipToNum('176.16.0.1'), ' ---> ' + 2953838593);
 
-// console.log(numToIp(3232235777), ' ---> ' +'192.168.1.1');
+// console.log(numToIp(3232235777), ' ---> ' + '192.168.1.1');
 // console.log(numToIp(167772160), ' ---> ' +'10.0.0.0');
 // console.log(numToIp(2953838593), ' ---> ' +'176.16.0.1');
 
