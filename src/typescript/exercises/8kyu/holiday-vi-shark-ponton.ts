@@ -7,5 +7,7 @@ export function shark(
 	sharkSpeed: number,
 	dolphin: boolean
 ): string {
-    
+    if(dolphin) sharkSpeed /= 2;
+    if(pontoonDistance/youSpeed < sharkDistance/sharkSpeed) return 'Alive!';
+    else return "Shark Bait!";
 }
