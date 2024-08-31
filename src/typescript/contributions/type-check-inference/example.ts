@@ -14,12 +14,12 @@ type BasicAllTypes = BasicTypes | BasicComplexTypes;
 export function expectedChecker(value: unknown): BasicAllTypes {
 	if (value === null) return 'null';
 	if (Array.isArray(value)) return 'array';
-	if (value instanceof Object) return 'classObject';
+	if (value instanceof Object && typeof value === 'object')
+		return 'classObject';
 	if (value !== value) return 'NaN';
 	return typeof value as BasicTypes;
 }
 // export function typeChecker(value: unknown): BasicTypes {}
-
 
 // TestCases
 enum Enum {
@@ -73,13 +73,50 @@ const kindValues: Record<BasicAllTypes, unknown[]> = {
 	bigint: [BigInt(1), BigInt(2), BigInt(3)],
 };
 
-console.log(expectedChecker(EnumValues));
+const testChecker = (key: BasicAllTypes, value: unknown): boolean => {
+	const result = expectedChecker(value);
+	const isOk = key === result;
+	console.log(
+		'Value:\n ',
+		{ value },
+		' \nResult => ',
+		// typeChecker(value),
+		result,
+		'\nExpected => ',
+		key
+	);
+	console.log(
+		isOk ? '\x1b[36m' : '\x1b[31m',
+		isOk ? 'Passed' : 'Failed',
+		'\x1b[0m'
+	);
+	console.log('-----------------------------------');
+	return isOk;
+};
 
-// const testChecker = (value: unknown) => {
-// 	console.log(
-// 		'Result: ',
-// 		value + ' => ' + typeChecker(value),
-// 		' // Expected: ',
-// 		expectedChecker(value)
-// 	);
-// };
+let listTests: boolean[] = [];
+for (let keyValue in kindValues) {
+	const key = keyValue as BasicAllTypes;
+	console.log(
+		'<----------------------------------->',
+		'\nInit Test for',
+		key
+	);
+	const resultsKey = kindValues[key].map((value) => testChecker(key, value));
+	const areTestsOk = resultsKey.every((value) => value);
+	console.log(
+		'Tests for ' + key,
+		areTestsOk ? '\x1b[36m' : '\x1b[31m',
+		areTestsOk ? 'Passed' : 'Failed',
+		'\x1b[0m'
+	);
+	listTests.push(areTestsOk);
+}
+const isAllTestsOk = listTests.every((value) => value);
+console.log(
+	'<----------------------------------->',
+	'\nFinal Result: ',
+	isAllTestsOk ? '\x1b[36m' : '\x1b[31m',
+	isAllTestsOk ? 'Passed' : 'Failed',
+	'\x1b[0m'
+);
