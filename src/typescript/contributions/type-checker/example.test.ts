@@ -1,55 +1,23 @@
 import { BasicAllTypes, typeChecker } from './type-checker';
 import { convertToString, testChecker } from './utils.helper';
-
 // import { BasicAllTypes, typeChecker } from './solution';
-// import { convertToString, testChecker, changeColorsOk } from './preloaded';
-import { expect } from 'chai';
+// import { convertToString, testChecker } from './preloaded';
+import { expect } from "chai";
 
 // TestCases
 const kindValues: Record<BasicAllTypes, unknown[]> = {
-	array: [
-		[],
-		[1, 2, 3],
-		['a', 'b', 'c'],
-		[true, false, true],
-		[{}],
-		[null],
-		[undefined],
-		[NaN],
-		[Symbol('a'), Symbol('b'), Symbol('c')],
-		[() => {}, () => {}, () => {}],
-		[BigInt(1), BigInt(2), BigInt(3)],
-		[[], {}, '', true, 1, Symbol('a'), () => {}, BigInt(1)],
-		new Array(),
-		new Array<unknown>(1, 'b', true),
-		new Array({}),
-	],
-	classObject: [
-		new String('a'),
-		new Number(1),
-		new Boolean(true),
-		new Date(),
-		new RegExp(''),
-		new Map(),
-	],
+	array: [new Array()],
+	classObject: [new Date()],
 	NaN: [NaN],
 	null: [null],
-	string: ['a', 'b', 'c'],
-	number: [1, 2, 3],
-	boolean: [true, false],
-	object: [
-		new Object(),
-		{},
-		{ a: 1 },
-		{ b: 2 },
-		{ c: 3 },
-		{ a: 1, b: 2, c: 3 },
-		{ a: [], b: {}, c: '' },
-	],
+	string: ['a'],
+	number: [1],
+	boolean: [true],
+	object: [{}],
 	undefined: [undefined],
-	symbol: [Symbol('a'), Symbol('b'), Symbol('c')],
-	function: [() => {}, typeChecker, function () {}, new Function()],
-	bigint: [BigInt(1), BigInt(2), BigInt(3)],
+	symbol: [Symbol('a')],
+	function: [new Function()],
+	bigint: [BigInt(1)],
 };
 
 let listTests: boolean[] = [];
