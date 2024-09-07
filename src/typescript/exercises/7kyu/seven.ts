@@ -2,13 +2,10 @@
 
 export function seven(m: number): number[] {
 	let counter = 0;
-	if (m < 100) return [m, counter];
-	do {
-		const [lastValue, ...restValues] = m.toString().split('').reverse();
-		const lastNum = parseInt(lastValue);
-		const restNum = parseInt(restValues.reverse().join(''));
-		m = restNum - lastNum * 2;
+	while (m > 99) {
+		const [lastNum, restNums] = [m % 10, Math.floor(m / 10)];
+		m = restNums - lastNum * 2;
 		counter++;
-	} while (m > 99);
+	}
 	return [m, counter];
 }
