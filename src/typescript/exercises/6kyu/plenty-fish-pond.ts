@@ -10,30 +10,16 @@ export function fish(shoal: String): number {
 		.sort()
 		.map(Number)
 		.filter((fish) => !!fish);
-	console.log('<------------------------------>', {
-		fishes,
-		size,
-		amountToGrow,
-		neededToGrow: funcAmountToGrow(size),
-	}, '<------------------------------>');
-
-	while (fishes.some((fish) => fish <= size)) {
-		console.log({
-			fishes,
-			size,
-			amountToGrow,
-			neededToGrow: funcAmountToGrow(size),
-			whileTrue: fishes.some((fish) => fish <= size),
-		});
-		const neededToGrow = funcAmountToGrow(size);
-		amountToGrow += fishes[0];
-		fishes.shift();
-		if (amountToGrow >= neededToGrow) {
-			console.log('GROWING');
+	for (let fish of fishes) {
+		console.log('fish:', fish, { size, amountToGrow });
+		if (fish > size) break;
+		else amountToGrow += fish;
+		const needToGrow = funcAmountToGrow(size);
+		console.log({ needToGrow, amountToGrow });
+		if (amountToGrow >= needToGrow) {
 			size++;
-			amountToGrow = 0;
+			amountToGrow = amountToGrow - needToGrow;
 		}
 	}
-	console.log('RESULT: ', size);
 	return size;
 }
