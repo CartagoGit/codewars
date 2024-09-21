@@ -64,11 +64,25 @@ const possibilites = (data: { tableState: Piece[]; i: number }) => {
 	};
 };
 
+let path: Piece[][] = [];
+
 const play = () => {
 	const { tableState, turn } =
 		movePiece({ tableState: [...table], turn: 0 }) || {};
 	if (!tableState) throw new Error('No se ha encontrado solución');
 	console.log(`Juego completado en ${turn} turnos => `, tableState);
+	const pathFinal = path.map((tableState, index) => {
+		const dictionary = {
+			B: '🔘',
+			V: '🚫',
+			N: '🟤',
+		};
+		return {
+			turn: index,
+			table: tableState.map((piece) => dictionary[piece]),
+		};
+	});
+	console.log(`El camino recorrido para ganar el juego =>`, pathFinal);
 };
 
 // Funcion recursiva para mover pieza
@@ -77,6 +91,7 @@ const movePiece = (data: {
 	turn: number;
 }): { tableState: Piece[]; turn: number } | undefined => {
 	const { tableState, turn } = data;
+	path.push(tableState);
 	// Si es el resultado final, retornamos el estado de la mesa
 	if (isFinalResult(tableState)) return data;
 	for (let i = 0; i < tableState.length; i++) {
@@ -92,8 +107,8 @@ const movePiece = (data: {
 		).filter((possibility) => !!possibility.condition);
 
 		// Recorremos las posibilidades y volvemos a llamar a mover pieza por cada posibilidad
-		for (let j = 0; j < conditions.length; j++) {
-			const newState = conditions[j].result(tableState);
+		for (let condition of conditions) {
+			const newState = condition.result(tableState);
 			const premutedTable = movePiece({
 				tableState: newState,
 				turn: turn + 1,
@@ -102,6 +117,7 @@ const movePiece = (data: {
 			if (!!premutedTable) return premutedTable;
 		}
 	}
+	path.pop();
 	// Si en esta recursividad no encontramos solucion, retornamos undefined, porque no tenemos solución por este camino
 	return;
 };
