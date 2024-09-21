@@ -17,9 +17,16 @@ const finalResult: Piece[] = ['N', 'N', 'N', 'N', 'V', 'B', 'B', 'B', 'B'];
 
 const play = () => {
 	let turn = 0;
-    let tableState = [...table];
-    while(!isFinalResult(tableState)){
-        turn++;
+	let tableState = [...table];
+	// while (!isFinalResult(tableState)) {
+	// 	turn++;
+	// }
+};
+
+const movePiece = (data: { tableState: Piece[]; turn: number }): Piece[] => {
+	const { tableState, turn } = data;
+	const possibleMoves: Piece[] = [];
+	for (let i = 0; i < tableState.length; i++) {
         
     }
 };
