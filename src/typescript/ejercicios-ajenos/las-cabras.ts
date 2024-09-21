@@ -15,57 +15,95 @@ type Piece = 'B' | 'V' | 'N';
 const table: Piece[] = ['B', 'B', 'B', 'B', 'V', 'N', 'N', 'N', 'N'];
 const finalResult: Piece[] = ['N', 'N', 'N', 'N', 'V', 'B', 'B', 'B', 'B'];
 
-const play = () => {
-	let turn = 0;
-	let tableState = [...table];
-	// while (!isFinalResult(tableState)) {
-	// 	tableState = movePiece({ tableState, turn });
-	// 	turn++;
-	// }
-	console.log(`Game completed in ${turn} turns`);
+// Posibilidades de saltar 1 o 2, y de que cambie el estado del tablero
+const possibilites = (data: { tableState: Piece[]; i: number }) => {
+	const { tableState, i } = data;
+	return {
+		BJumpOne: {
+			condition: tableState[i] === 'B' && tableState[i + 1] === 'V',
+			result: (actualState: Piece[]): Piece[] => {
+				const newState = [...actualState];
+				newState[i] = 'V';
+				newState[i + 1] = 'B';
+				return newState;
+			},
+		},
+		BJumpTwo: {
+			condition:
+				tableState[i] === 'B' &&
+				tableState[i + 2] === 'V' &&
+				tableState[i + 1] === 'N',
+			result: (actualState: Piece[]): Piece[] => {
+				const newState = [...actualState];
+				newState[i] = 'V';
+				newState[i + 2] = 'B';
+				return newState;
+			},
+		},
+		NJumpOne: {
+			condition: tableState[i] === 'N' && tableState[i - 1] === 'V',
+			result: (actualState: Piece[]): Piece[] => {
+				const newState = [...actualState];
+				newState[i] = 'V';
+				newState[i - 1] = 'N';
+				return newState;
+			},
+		},
+		NJumpTwo: {
+			condition:
+				tableState[i] === 'N' &&
+				tableState[i - 2] === 'V' &&
+				tableState[i - 1] === 'B',
+			result: (actualState: Piece[]): Piece[] => {
+				const newState = [...actualState];
+				newState[i] = 'V';
+				newState[i - 2] = 'N';
+				return newState;
+			},
+		},
+	};
 };
 
+const play = () => {
+	const { tableState, turn } =
+		movePiece({ tableState: [...table], turn: 0 }) || {};
+	if (!tableState) throw new Error('No se ha encontrado solución');
+	console.log(`Juego completado en ${turn} turnos => `, tableState);
+};
+
+// Funcion recursiva para mover pieza
 const movePiece = (data: {
 	tableState: Piece[];
 	turn: number;
-}): Piece[] | undefined => {
+}): { tableState: Piece[]; turn: number } | undefined => {
 	const { tableState, turn } = data;
+	// Si es el resultado final, retornamos el estado de la mesa
+	if (isFinalResult(tableState)) return data;
 	for (let i = 0; i < tableState.length; i++) {
-		if (tableState[i] === 'B' && tableState[i + 1] === 'V') {
-            const newState = [...tableState];
-			newState[i] = 'V';
-			newState[i + 1] = 'B';
+		// Chequeamos las condiciones para mover la pieza
+		const isConditionToMove = Object.values(
+			possibilites({ tableState, i })
+		).some((possibility) => possibility.condition);
+		if (!isConditionToMove) continue;
+
+		// Si se puede mover, vemos que posibilidades tenemos
+		const conditions = Object.values(
+			possibilites({ tableState, i })
+		).filter((possibility) => !!possibility.condition);
+
+		// Recorremos las posibilidades y volvemos a llamar a mover pieza por cada posibilidad
+		for (let j = 0; j < conditions.length; j++) {
+			const newState = conditions[j].result(tableState);
 			const premutedTable = movePiece({
 				tableState: newState,
 				turn: turn + 1,
 			});
+			// Si encontramos una solucion, retornamos el estado de la mesa
 			if (!!premutedTable) return premutedTable;
 		}
-		if (tableState[i] === 'N' && tableState[i - 1] === 'V') {
-			newState[i] = 'V';
-			newState[i - 1] = 'N';
-			break;
-		}
-		if (
-			tableState[i] === 'B' &&
-			tableState[i + 2] === 'V' &&
-			tableState[i + 1] === 'N'
-		) {
-			newState[i] = 'V';
-			newState[i + 2] = 'B';
-			break;
-		}
-		if (
-			tableState[i] === 'N' &&
-			tableState[i - 2] === 'V' &&
-			tableState[i - 1] === 'B'
-		) {
-			newState[i] = 'V';
-			newState[i - 2] = 'N';
-			break;
-		}
 	}
-	return newState;
+	// Si en esta recursividad no encontramos solucion, retornamos undefined, porque no tenemos solución por este camino
+	return;
 };
 
 const isFinalResult = (tableState: Piece[]): boolean => {
@@ -74,3 +112,7 @@ const isFinalResult = (tableState: Piece[]): boolean => {
 	}
 	return true;
 };
+
+// Accionamos el juego
+
+play();
