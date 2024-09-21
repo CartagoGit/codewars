@@ -19,16 +19,53 @@ const play = () => {
 	let turn = 0;
 	let tableState = [...table];
 	// while (!isFinalResult(tableState)) {
+	// 	tableState = movePiece({ tableState, turn });
 	// 	turn++;
 	// }
+	console.log(`Game completed in ${turn} turns`);
 };
 
-const movePiece = (data: { tableState: Piece[]; turn: number }): Piece[] => {
+const movePiece = (data: {
+	tableState: Piece[];
+	turn: number;
+}): Piece[] | undefined => {
 	const { tableState, turn } = data;
-	const possibleMoves: Piece[] = [];
 	for (let i = 0; i < tableState.length; i++) {
-        
-    }
+		if (tableState[i] === 'B' && tableState[i + 1] === 'V') {
+            const newState = [...tableState];
+			newState[i] = 'V';
+			newState[i + 1] = 'B';
+			const premutedTable = movePiece({
+				tableState: newState,
+				turn: turn + 1,
+			});
+			if (!!premutedTable) return premutedTable;
+		}
+		if (tableState[i] === 'N' && tableState[i - 1] === 'V') {
+			newState[i] = 'V';
+			newState[i - 1] = 'N';
+			break;
+		}
+		if (
+			tableState[i] === 'B' &&
+			tableState[i + 2] === 'V' &&
+			tableState[i + 1] === 'N'
+		) {
+			newState[i] = 'V';
+			newState[i + 2] = 'B';
+			break;
+		}
+		if (
+			tableState[i] === 'N' &&
+			tableState[i - 2] === 'V' &&
+			tableState[i - 1] === 'B'
+		) {
+			newState[i] = 'V';
+			newState[i - 2] = 'N';
+			break;
+		}
+	}
+	return newState;
 };
 
 const isFinalResult = (tableState: Piece[]): boolean => {
