@@ -3,22 +3,25 @@
 type Gravity = '-' | '#';
 
 export function switchGravity(arr: Gravity[][]): Gravity[][] {
-	let forceGravity: Gravity[][] = [];
+	const forceGravity: Gravity[][] = [...arr].map((row) => row.map(() => '-'));
+	console.log('START => ',{arr, forceGravity});
 	for (let row of arr) {
 		for (let [indexCell, cell] of row.entries()) {
 			if (cell !== '#') continue;
-			let innerRow = 0;
-			while (forceGravity?.[innerRow]?.[indexCell] === '#') {
-				innerRow++;
-			}
-			if (!forceGravity[innerRow]) forceGravity[innerRow] = [];
+			console.log({ indexCell, cell, row, forceGravity });
+			let innerRow = arr.length - 1;
+			while (forceGravity[innerRow][indexCell] === '#') innerRow--;
 			forceGravity[innerRow][indexCell] = '#';
 		}
 	}
-	forceGravity = [...forceGravity].map((row) =>
-		row.map((cell) => (cell === '#' ? cell : '-'))
-	);
-	console.log(forceGravity);
 	return forceGravity;
-    // REVIEW SIN TERMINAR
 }
+
+const test = switchGravity([
+	['-', '#', '#', '-'],
+	['-', '-', '-', '-'],
+	['-', '-', '-', '-'],
+	['-', '-', '-', '-'],
+]);
+
+console.log(test);
