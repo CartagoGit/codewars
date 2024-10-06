@@ -21,22 +21,15 @@ export const phone = (strng: string, num: string): string => {
 	const namePattern = /<([^>]+)>/;
 	const numMatch = line.match(numPattern)?.[0].replace('+', '');
 	const nameMatch = line.match(namePattern)?.[1];
-	console.log({
-		num: line.match(numPattern),
-		name: line.match(namePattern),
-	});
 	if (!numMatch || !nameMatch) return errorMsgs.notFound(num);
+	// Clean the addressMatch from the special especifications
 	const addressMatch = line
 		.replace(numMatch, '')
 		.replace(nameMatch, '')
 		.replace(/<|>/g, '')
-		// .replace(/[^a-zA-Z0-9\s-]/g, '')
-		.replace(/[^a-zA-Z0-9\s.,_-]/g, '')
-  .split(' ')
-		.filter((word) => word)
-		.join(' ')
+		.replace(/[^a-zA-Z0-9\s.-]/g, ' ')
+		.replace(/\s+/g, ' ')
 		.trim();
-	console.log({ numMatch, nameMatch, addressMatch });
 	return getInfoFormated({
 		num: numMatch,
 		name: nameMatch,
