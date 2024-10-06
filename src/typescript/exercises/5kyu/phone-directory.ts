@@ -30,7 +30,11 @@ export const phone = (strng: string, num: string): string => {
 		.replace(numMatch, '')
 		.replace(nameMatch, '')
 		.replace(/<|>/g, '')
-		.replace(/[^a-zA-Z0-9\s-]/g, '')
+		// .replace(/[^a-zA-Z0-9\s-]/g, '')
+		.replace(/[^a-zA-Z0-9\s.,_-]/g, '')
+  .split(' ')
+		.filter((word) => word)
+		.join(' ')
 		.trim();
 	console.log({ numMatch, nameMatch, addressMatch });
 	return getInfoFormated({
