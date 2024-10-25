@@ -10,5 +10,13 @@ export function toIndustrial(time: number | string): number {
 }
 
 export function toNormal(time: number): string {
-	
+	let hours = Math.floor(time);
+	let minutes = Math.round((time - hours) * 60);
+	if (minutes > 59) {
+		const restMinutes = minutes % 60;
+		const restHours = Math.floor(minutes / 60);
+		hours += restHours;
+		minutes = restMinutes;
+	}
+	return `${hours.toString()}:${minutes.toString().padStart(2, '0')}`;
 }
