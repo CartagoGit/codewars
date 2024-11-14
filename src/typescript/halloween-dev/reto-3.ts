@@ -42,7 +42,7 @@ function findSafestPath(dream: number[][]): number {
     const rows = dream.length;
     const cols = dream[0].length;
 
-    // Objetivo 
+    // Objetivo
     const goalX = cols - 1;
     const goalY = rows - 1;
 
@@ -50,7 +50,7 @@ function findSafestPath(dream: number[][]): number {
     const start: ICell = {
         x: 0,
         y: 0,
-        collected: dream[0][0],
+        collected: dream[0][0], // Valor inicial de la celda de inicio
         heuristic: heuristic(0, 0, goalX, goalY),
         parent: null
     };
@@ -68,7 +68,7 @@ function findSafestPath(dream: number[][]): number {
 
         // Si hemos llegado al objetivo, reconstruir el camino
         if (current.x === goalX && current.y === goalY) {
-            let totalDanger = current.collected;
+            let totalDanger = current.collected; // Valor total al llegar al objetivo
             let steps: IStep = [];
             let stepCell: ICell | null = current;
             while (stepCell !== null) {
@@ -79,11 +79,9 @@ function findSafestPath(dream: number[][]): number {
             const paths = orderSteps.reduce((acc, [x, y], index) => {
                 const [prevX, prevY] = orderSteps?.[index - 1] ?? [0, 0];
                 const direction: IDirection =
-                    !prevX && !prevY ?
-                        'INIT' :
-                        x > prevX ?
-                            "RIGHT" :
-                            "DOWN";
+                    !prevX && !prevY ? 'INIT' :
+                    x > prevX ? "RIGHT" : // Si se mueve a la derecha
+                    y > prevY ? "DOWN" : "INIT"; // Si se mueve hacia abajo
                 const toCollect = dream[x][y];
                 const collected = (acc[index - 1]?.collected ?? 0) + toCollect;
                 acc.push({ x, y, direction, toCollect, collected });
@@ -96,7 +94,7 @@ function findSafestPath(dream: number[][]): number {
         // Añadir la celda a la lista cerrada
         closedList.add(`${current.x},${current.y}`);
 
-        // Explorar las celdas vecinas (solo hacia la derecha y hacia abajo)
+        // Explorar las celdas vecinas (solo hacia abajo y hacia la derecha)
         const neighbors: [number, number][] = [
             [current.x + 1, current.y], // Abajo
             [current.x, current.y + 1], // Derecha
@@ -116,15 +114,17 @@ function findSafestPath(dream: number[][]): number {
                 openList.push(neighborCell);
             }
         }
-
     }
-    return 0
+
+    // Si no se encontró un camino, retornar 0
+    return 0;
 }
 
-const dream = [
-    [1, 3, 1],
-    [1, 5, 1],
-    [4, 2, 1],
-]
+const dream2 = [
+    [1, 2],
+    [3, 4],
+    [6, 5],
+    [7, 8]
+];
 
-console.log(findSafestPath(dream)); // 7
+console.log(findSafestPath(dream2)); // Esperamos 20
