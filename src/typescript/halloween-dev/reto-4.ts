@@ -1,8 +1,6 @@
 //* https://www.halloween.dev/es/retos/2024/4
 
 function findTheKiller(whisper: string, suspects: string[]): string {
-    const [...lowerSuspects] = suspects.map(suspect => suspect.toLowerCase());
-    const maxNameLength = Math.max(...suspects.map(suspect => suspect.length));
     const isCompleteName = whisper.at(-1) === '$';
     const filteredWhisper =
         isCompleteName ?
@@ -10,13 +8,14 @@ function findTheKiller(whisper: string, suspects: string[]): string {
             whisper;
     const filteredSuspects =
         isCompleteName ?
-            lowerSuspects.filter(susp => susp.length === whisper.length - 1) :
-            lowerSuspects.filter(susp => susp.length >= whisper.length);
+            suspects.filter(susp => susp.length === whisper.length - 1) :
+            suspects.filter(susp => susp.length >= whisper.length);
     let finalSuspects: string[] = [];
     for (const suspect of filteredSuspects) {
+        const lowerSuspect = suspect.toLowerCase();
         let isValidSuspect = true;
         for (const [index, char] of [...filteredWhisper].entries()) {
-            if (char !== '~' || suspect[index] === char) continue;
+            if (char === '~' || lowerSuspect[index] === char) continue;
             isValidSuspect = false;
         }
         if (isValidSuspect) finalSuspects.push(suspect);
