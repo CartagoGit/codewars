@@ -5,40 +5,60 @@ interface IPosition {
     y: number
 }
 
-type IVertex = IPosition & {
-    parent: IVertex | null
-    g: number // cost
-    h: number // heuristic
-    f: number // g + h
-}
+type IRoomChar = 'T' | '▲' | '.' | '#';
+type IRoomKind = 'me' | 'pyramidHead' | 'emptyPos' | 'wall';
 
-class Vertex implements IVertex {
-    x: number
-    y: number
-    parent: IVertex | null
-    g: number
-    h: number
-    f: number
-    constructor(data: Omit<IVertex, 'f'> | Vertex) {
-        const { x, y, parent, g, h } = data
+type IVertex = IPosition & { parent?: Vertex, g?: number }
+
+
+class Vertex implements IPosition {
+
+    private _target: IPosition
+
+    public x: number
+    public y: number
+    public g: number
+    public h: number
+    public f: number
+    public parent?: Vertex
+    public roomKind: IRoomKind
+
+
+    constructor(data: { vertex: IVertex, target: IPosition, roomKind: IRoomKind }) {
+        const { vertex, target, roomKind } = data;
+        const { x, y, parent, g } = vertex;
         this.x = x
         this.y = y
-        this.parent = parent
-        this.g = g
-        this.h = h
-        this.f = g + h
+        this.g = g ?? 1;
+        this._target = target
+        this.h = this._getHeuristic(target)
+        this.f = this.g + this.h
+        this.parent = parent;
+        this.roomKind = roomKind
+    }
+
+    private _getHeuristic(target: IPosition): number {
+        return Math.abs(this.x - target.x) + Math.abs(this.y - target.y)
+    }
+
+    public getBrothers(): IPosition[] {
+        return [
+            { x: this.x + 1, y: this.y },
+            { x: this.x - 1, y: this.y },
+            { x: this.x, y: this.y + 1 },
+            { x: this.x, y: this.y - 1 }
+        ]
     }
 }
 
 function escapePyramidHead(room: string[][]) {
-    const dictionary = {
+    const dictionary: Record<IRoomChar, IRoomKind> = {
         'T': 'me',
         '▲': 'pyramidHead',
         '.': 'emptyPos',
         '#': 'wall'
     }
-    const heuristic = (a: IPosition, b: IPosition) =>
-        Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+
 
 
     // Get the position of pyramidHead and me
@@ -51,15 +71,14 @@ function escapePyramidHead(room: string[][]) {
         return acc
     }, [] as IPosition[])
 
+    const target: IPosition = { x: mePos.x, y: mePos.y }
+
     // Get the initial vertex
-    const initHeuristic = heuristic(pyramidPos, mePos)
     const initVetex: Vertex = new Vertex(
         {
-            x: pyramidPos.x,
-            y: pyramidPos.y,
-            parent: null,
-            g: 0,
-            h: initHeuristic
+            vertex: { x: pyramidPos.x, y: pyramidPos.y },
+            target,
+            roomKind: dictionary["▲"]
         }
     )
     // Code here
