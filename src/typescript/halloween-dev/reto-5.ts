@@ -9,41 +9,53 @@ interface IPosition {
 type IRoomChar = 'T' | '▲' | '.' | '#';
 type IRoomKind = 'me' | 'pyramidHead' | 'emptyPos' | 'wall';
 
-type IVertex = IPosition & { roomKind: IRoomKind, target: IPosition, parent?: Vertex, g?: number }
+type IVertex = IPosition & {
+    roomKind: IRoomKind,
+    target: IPosition,
+    parent?: Vertex,
+    g?: number,
 
-class Vertex implements IPosition {
-    public x: number
-    public y: number
-    public g: number
-    public h: number
-    public f: number
-    public parent?: Vertex
-    public roomKind: IRoomKind
-
-    constructor(data: IVertex,) {
-        const { x, y, parent, target, g, roomKind } = data;
-        this.x = x
-        this.y = y
-        this.g = g ?? 1;
-        this.parent = parent;
-        this.roomKind = roomKind
-        this.h = this._getHeuristic(target);
-        this.f = this.g + this.h
-    }
-
-    private _getHeuristic(target: IPosition): number {
-        return Math.abs(this.x - target.x) + Math.abs(this.y - target.y)
-    }
-
-    public getBrothers(): IPosition[] {
-        return [
-            { x: this.x + 1, y: this.y },
-            { x: this.x - 1, y: this.y },
-            { x: this.x, y: this.y + 1 },
-            { x: this.x, y: this.y - 1 }
-        ]
-    }
 }
+
+type Vertex = IVertex & {
+    h: number;
+    f: number;
+    getBrothers: () => IPosition[]
+}
+
+// class Vertex implements IPosition {
+//     public x: number
+//     public y: number
+//     public g: number
+//     public h: number
+//     public f: number
+//     public parent?: Vertex
+//     public roomKind: IRoomKind
+
+//     constructor(data: IVertex,) {
+//         const { x, y, parent, target, g, roomKind } = data;
+//         this.x = x
+//         this.y = y
+//         this.g = g ?? 1;
+//         this.parent = parent;
+//         this.roomKind = roomKind
+//         this.h = this._getHeuristic(target);
+//         this.f = this.g + this.h
+//     }
+
+//     private _getHeuristic(target: IPosition): number {
+//         return Math.abs(this.x - target.x) + Math.abs(this.y - target.y)
+//     }
+
+//     public getBrothers(): IPosition[] {
+//         return [
+//             { x: this.x + 1, y: this.y },
+//             { x: this.x - 1, y: this.y },
+//             { x: this.x, y: this.y + 1 },
+//             { x: this.x, y: this.y - 1 }
+//         ]
+//     }
+// }
 
 
 function escapePyramidHead(room: IRoomChar[][]) {
@@ -52,6 +64,44 @@ function escapePyramidHead(room: IRoomChar[][]) {
         '▲': 'pyramidHead',
         '.': 'emptyPos',
         '#': 'wall'
+    }
+
+    // Ya que el ejercicio no permite usar clases, se crea una función que crea los vértices de manera manual, como una función prototipo creadora del objeto
+    function createVertex(data: IVertex): Vertex {
+        // Calcula la heurística
+        const getHeuristic = (target: IPosition): number => {
+            return Math.abs(x - target.x) + Math.abs(y - target.y);
+        };
+        // Método para obtener los hermanos
+        const getBrothers = (): IPosition[] => {
+            return [
+                { x: x + 1, y: y },
+                { x: x - 1, y: y },
+                { x: x, y: y + 1 },
+                { x: x, y: y - 1 }
+            ];
+        };
+        const { x, y, parent, target, g, roomKind } = data;
+
+
+        // Calcula `h` y `f`
+        const h = getHeuristic(target);
+        const gValue = g ?? 1;
+        const f = gValue + h;
+
+
+        // Devuelve el objeto resultante
+        return {
+            x,
+            y,
+            g: gValue,
+            h,
+            f,
+            target,
+            parent,
+            roomKind,
+            getBrothers
+        };
     }
 
 
@@ -69,7 +119,7 @@ function escapePyramidHead(room: IRoomChar[][]) {
     const target: IPosition = { x: mePos.x, y: mePos.y }
 
     // Get the initial vertex
-    const initVertex: Vertex = new Vertex(
+    const initVertex: Vertex = createVertex(
         {
             x: pyramidPos.x,
             y: pyramidPos.y,
@@ -100,7 +150,7 @@ function escapePyramidHead(room: IRoomChar[][]) {
         for (let side of vertex.getBrothers()) {
             const newPosRoom = room[side.y]?.[side.x];
             if (!newPosRoom || newPosRoom === '#') continue;
-            const newVertex = new Vertex(
+            const newVertex = createVertex(
                 {
                     x: side.x,
                     y: side.y,
