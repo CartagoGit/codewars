@@ -11,7 +11,6 @@ type IRoomKind = 'me' | 'pyramidHead' | 'emptyPos' | 'wall';
 
 type IVertex = IPosition & { roomKind: IRoomKind, target: IPosition, parent?: Vertex, g?: number }
 
-
 class Vertex implements IPosition {
     public x: number
     public y: number
@@ -45,6 +44,7 @@ class Vertex implements IPosition {
         ]
     }
 }
+
 
 function escapePyramidHead(room: IRoomChar[][]) {
     const dictionary: Record<IRoomChar, IRoomKind> = {
@@ -81,12 +81,24 @@ function escapePyramidHead(room: IRoomChar[][]) {
     // Create the state room with calculated vertices
     let stateRoom: (Vertex | null)[][] = room.map(row => row.map(() => null));
     stateRoom[initVertex.y][initVertex.x] = initVertex;
+    let openList = [initVertex];
+    while (openList.length > 0) {
+        openList = stateRoom.flat().filter(vertex => vertex !== null).sort((a, b) => a.f - b.f);
+        const vertex = openList.shift() as Vertex;
 
-    const nextSteps = (vertex: Vertex) => {
+        if (vertex.roomKind === 'me') {
+            let path: IPosition[] = []
+            let current = vertex;
+            while (current.parent) {
+                path.push({ x: current.x, y: current.y });
+                current = current.parent;
+            }
+            return path.length;
+        }
+
         for (let side of vertex.getBrothers()) {
             const newPosRoom = room[side.y]?.[side.x];
             if (!newPosRoom || newPosRoom === '#') continue;
-            if(newPosRoom === 'T') return;
             const newVertex = new Vertex(
                 {
                     x: side.x,
@@ -104,12 +116,20 @@ function escapePyramidHead(room: IRoomChar[][]) {
                     stateRoom[newVertex.y][newVertex.x] = newVertex;
                 }
             }
-
         }
-
     }
 
-
-    // Code here
-    return 0
+    return -1
 }
+
+
+const room: IRoomChar[][] = [
+    ['.', '.', '#', '.', '▲'],
+    ['#', '.', '#', '.', '#'],
+    ['.', '.', '.', '.', '.'],
+    ['#', '#', '#', '.', '#'],
+    ['T', '.', '.', '.', '.'],
+]
+
+const finalResult = escapePyramidHead(room); // -> 8
+console.log(IRoomChar[][])
