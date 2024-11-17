@@ -5,16 +5,14 @@ interface IPosition {
     y: number
 }
 
+
 type IRoomChar = 'T' | '▲' | '.' | '#';
 type IRoomKind = 'me' | 'pyramidHead' | 'emptyPos' | 'wall';
 
-type IVertex = IPosition & { parent?: Vertex, g?: number }
+type IVertex = IPosition & { roomKind: IRoomKind, target: IPosition, parent?: Vertex, g?: number }
 
 
 class Vertex implements IPosition {
-
-    private _target: IPosition
-
     public x: number
     public y: number
     public g: number
@@ -23,15 +21,12 @@ class Vertex implements IPosition {
     public parent?: Vertex
     public roomKind: IRoomKind
 
-
-    constructor(data: { vertex: IVertex, target: IPosition, roomKind: IRoomKind }) {
-        const { vertex, target, roomKind } = data;
-        const { x, y, parent, g } = vertex;
+    constructor(data: IVertex,) {
+        const { x, y, parent, target, g, roomKind } = data;
         this.x = x
         this.y = y
         this.g = g ?? 1;
-        this._target = target
-        this.h = this._getHeuristic(target)
+        this.h = this._getHeuristic(target);
         this.f = this.g + this.h
         this.parent = parent;
         this.roomKind = roomKind
@@ -51,7 +46,7 @@ class Vertex implements IPosition {
     }
 }
 
-function escapePyramidHead(room: string[][]) {
+function escapePyramidHead(room: IRoomChar[][]) {
     const dictionary: Record<IRoomChar, IRoomKind> = {
         'T': 'me',
         '▲': 'pyramidHead',
@@ -63,10 +58,10 @@ function escapePyramidHead(room: string[][]) {
 
     // Get the position of pyramidHead and me
     const [mePos, pyramidPos] = room.reduce((acc, row, y) => {
-        if (acc[0] && acc[1]) return acc;
-        const meX = row.indexOf(dictionary.T)
+        if (!!acc[0] && !!acc[1]) return acc;
+        const meX = row.indexOf("T")
         if (meX !== -1) acc[0] = { x: meX, y }
-        const pyramidX = row.indexOf(dictionary["▲"])
+        const pyramidX = row.indexOf("▲")
         if (pyramidX !== -1) acc[1] = { x: pyramidX, y }
         return acc
     }, [] as IPosition[])
@@ -74,13 +69,47 @@ function escapePyramidHead(room: string[][]) {
     const target: IPosition = { x: mePos.x, y: mePos.y }
 
     // Get the initial vertex
-    const initVetex: Vertex = new Vertex(
+    const initVertex: Vertex = new Vertex(
         {
-            vertex: { x: pyramidPos.x, y: pyramidPos.y },
+            x: pyramidPos.x,
+            y: pyramidPos.y,
             target,
             roomKind: dictionary["▲"]
         }
     )
+
+    // Create the state room with calculated vertices
+    let stateRoom: (Vertex | null)[][] = room.map(row => row.map(() => null));
+    stateRoom[initVertex.y][initVertex.x] = initVertex;
+
+    const nextSteps = (vertex: Vertex) => {
+        for (let side of vertex.getBrothers()) {
+            const newPosRoom = room[side.y]?.[side.x];
+            if (!newPosRoom || newPosRoom === '#') continue;
+            if(newPosRoom === 'T') return;
+            const newVertex = new Vertex(
+                {
+                    x: side.x,
+                    y: side.y,
+                    target,
+                    parent: vertex,
+                    roomKind: dictionary[newPosRoom]
+                }
+            )
+            if (!stateRoom[newVertex.y][newVertex.x]) {
+                stateRoom[newVertex.y][newVertex.x] = newVertex;
+            } else {
+                const oldVertex = stateRoom[newVertex.y][newVertex.x] as Vertex;
+                if (newVertex.f < oldVertex.f) {
+                    stateRoom[newVertex.y][newVertex.x] = newVertex;
+                }
+            }
+
+        }
+
+    }
+
+
     // Code here
     return 0
 }
