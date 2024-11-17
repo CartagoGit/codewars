@@ -65,13 +65,11 @@ function escapePyramidHead(room: IRoomChar[][]) {
         '.': 'emptyPos',
         '#': 'wall'
     }
-
     // Ya que el ejercicio no permite usar clases, se crea una función que crea los vértices de manera manual, como una función prototipo creadora del objeto
     function createVertex(data: IVertex): Vertex {
         // Calcula la heurística
-        const getHeuristic = (target: IPosition): number => {
-            return Math.abs(x - target.x) + Math.abs(y - target.y);
-        };
+        const getHeuristic = (target: IPosition): number =>
+            Math.abs(x - target.x) + Math.abs(y - target.y);
         // Método para obtener los hermanos
         const getBrothers = (): IPosition[] => {
             return [
@@ -81,29 +79,70 @@ function escapePyramidHead(room: IRoomChar[][]) {
                 { x: x, y: y - 1 }
             ];
         };
-        const { x, y, parent, target, g, roomKind } = data;
-
-
-        // Calcula `h` y `f`
-        const h = getHeuristic(target);
-        const gValue = g ?? 1;
-        const f = gValue + h;
-
+        const { x, y, target, g } = data;
 
         // Devuelve el objeto resultante
         return {
-            x,
-            y,
-            g: gValue,
-            h,
-            f,
-            target,
-            parent,
-            roomKind,
+            ...data,
+            h: getHeuristic(target),
+            f: (g ?? 1) + getHeuristic(target),
             getBrothers
         };
     }
 
+    function createMinHeap<T extends { f: number; h: number }>() {
+        const heap = [] as T[];
+        const compare = (a: T, b: T) => a.f - b.f || a.h - b.h;
+        const heapifyUp = (index: number) => {
+            let parentIndex = Math.floor((index - 1) / 2);
+            while (parentIndex >= 0 && compare(heap[parentIndex], heap[index]) > 0) {
+                [heap[parentIndex], heap[index]] = [heap[index], heap[parentIndex]];
+                index = parentIndex;
+                parentIndex = Math.floor((index - 1) / 2);
+            }
+        }
+
+        const heapifyDown = (index: number) => {
+            let smallest = index;
+            const left = 2 * index + 1;
+            const right = 2 * index + 2;
+
+            if (left < heap.length && compare(heap[left], heap[smallest]) < 0) {
+                smallest = left;
+            }
+
+            if (right < heap.length && compare(heap[right], heap[smallest]) < 0) {
+                smallest = right;
+            }
+
+            if (smallest !== index) {
+                [heap[index], heap[smallest]] = [heap[smallest], heap[index]];
+                heapifyDown(smallest);
+
+            }
+        };
+
+        const push = (item: T) => {
+            heap.push(item);
+            heapifyUp(heap.length - 1);
+        }
+        const pop = () => {
+            if (heap.length === 0) return undefined;
+            const item = heap[0];
+            heap[0] = heap[heap.length - 1];
+            heap.pop();
+            heapifyDown(0);
+            return item;
+        }
+        return {
+            heap,
+            push,
+            pop,
+            heapifyUp,
+            heapifyDown,
+            compare
+        }
+    }
 
 
     // Get the position of pyramidHead and me
@@ -131,10 +170,10 @@ function escapePyramidHead(room: IRoomChar[][]) {
     // Create the state room with calculated vertices
     let stateRoom: (Vertex | null)[][] = room.map(row => row.map(() => null));
     stateRoom[initVertex.y][initVertex.x] = initVertex;
-    let openList = [initVertex];
-    while (openList.length > 0) {
-        openList.sort((a, b) => a.f - b.f || a.h - b.h);
-        const vertex = openList.shift() as Vertex;
+    let openList = createMinHeap<Vertex>();
+    openList.push(initVertex);
+    while (openList.heap.length > 0) {
+        const vertex = openList.pop() as Vertex;
 
 
         if (vertex.roomKind === 'me') {
@@ -152,8 +191,7 @@ function escapePyramidHead(room: IRoomChar[][]) {
             if (!newPosRoom || newPosRoom === '#') continue;
             const newVertex = createVertex(
                 {
-                    x: side.x,
-                    y: side.y,
+                    ...side,
                     target,
                     parent: vertex,
                     roomKind: dictionary[newPosRoom]
@@ -162,12 +200,10 @@ function escapePyramidHead(room: IRoomChar[][]) {
             if (!stateRoom[newVertex.y][newVertex.x]) {
                 stateRoom[newVertex.y][newVertex.x] = newVertex;
                 openList.push(newVertex);
-            } else {
-                const oldVertex = stateRoom[newVertex.y][newVertex.x] as Vertex;
-                if (newVertex.f < oldVertex.f) {
-                    stateRoom[newVertex.y][newVertex.x] = newVertex;
-                    openList.push(newVertex);
-                }
+            } else if (newVertex.f < stateRoom[newVertex.y][newVertex.x]!.f) {
+                stateRoom[newVertex.y][newVertex.x] = newVertex;
+                openList.push(newVertex);
+
             }
         }
     }
