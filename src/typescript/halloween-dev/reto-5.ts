@@ -25,10 +25,10 @@ class Vertex implements IPosition {
         this.x = x
         this.y = y
         this.g = g ?? 1;
-        this.h = this._getHeuristic(target);
-        this.f = this.g + this.h
         this.parent = parent;
         this.roomKind = roomKind
+        this.h = this._getHeuristic(target);
+        this.f = this.g + this.h
     }
 
     private _getHeuristic(target: IPosition): number {
@@ -83,8 +83,9 @@ function escapePyramidHead(room: IRoomChar[][]) {
     stateRoom[initVertex.y][initVertex.x] = initVertex;
     let openList = [initVertex];
     while (openList.length > 0) {
-        openList = stateRoom.flat().filter(vertex => vertex !== null).sort((a, b) => a.f - b.f);
+        openList.sort((a, b) => a.f - b.f || a.h - b.h);
         const vertex = openList.shift() as Vertex;
+
 
         if (vertex.roomKind === 'me') {
             let path: IPosition[] = []
@@ -110,10 +111,12 @@ function escapePyramidHead(room: IRoomChar[][]) {
             )
             if (!stateRoom[newVertex.y][newVertex.x]) {
                 stateRoom[newVertex.y][newVertex.x] = newVertex;
+                openList.push(newVertex);
             } else {
                 const oldVertex = stateRoom[newVertex.y][newVertex.x] as Vertex;
                 if (newVertex.f < oldVertex.f) {
                     stateRoom[newVertex.y][newVertex.x] = newVertex;
+                    openList.push(newVertex);
                 }
             }
         }
@@ -131,5 +134,4 @@ const room: IRoomChar[][] = [
     ['T', '.', '.', '.', '.'],
 ]
 
-const finalResult = escapePyramidHead(room); // -> 8
-console.log(IRoomChar[][])
+console.log(escapePyramidHead(room))// -> 8
