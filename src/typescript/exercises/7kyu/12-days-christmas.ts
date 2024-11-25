@@ -19,3 +19,5 @@ export function comparator(a: string, b: string): number {
     return song.indexOf(a) - song.indexOf(b)
 
 }
+
+// REVIEW Sin resolver por falta de entendimiento del enunciado
