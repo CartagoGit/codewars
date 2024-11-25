@@ -16,7 +16,6 @@ const song = [
     "a partridge in a pear tree.",
 ]
 export function comparator(a: string, b: string): number {
-    console.log(a, b)
-    // Your code here
-    return 0
+    return song.indexOf(a) - song.indexOf(b)
+
 }
