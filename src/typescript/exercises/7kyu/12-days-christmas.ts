@@ -16,8 +16,9 @@ const song = [
 	'a partridge in a pear tree.',
 ];
 export function comparator(a: string, b: string): number {
-	const diff = song.indexOf(a) - song.indexOf(b);
-	return diff > 0 ? 1 : diff < 0 ? -1 : 0;
+	const indexA = song.indexOf(a);
+	const indexB = song.indexOf(b);
+	return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
 }
 
 // REVIEW Sin resolver por falta de entendimiento del enunciado
