@@ -18,7 +18,5 @@ const song = [
 export function comparator(a: string, b: string): number {
 	const indexA = song.indexOf(a);
 	const indexB = song.indexOf(b);
-	return indexA < indexB ? -1 : indexA > indexB ? 1 : 0;
+	return indexA < indexB ? 1 : indexA > indexB ? -1 : 0;
 }
-
-// REVIEW Sin resolver por falta de entendimiento del enunciado
