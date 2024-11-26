@@ -12,11 +12,8 @@ const song = [
 	'5 golden rings,',
 	'4 calling birds,',
 	'3 French hens,',
-	'2 turtle doves and ',
+	'2 turtle doves and',
 	'a partridge in a pear tree.',
 ];
-export function comparator(a: string, b: string): number {
-	const indexA = song.indexOf(a);
-	const indexB = song.indexOf(b);
-	return indexA < indexB ? 1 : indexA > indexB ? -1 : 0;
-}
+export const comparator = (a: string, b: string): number =>
+	song.indexOf(a) - song.indexOf(b);
