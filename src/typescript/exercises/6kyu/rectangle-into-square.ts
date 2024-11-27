@@ -3,7 +3,7 @@
 export const sqInRect = (l: number, w: number): null | number[] => {
 	if (l === w) return null;
 	const recursive = (size1: number, size2: number): number[] => {
-		const [min, max] = size1 < size2 ? [size1, size2] : [size2, size1];
+		const [min, max] = [Math.min(size1, size2), Math.max(size1, size2)];
 		if (min === 0) return [];
 		return [min, ...recursive(min, max - min)];
 	};
