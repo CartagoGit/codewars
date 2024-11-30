@@ -1,10 +1,17 @@
 //* https://www.codewars.com/kata/59d9d8cb27ee005972000045/train/typescript
 
 export function catalog(s: string, article: string): string {
-	const products = s.split('\n').filter((line) => !!line);
-	console.log(products);
-
-	return '';
+	const foundProducts: string[] = [];
+	for (const product of s.split('\n')) {
+		if (!product) continue;
+		const name = product.match(/<name>(.*?)<\/name>/)?.[1];
+		if (!name?.includes(article)) continue;
+		const prx = product.match(/<prx>(.*?)<\/prx>/)?.[1];
+		const qty = product.match(/<qty>(.*?)<\/qty>/)?.[1];
+		if (!prx || !qty) continue;
+		foundProducts.push(`${name} > prx: $${prx} qty: ${qty}`);
+	}
+	return foundProducts.length ? foundProducts.join('\r\n') : 'Nothing';
 }
 
 // Tests
@@ -57,6 +64,6 @@ const s = `<prod><name>drill</name><prx>99</prx><qty>5</qty></prod>
 
 <prod><name>window fan</name><prx>62</prx><qty>8</qty></prod>`;
 
-console.log(catalog(s, 'ladder')) //, 'ladder > prx: $112 qty: 12');
-console.log(catalog(s,'saw',)) //	table saw > prx: $1099.99 qty: 5\r\nsaw > prx: $9 qty: 10\r\nsaw for metal > prx: $13.80 qty: 32');
-console.log(catalog(s, 'nails')) //, 'Nothing');
+console.log(catalog(s, 'ladder')); //, 'ladder > prx: $112 qty: 12');
+console.log(catalog(s, 'saw')); //	table saw > prx: $1099.99 qty: 5\r\nsaw > prx: $9 qty: 10\r\nsaw for metal > prx: $13.80 qty: 32');
+console.log(catalog(s, 'nails')); //, 'Nothing');
