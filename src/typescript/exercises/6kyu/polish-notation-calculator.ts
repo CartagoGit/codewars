@@ -6,10 +6,10 @@ export function calc(expr: string): number {
 	if (!expr) return 0;
 	let numbers: number[] = [];
 	const operators = {
-		'+': (a: number, b: number) => a + b,
-		'-': (a: number, b: number) => a - b,
-		'*': (a: number, b: number) => a * b,
-		'/': (a: number, b: number) => a / b,
+		'+': (a: number, b: number) => b + a,
+		'-': (a: number, b: number) => b - a,
+		'*': (a: number, b: number) => b * a,
+		'/': (a: number, b: number) => b / a,
 	};
 	for (let char of expr.split(' ')) {
 		let nextNum: number;
