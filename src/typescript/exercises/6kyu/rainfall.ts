@@ -18,10 +18,11 @@ export const variance = (town: string, chain: string): number => {
 };
 
 const getParsedTownData = (town: string, chain: string): number[] => {
-	const townData = chain.split('\n').find((data) => data.startsWith(town));
-	if (!townData) return [];
-	const monthsData = townData
-		.split(':')[1]
+	const townsData = chain.split('\n').map((townData) => townData.split(':'));
+	const [_townName, months] =
+		townsData.find(([name, _data]) => name === town) ?? [];
+	if (!months) return [];
+	const monthsData = months
 		.split(',')
 		.map((data) => parseFloat(data.split(' ')[1]));
 	return monthsData;
