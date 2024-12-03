@@ -9,26 +9,21 @@ export class Connect4 {
 	public board = Array.from({ length: 6 }, () =>
 		Array.from({ length: 7 }, () => 0)
 	);
-
 	public playerTurn: IPlayer = 1;
-
 	public isGameFinished = false;
 
 	// ANCHOR: Constructor
 
 	constructor() {
-		console.log('NEW GAME ----->');
 	}
 
 	// ANCHOR: Methods
 
 	play(col: number): string {
-		console.log('BOARD: ', this.board ,'PLAYER: ', this.playerTurn, 'COL: ', col);
 		if (this.isGameFinished) return 'Game has finished!';
 		for (let row = 0; row < this.board.length; row++) {
             if (this.board[row][col] !== 0) {
-                console.log('ROW: ', row, 'COL: ', col, 'VALUE: ', this.board[row][col]);
-				if (row === this.board[0].length - 1) return 'Column full!';
+				if (row === this.board.length - 1) return 'Column full!';
 				continue;
 			}
 			this.board[row][col] = this.playerTurn;
