@@ -2,14 +2,7 @@
 
 type IPlayer = 1 | 2;
 type IPosition = { row: number; col: number };
-type IDirections =
-	| 'down'
-	| 'left'
-	| 'right'
-	| 'upRight'
-	| 'upLeft'
-	| 'downRight'
-	| 'downLeft';
+type IDirectionsForCheck = 'up' | 'upRight' | 'right' | 'downRight';
 
 export class Connect4 {
 	// ANCHOR : Properties
@@ -29,17 +22,15 @@ export class Connect4 {
 
 	play(col: number): string {
 		if (this.isGameFinished) return 'Game has finished!';
-		let lastPiece: IPosition;
 		for (let row = 0; row < this.board[0].length; row++) {
 			if (this.board[row][col] !== 0) {
 				if (row === this.board[0].length - 1) return 'Column full!';
 				continue;
 			}
 			this.board[row][col] = this.playerTurn;
-			lastPiece = { row, col };
 			break;
 		}
-		const isPlayerWins = this._checkWin(lastPiece!);
+		const isPlayerWins = this._checkWin();
 		if (isPlayerWins) return `Player ${this.playerTurn} wins!`;
 		const result = `Player ${this.playerTurn} has a turn`;
 		this._changePlayerTurn();
@@ -50,15 +41,31 @@ export class Connect4 {
 		this.playerTurn = this.playerTurn === 1 ? 2 : 1;
 	}
 
-	private _checkWin(lastPiece: IPosition): boolean {
-		const directions: Record<IDirections, IPosition> = {
-			upLeft: { row: -1, col: -1 },
-			left: { row: 0, col: -1 },
-			downLeft: { row: 1, col: -1 },
-			down: { row: 1, col: 0 },
-			downRight: { row: 1, col: 1 },
-			right: { row: 0, col: 1 },
+	private _checkWin(): boolean {
+		const directions: Record<IDirectionsForCheck, IPosition> = {
+			up: { row: -1, col: 0 },
 			upRight: { row: -1, col: 1 },
+			right: { row: 0, col: 1 },
+			downRight: { row: 1, col: 1 },
 		};
+		for (let [rowIndex, row] of this.board.entries()) {
+			for (let col of row) {
+				if ([0, this.playerTurn === 1 ? 2 : 1].includes(col)) continue;
+				for (let newPosition of Object.values(directions)) {
+					let count = 0;
+					let position: IPosition = { row: rowIndex, col };
+					while (
+						this.board[position.row]?.[position.col] ===
+						this.playerTurn
+					) {
+						count++;
+						position.row += newPosition.row;
+						position.col += newPosition.col;
+					}
+					if (count >= 4) return true;
+				}
+			}
+		}
+		return false;
 	}
 }
