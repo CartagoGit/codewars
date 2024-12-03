@@ -17,24 +17,25 @@ export class Connect4 {
 	// ANCHOR: Constructor
 
 	constructor() {
-        console.log('NEW GAME ----->')
-    }
+		console.log('NEW GAME ----->');
+	}
 
 	// ANCHOR: Methods
 
 	play(col: number): string {
-        console.log('PLAYER: ', this.playerTurn, 'COL: ', col)
+		console.log('BOARD: ', this.board ,'PLAYER: ', this.playerTurn, 'COL: ', col);
 		if (this.isGameFinished) return 'Game has finished!';
 		for (let row = 0; row < this.board.length; row++) {
-			if (this.board[row][col] !== 0) {
+            if (this.board[row][col] !== 0) {
+                console.log('ROW: ', row, 'COL: ', col, 'VALUE: ', this.board[row][col]);
 				if (row === this.board[0].length - 1) return 'Column full!';
 				continue;
 			}
 			this.board[row][col] = this.playerTurn;
 			break;
 		}
-		const isPlayerWins = this._checkWin();
-		if (isPlayerWins) return `Player ${this.playerTurn} wins!`;
+		this.isGameFinished = this._checkWin();
+		if (this.isGameFinished) return `Player ${this.playerTurn} wins!`;
 		const result = `Player ${this.playerTurn} has a turn`;
 		this._changePlayerTurn();
 		return result;
@@ -46,27 +47,26 @@ export class Connect4 {
 
 	private _checkWin(): boolean {
 		const directions: Record<IDirectionsForCheck, IPosition> = {
-			up: { row: -1, col: 0 },
-			upRight: { row: -1, col: 1 },
+			up: { row: 1, col: 0 },
+			upRight: { row: 1, col: 1 },
 			right: { row: 0, col: 1 },
-			downRight: { row: 1, col: 1 },
+			downRight: { row: -1, col: 1 },
 		};
-        console.log({board: this.board})
 		for (let [rowIndex, row] of this.board.entries()) {
-			for (let colIndex of row) {
-				if ([0, this.playerTurn === 1 ? 2 : 1].includes(colIndex)) continue;
-				for (let newPosition of Object.values(directions)) {
-                    if(rowIndex === 0){
-                        console.log({rowIndex, colIndex, newPosition})
-                    }
+			for (let [colIndex, colValue] of row.entries()) {
+				if ([0, this.playerTurn === 1 ? 2 : 1].includes(colValue))
+					continue;
+				for (let [_direction, newPosition] of Object.entries(
+					directions
+				)) {
 					let count = 0;
 					let position: IPosition = { row: rowIndex, col: colIndex };
 					while (
-                        this.board[position.row]?.[position.col] ===
-						this.playerTurn
+						count < 4 &&
+						this.board[position.row]?.[position.col] ===
+							this.playerTurn
 					) {
-                        console.log(({position, player: this.playerTurn, positionInBoard: this.board[position.row]?.[position.col], newPosition, count}))
-                        count++;
+						count++;
 						position.row += newPosition.row;
 						position.col += newPosition.col;
 					}
