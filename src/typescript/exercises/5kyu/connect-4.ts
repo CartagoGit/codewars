@@ -16,13 +16,16 @@ export class Connect4 {
 
 	// ANCHOR: Constructor
 
-	constructor() {}
+	constructor() {
+        console.log('NEW GAME ----->')
+    }
 
 	// ANCHOR: Methods
 
 	play(col: number): string {
+        console.log('PLAYER: ', this.playerTurn, 'COL: ', col)
 		if (this.isGameFinished) return 'Game has finished!';
-		for (let row = 0; row < this.board[0].length; row++) {
+		for (let row = 0; row < this.board.length; row++) {
 			if (this.board[row][col] !== 0) {
 				if (row === this.board[0].length - 1) return 'Column full!';
 				continue;
@@ -48,17 +51,22 @@ export class Connect4 {
 			right: { row: 0, col: 1 },
 			downRight: { row: 1, col: 1 },
 		};
+        console.log({board: this.board})
 		for (let [rowIndex, row] of this.board.entries()) {
-			for (let col of row) {
-				if ([0, this.playerTurn === 1 ? 2 : 1].includes(col)) continue;
+			for (let colIndex of row) {
+				if ([0, this.playerTurn === 1 ? 2 : 1].includes(colIndex)) continue;
 				for (let newPosition of Object.values(directions)) {
+                    if(rowIndex === 0){
+                        console.log({rowIndex, colIndex, newPosition})
+                    }
 					let count = 0;
-					let position: IPosition = { row: rowIndex, col };
+					let position: IPosition = { row: rowIndex, col: colIndex };
 					while (
-						this.board[position.row]?.[position.col] ===
+                        this.board[position.row]?.[position.col] ===
 						this.playerTurn
 					) {
-						count++;
+                        console.log(({position, player: this.playerTurn, positionInBoard: this.board[position.row]?.[position.col], newPosition, count}))
+                        count++;
 						position.row += newPosition.row;
 						position.col += newPosition.col;
 					}
